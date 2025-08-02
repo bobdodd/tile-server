@@ -1,0 +1,79 @@
+{% extends "layout-base.html" %}
+
+{% block title %}Tile Generation Server{% endblock %}
+
+{% block content %}
+<div class="welcome">
+    <header class="welcome-header">
+        <h1>Tile Generation Server</h1>
+        <p class="welcome-description">
+            Self-contained SVG tile generation and serving system for accessible mapping applications.
+        </p>
+    </header>
+    
+    <section class="server-info">
+        <h2>Server Information</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>Purpose</h3>
+                <p>Generates and serves pre-rendered SVG tiles for accessible map applications</p>
+            </div>
+            <div class="info-card">
+                <h3>Coverage</h3>
+                <p>Configurable regions across Canada for September 2024 testing</p>
+            </div>
+            <div class="info-card">
+                <h3>Technology</h3>
+                <p>Flask + OpenStreetMap + SVG rendering with accessibility features</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="access-points">
+        <h2>Access Points</h2>
+        <div class="access-grid">
+            <a href="/admin/" class="access-card admin">
+                <h3>🛠️ Admin Interface</h3>
+                <p>Manage regions, generate tiles, view statistics</p>
+                <span class="access-url">/admin/</span>
+            </a>
+            <a href="/api/regions" class="access-card api">
+                <h3>🔌 API Endpoints</h3>
+                <p>RESTful API for tile serving and management</p>
+                <span class="access-url">/api/</span>
+            </a>
+            <a href="/tiles/" class="access-card tiles">
+                <h3>🗺️ Direct Tile Access</h3>
+                <p>High-performance direct tile serving</p>
+                <span class="access-url">/tiles/</span>
+            </a>
+        </div>
+    </section>
+    
+    <section class="quick-start">
+        <h2>Quick Start</h2>
+        <ol class="quick-start-steps">
+            <li>
+                <strong>Access Admin Interface:</strong> 
+                <a href="/admin/">Go to /admin/</a> to manage tiles
+            </li>
+            <li>
+                <strong>View Existing Regions:</strong> 
+                Check the Toronto Downtown region that's already migrated
+            </li>
+            <li>
+                <strong>Create New Regions:</strong> 
+                Add Vancouver, Calgary, or other Canadian cities for testing
+            </li>
+            <li>
+                <strong>Generate Tiles:</strong> 
+                Use the admin interface to generate tiles for new regions
+            </li>
+            <li>
+                <strong>API Integration:</strong> 
+                Connect your main app to <code>/api/tile/&lt;region&gt;/&lt;tile&gt;</code>
+            </li>
+        </ol>
+    </section>
+</div>
+{% endblock %}

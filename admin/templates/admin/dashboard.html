@@ -1,0 +1,91 @@
+{% extends "layout-base.html" %}
+
+{% block title %}Admin Dashboard - Tile Generation Server{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <header class="page-header">
+        <h1>Tile Generation Dashboard</h1>
+        <p class="page-description">Overview of tile regions and generation status</p>
+    </header>
+    
+    <section class="stats-grid" aria-labelledby="stats-heading">
+        <h2 id="stats-heading" class="visually-hidden">Server Statistics</h2>
+        
+        <div class="stat-card">
+            <h3>Total Regions</h3>
+            <p class="stat-number">{{ stats.total_regions }}</p>
+            <p class="stat-label">Active regions</p>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Total Tiles</h3>
+            <p class="stat-number">{{ stats.total_tiles }}</p>
+            <p class="stat-label">Generated tiles</p>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Storage Used</h3>
+            <p class="stat-number">{{ "%.1f"|format(stats.total_size_mb) }}MB</p>
+            <p class="stat-label">Disk usage</p>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Server Status</h3>
+            <p class="stat-number status-healthy">Active</p>
+            <p class="stat-label">Ready for tile serving</p>
+        </div>
+    </section>
+    
+    <section class="regions-overview" aria-labelledby="regions-heading">
+        <h2 id="regions-heading">Regional Coverage</h2>
+        
+        {% if stats.regions %}
+        <div class="regions-grid">
+            {% for region in stats.regions %}
+            <div class="region-card">
+                <h3>{{ region.name }}</h3>
+                <div class="region-stats">
+                    <p><strong>{{ region.tile_count }}</strong> tiles</p>
+                    <p><strong>{{ "%.1f"|format(region.size_mb) }}MB</strong> storage</p>
+                    <p class="status status-{{ region.status }}">{{ region.status|title }}</p>
+                </div>
+                <div class="region-actions">
+                    <a href="/admin/regions/{{ region.name }}" class="btn btn-primary">View Details</a>
+                    <a href="/api/region/{{ region.name }}/tiles" class="btn btn-secondary">API</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>No Regions Found</h3>
+            <p>Create your first region to start generating tiles.</p>
+            <a href="/admin/regions/create" class="btn btn-primary">Create Region</a>
+        </div>
+        {% endif %}
+    </section>
+    
+    <section class="quick-actions" aria-labelledby="actions-heading">
+        <h2 id="actions-heading">Quick Actions</h2>
+        <div class="actions-grid">
+            <a href="/admin/regions/create" class="action-card">
+                <h3>Create New Region</h3>
+                <p>Define a new geographic area for tile generation</p>
+            </a>
+            <a href="/admin/generation" class="action-card">
+                <h3>Generate Tiles</h3>
+                <p>Start batch tile generation for existing regions</p>
+            </a>
+            <a href="/admin/tiles" class="action-card">
+                <h3>Browse Tiles</h3>
+                <p>Visual tile browser with geographic boundaries</p>
+            </a>
+            <a href="/api/regions" class="action-card">
+                <h3>API Documentation</h3>
+                <p>View available API endpoints and regional data</p>
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

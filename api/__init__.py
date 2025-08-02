@@ -1,0 +1,1 @@
+"""API endpoints for tile serving and management."""
