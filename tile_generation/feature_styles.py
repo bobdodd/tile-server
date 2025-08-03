@@ -125,19 +125,58 @@ FEATURE_STYLES = {
     },
     'transit': {
         'tags': {
-            'highway': ['bus_stop'],
-            'railway': ['station', 'subway_entrance', 'tram_stop', 'halt'],
+            'highway': ['bus_stop', 'platform', 'bus_guideway'],
+            'railway': ['station', 'halt', 'platform', 'subway', 'tram', 'tram_stop', 'stop', 'subway_entrance',
+                       'rail', 'light_rail', 'narrow_gauge', 'funicular', 'monorail'],
+            'public_transport': ['platform', 'stop_position', 'station'],
             'amenity': ['bus_station', 'ferry_terminal'],
-            'public_transport': ['platform', 'stop_position']
+            'aerialway': ['station', 'loading_point', 'cable_car', 'gondola', 'chair_lift', 'drag_lift', 'rope_tow', 'zip_line'],
+            'aeroway': ['terminal', 'gate', 'runway', 'taxiway', 'aerodrome']
         },
         'styles': {
+            # Bus Infrastructure
             'bus_stop': {'fill': '#ff9800', 'stroke': '#ff6600', 'stroke_width': 2, 'radius': 5},
-            'railway_station': {'fill': '#9c27b0', 'stroke': '#7b1fa2', 'stroke_width': 2, 'radius': 8},
+            'bus_station': {'fill': '#ff5722', 'stroke': '#d84315', 'stroke_width': 2.5, 'radius': 12},
+            'bus_guideway': {'color': '#ff7043', 'width': 4, 'stroke_dasharray': '8,4'},
+            
+            # Railway Infrastructure  
+            'station': {'fill': '#9c27b0', 'stroke': '#7b1fa2', 'stroke_width': 2.5, 'radius': 10},
+            'halt': {'fill': '#ba68c8', 'stroke': '#9c27b0', 'stroke_width': 2, 'radius': 6},
             'subway_entrance': {'fill': '#2196f3', 'stroke': '#1976d2', 'stroke_width': 2, 'radius': 6},
+            'rail': {'color': '#424242', 'width': 3},
+            'subway': {'color': '#1976d2', 'width': 4, 'stroke_dasharray': '12,4'},
+            'tram': {'color': '#00bcd4', 'width': 2.5},
             'tram_stop': {'fill': '#00bcd4', 'stroke': '#0097a7', 'stroke_width': 2, 'radius': 5},
-            'bus_station': {'fill': '#ff5722', 'stroke': '#d84315', 'stroke_width': 2, 'radius': 10},
-            'ferry_terminal': {'fill': '#607d8b', 'stroke': '#455a64', 'stroke_width': 2, 'radius': 8},
+            'light_rail': {'color': '#4caf50', 'width': 3},
+            'narrow_gauge': {'color': '#795548', 'width': 2},
+            'funicular': {'color': '#ff5722', 'width': 2.5, 'stroke_dasharray': '6,2'},
+            'monorail': {'color': '#e91e63', 'width': 3.5},
+            
+            # Public Transport
             'platform': {'fill': '#ffc107', 'stroke': '#ff8f00', 'stroke_width': 1.5},
+            'stop_position': {'fill': '#ffeb3b', 'stroke': '#fbc02d', 'stroke_width': 1.5, 'radius': 3},
+            
+            # Water Transport
+            'ferry_terminal': {'fill': '#607d8b', 'stroke': '#455a64', 'stroke_width': 2, 'radius': 8},
+            
+            # Aerial Transport
+            'cable_car': {'color': '#795548', 'width': 2, 'stroke_dasharray': '4,8'},
+            'gondola': {'color': '#8bc34a', 'width': 2, 'stroke_dasharray': '4,8'},
+            'chair_lift': {'color': '#cddc39', 'width': 1.5, 'stroke_dasharray': '3,6'},
+            'drag_lift': {'color': '#ffeb3b', 'width': 1.5, 'stroke_dasharray': '2,4'},
+            'rope_tow': {'color': '#ffc107', 'width': 1, 'stroke_dasharray': '2,2'},
+            'zip_line': {'color': '#ff9800', 'width': 1.5, 'stroke_dasharray': '6,2'},
+            'aerialway_station': {'fill': '#8bc34a', 'stroke': '#689f38', 'stroke_width': 2, 'radius': 7},
+            'loading_point': {'fill': '#cddc39', 'stroke': '#9e9d24', 'stroke_width': 1.5, 'radius': 4},
+            
+            # Airport Infrastructure
+            'terminal': {'fill': '#3f51b5', 'stroke': '#303f9f', 'stroke_width': 2.5, 'radius': 15},
+            'gate': {'fill': '#5c6bc0', 'stroke': '#3f51b5', 'stroke_width': 1.5, 'radius': 4},
+            'runway': {'fill': '#424242', 'stroke': '#212121', 'stroke_width': 2},
+            'taxiway': {'fill': '#616161', 'stroke': '#424242', 'stroke_width': 1},
+            'aerodrome': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 2},
+            
+            # Default
             'default': {'fill': '#ff9800', 'stroke': '#ff6600', 'stroke_width': 2, 'radius': 5}
         }
     },

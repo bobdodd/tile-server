@@ -199,6 +199,13 @@ class TileBuilder:
           node["healthcare"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           node["highway"="bus_stop"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           node["railway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          node["public_transport"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          node["aerialway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          node["aeroway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          way["railway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          way["public_transport"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          way["aerialway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          way["aeroway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           way["amenity"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           way["healthcare"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           relation["building"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
@@ -206,6 +213,10 @@ class TileBuilder:
           relation["landuse"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           relation["amenity"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           relation["healthcare"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          relation["railway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          relation["public_transport"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          relation["aerialway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          relation["aeroway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
         );
         out body;
         >;
@@ -444,12 +455,80 @@ class TileBuilder:
         elif feature_type == 'roads':
             return properties.get('highway', 'road')
         elif feature_type == 'transit':
+            # Bus Infrastructure
             if properties.get('highway') == 'bus_stop':
                 return 'bus_stop'
-            elif properties.get('railway') == 'station':
-                return 'railway_station'
+            elif properties.get('amenity') == 'bus_station':
+                return 'bus_station'
+            elif properties.get('highway') == 'bus_guideway':
+                return 'bus_guideway'
+            
+            # Railway Infrastructure
+            elif properties.get('railway') in ['station']:
+                return 'station'
+            elif properties.get('railway') == 'halt':
+                return 'halt'
             elif properties.get('railway') == 'subway_entrance':
                 return 'subway_entrance'
+            elif properties.get('railway') == 'tram_stop':
+                return 'tram_stop'
+            elif properties.get('railway') == 'rail':
+                return 'rail'
+            elif properties.get('railway') == 'subway':
+                return 'subway'
+            elif properties.get('railway') == 'tram':
+                return 'tram'
+            elif properties.get('railway') == 'light_rail':
+                return 'light_rail'
+            elif properties.get('railway') == 'narrow_gauge':
+                return 'narrow_gauge'
+            elif properties.get('railway') == 'funicular':
+                return 'funicular'
+            elif properties.get('railway') == 'monorail':
+                return 'monorail'
+            
+            # Public Transport
+            elif properties.get('public_transport') == 'platform':
+                return 'platform'
+            elif properties.get('public_transport') == 'stop_position':
+                return 'stop_position'
+            elif properties.get('public_transport') == 'station':
+                return 'station'
+            
+            # Water Transport
+            elif properties.get('amenity') == 'ferry_terminal':
+                return 'ferry_terminal'
+            
+            # Aerial Transport
+            elif properties.get('aerialway') == 'cable_car':
+                return 'cable_car'
+            elif properties.get('aerialway') == 'gondola':
+                return 'gondola'
+            elif properties.get('aerialway') == 'chair_lift':
+                return 'chair_lift'
+            elif properties.get('aerialway') == 'drag_lift':
+                return 'drag_lift'
+            elif properties.get('aerialway') == 'rope_tow':
+                return 'rope_tow'
+            elif properties.get('aerialway') == 'zip_line':
+                return 'zip_line'
+            elif properties.get('aerialway') == 'station':
+                return 'aerialway_station'
+            elif properties.get('aerialway') == 'loading_point':
+                return 'loading_point'
+            
+            # Airport Infrastructure
+            elif properties.get('aeroway') == 'terminal':
+                return 'terminal'
+            elif properties.get('aeroway') == 'gate':
+                return 'gate'
+            elif properties.get('aeroway') == 'runway':
+                return 'runway'
+            elif properties.get('aeroway') == 'taxiway':
+                return 'taxiway'
+            elif properties.get('aeroway') == 'aerodrome':
+                return 'aerodrome'
+            
             return 'default'
         elif feature_type == 'water':
             if properties.get('waterway'):
@@ -483,12 +562,47 @@ class TileBuilder:
         elif properties.get('highway'):
             if properties.get('highway') == 'bus_stop':
                 feature_type = 'bus stop'
+            elif properties.get('highway') == 'bus_guideway':
+                feature_type = 'bus guideway'
             else:
                 feature_type = 'road'
         elif properties.get('amenity'):
             feature_type = properties.get('amenity').replace('_', ' ')
         elif properties.get('healthcare'):
             feature_type = properties.get('healthcare').replace('_', ' ')
+        elif properties.get('railway'):
+            if properties.get('railway') == 'subway_entrance':
+                feature_type = 'subway entrance'
+            elif properties.get('railway') == 'tram_stop':
+                feature_type = 'tram stop'
+            elif properties.get('railway') == 'light_rail':
+                feature_type = 'light rail'
+            elif properties.get('railway') == 'narrow_gauge':
+                feature_type = 'narrow gauge railway'
+            else:
+                feature_type = properties.get('railway').replace('_', ' ')
+        elif properties.get('public_transport'):
+            if properties.get('public_transport') == 'stop_position':
+                feature_type = 'transit stop'
+            else:
+                feature_type = properties.get('public_transport').replace('_', ' ')
+        elif properties.get('aerialway'):
+            if properties.get('aerialway') == 'cable_car':
+                feature_type = 'cable car'
+            elif properties.get('aerialway') == 'chair_lift':
+                feature_type = 'chair lift'
+            elif properties.get('aerialway') == 'drag_lift':
+                feature_type = 'drag lift'
+            elif properties.get('aerialway') == 'rope_tow':
+                feature_type = 'rope tow'
+            elif properties.get('aerialway') == 'zip_line':
+                feature_type = 'zip line'
+            elif properties.get('aerialway') == 'loading_point':
+                feature_type = 'loading point'
+            else:
+                feature_type = properties.get('aerialway').replace('_', ' ')
+        elif properties.get('aeroway'):
+            feature_type = properties.get('aeroway').replace('_', ' ')
         elif properties.get('leisure'):
             feature_type = properties.get('leisure').replace('_', ' ')
         elif properties.get('natural'):

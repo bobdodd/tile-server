@@ -16,9 +16,14 @@
 - **Pedestrian/Bike:** pedestrian, footway, sidewalk, cycleway, path, bridleway, steps, corridor
 - **Special:** track, bus_guideway, busway, escape, raceway
 
-### **Transit Infrastructure (8 types) - GOOD COVERAGE**
-- bus_stop, railway_station, subway_entrance, tram_stop, bus_station, ferry_terminal, platform
-- Point rendering with appropriate symbols and colors
+### **Transit Infrastructure (40+ types) - COMPREHENSIVE**
+- **Bus Infrastructure:** bus_stop, bus_station, bus_guideway
+- **Railway Infrastructure:** station, halt, subway_entrance, rail, subway, tram, tram_stop, light_rail, narrow_gauge, funicular, monorail
+- **Public Transport:** platform, stop_position, station
+- **Water Transport:** ferry_terminal
+- **Aerial Transport:** cable_car, gondola, chair_lift, drag_lift, rope_tow, zip_line, aerialway_station, loading_point
+- **Airport Infrastructure:** terminal, gate, runway, taxiway, aerodrome
+- Point, line, and area rendering with comprehensive styling and accessibility features
 
 ### **Water Features (6 types) - BASIC COVERAGE**
 - **Area water:** water, coastline, beach, bay, strait
@@ -180,19 +185,13 @@
 - **Leisure=bowling_alley** ❌ - Bowling alleys
 - **Leisure=amusement_arcade** ❌ - Arcades
 
-### **9. Transportation Infrastructure Gaps (MEDIUM PRIORITY)**
-- **Railway=rail** ❌ - Railway tracks/lines
-- **Railway=subway** ❌ - Subway/metro lines  
-- **Railway=tram** ❌ - Tram lines
-- **Aeroway=runway** ❌ - Airport runways
-- **Aeroway=taxiway** ❌ - Airport taxiways
-- **Aeroway=terminal** ❌ - Airport terminals
-- **Aeroway=gate** ❌ - Airport gates
-- **Public_transport=platform** ❌ - Detailed transit platforms
+### **9. Automotive Services (MEDIUM PRIORITY)**
 - **Highway=motorway_junction** ❌ - Highway interchanges
 - **Amenity=fuel** ❌ - Gas stations
 - **Amenity=car_wash** ❌ - Car washes
 - **Amenity=car_rental** ❌ - Car rental locations
+- **Amenity=parking** ❌ - Enhanced parking areas
+- **Amenity=charging_station** ❌ - EV charging stations
 
 ### **10. Enhanced Natural Features (MEDIUM PRIORITY)**
 - **Natural=water** ❌ - Large water bodies (lakes, ponds)

@@ -61,8 +61,13 @@ class OSMHandler(osmium.SimpleHandler):
                 'properties': {**tags, 'osm_id': n.id, 'healthcare_type': 'healthcare'}
             })
         
-        # Transit stops
-        elif tags.get('highway') == 'bus_stop' or tags.get('railway') in ['station', 'subway_entrance']:
+        # Comprehensive Transit Infrastructure
+        elif (tags.get('highway') in ['bus_stop', 'platform'] or
+              tags.get('railway') in ['station', 'halt', 'platform', 'subway', 'tram', 'tram_stop', 'stop', 'subway_entrance'] or
+              tags.get('public_transport') in ['platform', 'stop_position', 'station'] or
+              tags.get('amenity') in ['bus_station', 'ferry_terminal'] or
+              tags.get('aerialway') in ['station', 'loading_point'] or
+              tags.get('aeroway') in ['terminal', 'gate']):
             self.features['transit'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
@@ -232,6 +237,39 @@ class OSMHandler(osmium.SimpleHandler):
                 'properties': {**tags, 'osm_id': w.id}
             })
         
+        # Transit Infrastructure (lines and areas)
+        elif (tags.get('railway') in ['rail', 'subway', 'tram', 'light_rail', 'narrow_gauge', 'funicular', 'monorail'] or
+              tags.get('highway') in ['bus_guideway'] or
+              tags.get('aerialway') in ['cable_car', 'gondola', 'chair_lift', 'drag_lift', 'rope_tow', 'zip_line']):
+            # These are linear transit infrastructure
+            self.features['transit'].append({
+                'geometry': line,
+                'properties': {**tags, 'osm_id': w.id}
+            })
+        
+        # Transit Infrastructure (areas - stations, terminals, platforms)
+        elif (tags.get('railway') in ['platform'] or
+              tags.get('public_transport') in ['platform', 'station'] or
+              tags.get('amenity') in ['bus_station', 'ferry_terminal'] or
+              tags.get('aeroway') in ['terminal', 'runway', 'taxiway', 'aerodrome'] or
+              tags.get('aerialway') in ['station']):
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['transit'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+                else:
+                    # Linear platforms/infrastructure
+                    self.features['transit'].append({
+                        'geometry': line,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
         # Healthcare facilities (as areas/buildings)
         elif tags.get('amenity') in ['hospital', 'clinic', 'doctors', 'dentist', 'pharmacy', 'veterinary'] or \
              tags.get('healthcare') in ['alternative', 'audiologist', 'birthing_centre', 'blood_bank', 
@@ -319,6 +357,32 @@ class OSMHandler(osmium.SimpleHandler):
                         self.features['healthcare'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id, 'healthcare_type': healthcare_type}
+                        })
+                except Exception:
+                    pass
+            
+            # Transit Infrastructure (as relations)
+            elif (tags.get('railway') in ['station', 'platform'] or 
+                  tags.get('public_transport') in ['platform', 'station'] or 
+                  tags.get('amenity') in ['bus_station', 'ferry_terminal'] or 
+                  tags.get('aeroway') in ['terminal', 'aerodrome'] or 
+                  tags.get('aerialway') in ['station']):
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if transit area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['transit'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
                         })
                 except Exception:
                     pass
