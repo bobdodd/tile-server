@@ -3,6 +3,18 @@
 {% block title %}Admin Dashboard - Tile Generation Server{% endblock %}
 
 {% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 <div class="dashboard">
     <header class="page-header">
         <h1>Tile Generation Dashboard</h1>
@@ -27,13 +39,17 @@
         <div class="stat-card">
             <h3>Storage Used</h3>
             <p class="stat-number">{{ "%.1f"|format(stats.total_size_mb) }}MB</p>
-            <p class="stat-label">Disk usage</p>
+            <p class="stat-label">Local disk usage</p>
         </div>
         
         <div class="stat-card">
-            <h3>Server Status</h3>
-            <p class="stat-number status-healthy">Active</p>
-            <p class="stat-label">Ready for tile serving</p>
+            <h3>Server Tiles</h3>
+            <p class="stat-number">{{ stats.server_tiles }}</p>
+            {% if stats.siteground_configured %}
+                <p class="stat-label">On SiteGround server</p>
+            {% else %}
+                <p class="stat-label">SiteGround not configured</p>
+            {% endif %}
         </div>
     </section>
     
@@ -46,13 +62,27 @@
             <div class="region-card">
                 <h3>{{ region.name }}</h3>
                 <div class="region-stats">
-                    <p><strong>{{ region.tile_count }}</strong> tiles</p>
-                    <p><strong>{{ "%.1f"|format(region.size_mb) }}MB</strong> storage</p>
-                    <p class="status status-{{ region.status }}">{{ region.status|title }}</p>
+                    <p><strong>Local:</strong> {{ region.local_tile_count }} tiles</p>
+                    <p><strong>Server:</strong> {{ region.server_tile_count }} tiles</p>
+                    {% if region.size_mb > 0 %}
+                        <p><strong>Size:</strong> {{ "%.1f"|format(region.size_mb) }}MB</p>
+                    {% endif %}
+                    <p class="status status-{{ region.status }}">
+                        {% if region.status == 'synced' %}✅ Synced
+                        {% elif region.status == 'local_only' %}📱 Local Only
+                        {% elif region.status == 'server_only' %}☁️ Server Only
+                        {% elif region.status == 'partial' %}⚠️ Partial Sync
+                        {% else %}{{ region.status|title }}
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="region-actions">
-                    <a href="/admin/regions/{{ region.name }}" class="btn btn-primary">View Details</a>
-                    <a href="/api/region/{{ region.name }}/tiles" class="btn btn-secondary">API</a>
+                    {% if region.local_tile_count > 0 %}
+                        <a href="/tiles/regions/{{ region.region_id }}/" class="btn btn-secondary">View Local</a>
+                    {% endif %}
+                    {% if region.server_tile_count > 0 %}
+                        <a href="https://bobd77.sg-host.com/tiles/" class="btn btn-secondary" target="_blank">View Server (Flat)</a>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
@@ -66,25 +96,77 @@
         {% endif %}
     </section>
     
+    <section class="siteground-upload" aria-labelledby="upload-heading">
+        <h2 id="upload-heading">SiteGround Upload</h2>
+        
+        {% if stats.siteground_configured %}
+        <div class="upload-controls">
+            <p class="status-message success">✅ SiteGround FTP configured</p>
+            <div class="upload-actions">
+                <form method="POST" action="/admin/sync-all" style="display: inline;">
+                    <button type="submit" class="btn btn-primary">Sync All Regions</button>
+                </form>
+                <a href="/admin/test-connection" class="btn btn-secondary" id="test-connection">Test Connection</a>
+            </div>
+        </div>
+        
+        {% if stats.regions %}
+        <div class="region-upload-grid">
+            {% for region in stats.regions %}
+            {% if region.local_tile_count > 0 %}
+            <div class="region-upload-card">
+                <h4>{{ region.name }}</h4>
+                <p>{{ region.local_tile_count }} local tiles 
+                   {% if region.size_mb > 0 %}({{ "%.1f"|format(region.size_mb) }}MB){% endif %}</p>
+                <p class="upload-status">
+                    {% if region.status == 'synced' %}✅ Up to date
+                    {% elif region.status == 'local_only' %}⬆️ Needs upload
+                    {% elif region.status == 'partial' %}⚠️ Partial sync
+                    {% endif %}
+                </p>
+                <form method="POST" action="/admin/upload/{{ region.region_id }}">
+                    <button type="submit" class="btn btn-sm btn-outline">
+                        {% if region.status == 'synced' %}Re-upload
+                        {% else %}Upload Region
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <div class="config-warning">
+            <p class="status-message warning">⚠️ SiteGround not configured</p>
+            <p>Create a <code>.env</code> file with your SiteGround FTP credentials:</p>
+            <pre>SITEGROUND_HOST=yourdomain.com
+SITEGROUND_USERNAME=your-ftp-username
+SITEGROUND_PASSWORD=your-ftp-password</pre>
+        </div>
+        {% endif %}
+    </section>
+    
     <section class="quick-actions" aria-labelledby="actions-heading">
         <h2 id="actions-heading">Quick Actions</h2>
         <div class="actions-grid">
-            <a href="/admin/regions/create" class="action-card">
-                <h3>Create New Region</h3>
-                <p>Define a new geographic area for tile generation</p>
-            </a>
-            <a href="/admin/generation" class="action-card">
-                <h3>Generate Tiles</h3>
-                <p>Start batch tile generation for existing regions</p>
-            </a>
-            <a href="/admin/tiles" class="action-card">
-                <h3>Browse Tiles</h3>
-                <p>Visual tile browser with geographic boundaries</p>
-            </a>
             <a href="/api/regions" class="action-card">
                 <h3>API Documentation</h3>
                 <p>View available API endpoints and regional data</p>
             </a>
+            <a href="/tiles/regions/" class="action-card">
+                <h3>Browse Local Tiles</h3>
+                <p>View locally generated tile files</p>
+            </a>
+            <div class="action-card" onclick="window.open('https://bobd77.sg-host.com/tiles/', '_blank')">
+                <h3>View Live Tiles</h3>
+                <p>See tiles served from SiteGround (flat structure)</p>
+            </div>
+            <div class="action-card">
+                <h3>Generate New Tiles</h3>
+                <p>Coming soon - tile generation interface</p>
+            </div>
         </div>
     </section>
 </div>

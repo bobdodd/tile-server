@@ -91,17 +91,26 @@ class Config:
     }
 
 class DevelopmentConfig(Config):
-    """Development configuration."""
+    """Local Mac development configuration."""
     DEBUG = True
+    HOST = '127.0.0.1'
+    PORT = 5000
+    
+    # SiteGround upload settings (set via environment variables)
+    SITEGROUND_HOST = os.environ.get('SITEGROUND_HOST', '')
+    SITEGROUND_USERNAME = os.environ.get('SITEGROUND_USERNAME', '')
+    SITEGROUND_PASSWORD = os.environ.get('SITEGROUND_PASSWORD', '')
+    SITEGROUND_TILES_PATH = '/public_html/tiles/'
     
 class ProductionConfig(Config):
     """Production configuration for SiteGround."""
     DEBUG = False
     SECRET_KEY = os.environ.get('SECRET_KEY')
     
-    # Ensure required environment variables are set in production
-    if not SECRET_KEY:
-        raise ValueError("SECRET_KEY environment variable must be set in production")
+    def __init__(self):
+        # Only validate SECRET_KEY when actually using production config
+        if not self.SECRET_KEY:
+            raise ValueError("SECRET_KEY environment variable must be set in production")
 
 # Configuration factory
 config = {

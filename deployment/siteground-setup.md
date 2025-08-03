@@ -39,14 +39,10 @@ your-siteground-domain.com/
 2. Ensure directory structure matches above
 3. Set proper permissions (755 for directories, 644 for files)
 
-### Step 2: Python Environment Setup
-1. Log into SiteGround control panel
-2. Go to "Dev Tools" → "Python App"
-3. Create new Python application:
-   - **Python Version**: 3.8 or newer
-   - **App Root**: `/` (or subdirectory if desired)
-   - **App URL**: your domain or subdomain
-   - **App Startup File**: `passenger_wsgi.py`
+### Step 2: Enable Python Support
+1. Contact SiteGround support to enable Python/Flask hosting on your account
+2. SiteGround may require a specific hosting plan for Python applications
+3. Alternatively, upload files and configure as static site with API endpoints served via CGI
 
 ### Step 3: Install Dependencies
 ```bash

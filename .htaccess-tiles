@@ -1,0 +1,26 @@
+# Configuration for serving SVG tiles
+# Place this in the tiles directory on SiteGround
+
+# Enable gzip content encoding for .svg.gz files
+<FilesMatch "\.svg\.gz$">
+    Header set Content-Encoding gzip
+    Header set Content-Type image/svg+xml
+    Header set Cache-Control "public, max-age=86400"
+    Header set Access-Control-Allow-Origin "*"
+</FilesMatch>
+
+# Alternative method using rewrite rules
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Serve .svg.gz files with proper headers
+    RewriteCond %{REQUEST_FILENAME} \.svg\.gz$
+    RewriteRule ^(.*)$ - [E=gzip:1]
+    Header set Content-Encoding gzip env=gzip
+    Header set Content-Type image/svg+xml env=gzip
+</IfModule>
+
+# CORS headers for tile access
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type"
