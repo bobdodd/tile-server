@@ -196,11 +196,16 @@ class TileBuilder:
           way["landuse"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           way["natural"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           node["amenity"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          node["healthcare"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           node["highway"="bus_stop"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           node["railway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          way["amenity"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          way["healthcare"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           relation["building"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           relation["leisure"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
           relation["landuse"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          relation["amenity"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
+          relation["healthcare"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
         );
         out body;
         >;
@@ -456,6 +461,13 @@ class TileBuilder:
             return 'water'
         elif feature_type == 'parks':
             return properties.get('leisure', properties.get('landuse', 'park'))
+        elif feature_type == 'healthcare':
+            # Return the specific healthcare type for styling
+            if properties.get('amenity') in ['hospital', 'clinic', 'doctors', 'dentist', 'pharmacy', 'veterinary']:
+                return properties.get('amenity')
+            elif properties.get('healthcare'):
+                return properties.get('healthcare')
+            return 'default'
         
         return 'default'
     
@@ -475,6 +487,8 @@ class TileBuilder:
                 feature_type = 'road'
         elif properties.get('amenity'):
             feature_type = properties.get('amenity').replace('_', ' ')
+        elif properties.get('healthcare'):
+            feature_type = properties.get('healthcare').replace('_', ' ')
         elif properties.get('leisure'):
             feature_type = properties.get('leisure').replace('_', ' ')
         elif properties.get('natural'):

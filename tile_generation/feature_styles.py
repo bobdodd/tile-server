@@ -170,5 +170,51 @@ FEATURE_STYLES = {
             'grass': {'fill': '#e8f5e8', 'stroke': '#81c784', 'stroke_width': 0.5},
             'default': {'fill': '#c8e6c9', 'stroke': '#4caf50', 'stroke_width': 1}
         }
+    },
+    
+    'healthcare': {
+        'tags': {'amenity': ['hospital', 'clinic', 'doctors', 'dentist', 'pharmacy', 'veterinary'],
+                 'healthcare': ['alternative', 'audiologist', 'birthing_centre', 'blood_bank', 
+                               'blood_donation', 'centre', 'clinic', 'counselling', 'dentist',
+                               'dialysis', 'doctor', 'hospice', 'hospital', 'laboratory',
+                               'midwife', 'nurse', 'occupational_therapist', 'optometrist',
+                               'pharmacy', 'physiotherapist', 'podiatrist', 'psychotherapist',
+                               'rehabilitation', 'sample_collection', 'speech_therapist',
+                               'vaccination_centre']},
+        'styles': {
+            # Major Healthcare Facilities (amenity-based)
+            'hospital': {'fill': '#ffccdd', 'stroke': '#cc5577', 'stroke_width': 2.5, 'radius': 8},
+            'clinic': {'fill': '#ffe0e0', 'stroke': '#cc7777', 'stroke_width': 2, 'radius': 6},
+            'doctors': {'fill': '#ffe8e8', 'stroke': '#cc8888', 'stroke_width': 1.5, 'radius': 5},
+            'dentist': {'fill': '#f0e8ff', 'stroke': '#9966cc', 'stroke_width': 1.5, 'radius': 5},
+            'pharmacy': {'fill': '#e0ffe0', 'stroke': '#66cc66', 'stroke_width': 2, 'radius': 6},
+            'veterinary': {'fill': '#fff0e0', 'stroke': '#cc9966', 'stroke_width': 1.5, 'radius': 5},
+            
+            # Specialized Healthcare (healthcare-based)
+            'alternative': {'fill': '#f8f0ff', 'stroke': '#aa88cc', 'stroke_width': 1, 'radius': 4},
+            'audiologist': {'fill': '#fff8f0', 'stroke': '#ccaa88', 'stroke_width': 1, 'radius': 4},
+            'birthing_centre': {'fill': '#fff0f8', 'stroke': '#cc88aa', 'stroke_width': 2, 'radius': 6},
+            'blood_bank': {'fill': '#ffe0e0', 'stroke': '#cc6666', 'stroke_width': 2, 'radius': 6},
+            'blood_donation': {'fill': '#ffe8e8', 'stroke': '#cc7777', 'stroke_width': 1.5, 'radius': 5},
+            'centre': {'fill': '#ffe0f0', 'stroke': '#cc7799', 'stroke_width': 2, 'radius': 6},
+            'counselling': {'fill': '#f0f0ff', 'stroke': '#7799cc', 'stroke_width': 1.5, 'radius': 5},
+            'dialysis': {'fill': '#e0f0ff', 'stroke': '#6699cc', 'stroke_width': 2, 'radius': 6},
+            'hospice': {'fill': '#f8f8f0', 'stroke': '#aaaa88', 'stroke_width': 2, 'radius': 6},
+            'laboratory': {'fill': '#f0fff0', 'stroke': '#88cc88', 'stroke_width': 1.5, 'radius': 5},
+            'midwife': {'fill': '#fff0f8', 'stroke': '#cc88aa', 'stroke_width': 1.5, 'radius': 5},
+            'nurse': {'fill': '#f0f8ff', 'stroke': '#88aacc', 'stroke_width': 1, 'radius': 4},
+            'occupational_therapist': {'fill': '#f8fff0', 'stroke': '#aacc88', 'stroke_width': 1, 'radius': 4},
+            'optometrist': {'fill': '#fff8f8', 'stroke': '#ccaaaa', 'stroke_width': 1.5, 'radius': 5},
+            'physiotherapist': {'fill': '#f0fff8', 'stroke': '#88ccaa', 'stroke_width': 1.5, 'radius': 5},
+            'podiatrist': {'fill': '#fff0f0', 'stroke': '#cc8888', 'stroke_width': 1, 'radius': 4},
+            'psychotherapist': {'fill': '#f8f0ff', 'stroke': '#aa88cc', 'stroke_width': 1.5, 'radius': 5},
+            'rehabilitation': {'fill': '#f0f8ff', 'stroke': '#88aacc', 'stroke_width': 2, 'radius': 6},
+            'sample_collection': {'fill': '#f8fff8', 'stroke': '#aaccaa', 'stroke_width': 1, 'radius': 4},
+            'speech_therapist': {'fill': '#fff8f0', 'stroke': '#ccaa88', 'stroke_width': 1, 'radius': 4},
+            'vaccination_centre': {'fill': '#e0ffe0', 'stroke': '#66cc66', 'stroke_width': 2, 'radius': 6},
+            
+            # Default healthcare style
+            'default': {'fill': '#ffe0e0', 'stroke': '#cc6666', 'stroke_width': 1.5, 'radius': 5}
+        }
     }
 }

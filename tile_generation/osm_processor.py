@@ -13,6 +13,7 @@ class OSMHandler(osmium.SimpleHandler):
         self.features = {
             'buildings': [],
             'roads': [],
+            'healthcare': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -40,8 +41,28 @@ class OSMHandler(osmium.SimpleHandler):
             
         tags = {t.k: t.v for t in n.tags}
         
+        # Healthcare facilities (amenity-based)
+        if tags.get('amenity') in ['hospital', 'clinic', 'doctors', 'dentist', 'pharmacy', 'veterinary']:
+            self.features['healthcare'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id, 'healthcare_type': 'amenity'}
+            })
+        
+        # Healthcare facilities (healthcare-based)
+        elif tags.get('healthcare') in ['alternative', 'audiologist', 'birthing_centre', 'blood_bank', 
+                                       'blood_donation', 'centre', 'clinic', 'counselling', 'dentist',
+                                       'dialysis', 'doctor', 'hospice', 'hospital', 'laboratory',
+                                       'midwife', 'nurse', 'occupational_therapist', 'optometrist',
+                                       'pharmacy', 'physiotherapist', 'podiatrist', 'psychotherapist',
+                                       'rehabilitation', 'sample_collection', 'speech_therapist',
+                                       'vaccination_centre']:
+            self.features['healthcare'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id, 'healthcare_type': 'healthcare'}
+            })
+        
         # Transit stops
-        if tags.get('highway') == 'bus_stop' or tags.get('railway') in ['station', 'subway_entrance']:
+        elif tags.get('highway') == 'bus_stop' or tags.get('railway') in ['station', 'subway_entrance']:
             self.features['transit'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
@@ -211,6 +232,27 @@ class OSMHandler(osmium.SimpleHandler):
                 'properties': {**tags, 'osm_id': w.id}
             })
         
+        # Healthcare facilities (as areas/buildings)
+        elif tags.get('amenity') in ['hospital', 'clinic', 'doctors', 'dentist', 'pharmacy', 'veterinary'] or \
+             tags.get('healthcare') in ['alternative', 'audiologist', 'birthing_centre', 'blood_bank', 
+                                       'blood_donation', 'centre', 'clinic', 'counselling', 'dentist',
+                                       'dialysis', 'doctor', 'hospice', 'hospital', 'laboratory',
+                                       'midwife', 'nurse', 'occupational_therapist', 'optometrist',
+                                       'pharmacy', 'physiotherapist', 'podiatrist', 'psychotherapist',
+                                       'rehabilitation', 'sample_collection', 'speech_therapist',
+                                       'vaccination_centre']:
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    healthcare_type = 'amenity' if tags.get('amenity') else 'healthcare'
+                    self.features['healthcare'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id, 'healthcare_type': healthcare_type}
+                    })
+            except Exception:
+                pass
+        
         # Parks and leisure areas
         elif tags.get('leisure') in ['park', 'garden', 'playground', 'dog_park', 'nature_reserve'] or \
              tags.get('landuse') in ['grass', 'recreation_ground', 'village_green']:
@@ -251,8 +293,38 @@ class OSMHandler(osmium.SimpleHandler):
         try:
             wkb = osmium.geom.WKBFactory()
             
+            # Healthcare facilities (as relations)
+            if tags.get('amenity') in ['hospital', 'clinic', 'doctors', 'dentist', 'pharmacy', 'veterinary'] or \
+               tags.get('healthcare') in ['alternative', 'audiologist', 'birthing_centre', 'blood_bank', 
+                                         'blood_donation', 'centre', 'clinic', 'counselling', 'dentist',
+                                         'dialysis', 'doctor', 'hospice', 'hospital', 'laboratory',
+                                         'midwife', 'nurse', 'occupational_therapist', 'optometrist',
+                                         'pharmacy', 'physiotherapist', 'podiatrist', 'psychotherapist',
+                                         'rehabilitation', 'sample_collection', 'speech_therapist',
+                                         'vaccination_centre']:
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if healthcare area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        healthcare_type = 'amenity' if tags.get('amenity') else 'healthcare'
+                        self.features['healthcare'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id, 'healthcare_type': healthcare_type}
+                        })
+                except Exception:
+                    pass
+            
             # Buildings
-            if 'building' in tags:
+            elif 'building' in tags:
                 try:
                     geom = wkb.create_multipolygon(a)
                     poly = loads(geom, hex=True)
