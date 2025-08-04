@@ -24,10 +24,16 @@ def create_app():
     
     # Register blueprints
     from admin.routes.dashboard import dashboard_bp
+    from admin.routes.regions import regions_bp
+    from admin.routes.tiles import tiles_bp
+    from admin.routes.generation import generation_bp
     from api.tiles import tiles_api_bp
     from api.missing import missing_api_bp
     
     app.register_blueprint(dashboard_bp, url_prefix='/admin')
+    app.register_blueprint(regions_bp, url_prefix='/admin/regions')
+    app.register_blueprint(tiles_bp, url_prefix='/admin/tiles')
+    app.register_blueprint(generation_bp, url_prefix='/admin/generation')
     app.register_blueprint(tiles_api_bp, url_prefix='/api')
     app.register_blueprint(missing_api_bp, url_prefix='/api')
     
