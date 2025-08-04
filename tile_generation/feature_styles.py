@@ -650,6 +650,81 @@ FEATURE_STYLES = {
         }
     },
     
+    'office_professional': {
+        'tags': {
+            # Professional office services covering all business sectors
+            'office': ['company', 'government', 'lawyer', 'estate_agent', 'insurance', 'architect', 
+                      'accountant', 'employment_agency', 'consulting', 'financial', 'it', 'research', 
+                      'ngo', 'association', 'diplomatic', 'educational_institution', 'foundation', 
+                      'political_party', 'religion', 'tax_advisor', 'therapist', 'travel_agent', 
+                      'physician', 'coworking', 'notary', 'newspaper', 'advertising_agency', 
+                      'logistics', 'construction_company', 'energy_supplier', 'guide', 
+                      'water_utility', 'property_management', 'telecommunication']
+        },
+        'styles': {
+            # Corporate & Business - Professional blue palette for major business
+            'company': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 2.5, 'radius': 8},
+            'consulting': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 2.5, 'radius': 7},
+            'financial': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 2.5, 'radius': 8},
+            'it': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2.5, 'radius': 7},
+            'research': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 2.5, 'radius': 7},
+            'advertising_agency': {'fill': '#ffccbc', 'stroke': '#ff5722', 'stroke_width': 2, 'radius': 6},
+            'logistics': {'fill': '#fff9c4', 'stroke': '#f9a825', 'stroke_width': 2, 'radius': 7},
+            
+            # Government & Public Sector - Authoritative green palette
+            'government': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 3, 'radius': 9},
+            'diplomatic': {'fill': '#c8e6c9', 'stroke': '#1b5e20', 'stroke_width': 3, 'radius': 8},
+            'political_party': {'fill': '#dcedc8', 'stroke': '#33691e', 'stroke_width': 2.5, 'radius': 7},
+            'educational_institution': {'fill': '#e0f2f1', 'stroke': '#00796b', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Legal & Professional Services - Formal gray/blue palette
+            'lawyer': {'fill': '#eceff1', 'stroke': '#455a64', 'stroke_width': 2.5, 'radius': 7},
+            'accountant': {'fill': '#cfd8dc', 'stroke': '#37474f', 'stroke_width': 2.5, 'radius': 6},
+            'notary': {'fill': '#e1f5fe', 'stroke': '#0277bd', 'stroke_width': 2, 'radius': 6},
+            'tax_advisor': {'fill': '#f0f4c3', 'stroke': '#827717', 'stroke_width': 2, 'radius': 6},
+            
+            # Real Estate & Property - Warm brown/orange palette
+            'estate_agent': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 2.5, 'radius': 7},
+            'property_management': {'fill': '#d7ccc8', 'stroke': '#6d4c41', 'stroke_width': 2, 'radius': 6},
+            'construction_company': {'fill': '#ffe0b2', 'stroke': '#f57c00', 'stroke_width': 2.5, 'radius': 7},
+            'architect': {'fill': '#fff3e0', 'stroke': '#e65100', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Healthcare & Wellness - Medical pink/red palette
+            'physician': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2.5, 'radius': 7},
+            'therapist': {'fill': '#f8bbd9', 'stroke': '#ad1457', 'stroke_width': 2, 'radius': 6},
+            
+            # Employment & HR - Purple palette for human services
+            'employment_agency': {'fill': '#ede7f6', 'stroke': '#673ab7', 'stroke_width': 2, 'radius': 6},
+            
+            # Insurance & Risk Management - Protective teal palette
+            'insurance': {'fill': '#e0f7fa', 'stroke': '#00838f', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Media & Communication - Vibrant colors for creative industries
+            'newspaper': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 2, 'radius': 6},
+            'telecommunication': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Travel & Tourism - Travel blue palette
+            'travel_agent': {'fill': '#e1f5fe', 'stroke': '#0288d1', 'stroke_width': 2, 'radius': 6},
+            'guide': {'fill': '#b3e5fc', 'stroke': '#0277bd', 'stroke_width': 2, 'radius': 5},
+            
+            # Non-Profit & Social Sector - Community green palette
+            'ngo': {'fill': '#f1f8e9', 'stroke': '#558b2f', 'stroke_width': 2, 'radius': 7},
+            'association': {'fill': '#e8f5e8', 'stroke': '#43a047', 'stroke_width': 2, 'radius': 6},
+            'foundation': {'fill': '#c8e6c9', 'stroke': '#388e3c', 'stroke_width': 2.5, 'radius': 7},
+            'religion': {'fill': '#e6d9ff', 'stroke': '#9c27b0', 'stroke_width': 2, 'radius': 6},
+            
+            # Utilities & Infrastructure - Industrial gray palette
+            'energy_supplier': {'fill': '#fff59d', 'stroke': '#f9a825', 'stroke_width': 2.5, 'radius': 7},
+            'water_utility': {'fill': '#b2ebf2', 'stroke': '#00acc1', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Modern Work Spaces - Contemporary orange palette
+            'coworking': {'fill': '#ffe0b2', 'stroke': '#fb8c00', 'stroke_width': 2, 'radius': 6},
+            
+            # Default office style
+            'default': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 2.5, 'radius': 7}
+        }
+    },
+    
     'natural_features': {
         'tags': {
             # Enhanced natural features for terrain, landscape, and land use

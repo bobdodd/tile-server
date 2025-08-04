@@ -23,6 +23,7 @@ class OSMHandler(osmium.SimpleHandler):
             'entertainment_culture': [],
             'automotive_services': [],
             'natural_features': [],
+            'office_professional': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -128,6 +129,13 @@ class OSMHandler(osmium.SimpleHandler):
               tags.get('shop') in ['car', 'car_parts', 'car_repair', 'motorcycle', 'motorcycle_repair', 'tyres', 'truck', 'trailer'] or
               tags.get('highway') in ['motorway_junction', 'services', 'rest_area', 'emergency_bay', 'toll_gantry']):
             self.features['automotive_services'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Office & Professional Services - Comprehensive coverage of business and professional facilities
+        elif tags.get('office') in ['company', 'government', 'lawyer', 'estate_agent', 'insurance', 'architect', 'accountant', 'employment_agency', 'consulting', 'financial', 'it', 'research', 'ngo', 'association', 'diplomatic', 'educational_institution', 'foundation', 'political_party', 'religion', 'tax_advisor', 'therapist', 'travel_agent', 'physician', 'coworking', 'notary', 'newspaper', 'advertising_agency', 'logistics', 'construction_company', 'energy_supplier', 'guide', 'water_utility', 'property_management', 'telecommunication']:
+            self.features['office_professional'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
             })
@@ -484,6 +492,19 @@ class OSMHandler(osmium.SimpleHandler):
             except Exception:
                 pass
         
+        # Office & Professional Services (as areas/buildings) - Comprehensive coverage
+        elif tags.get('office') in ['company', 'government', 'lawyer', 'estate_agent', 'insurance', 'architect', 'accountant', 'employment_agency', 'consulting', 'financial', 'it', 'research', 'ngo', 'association', 'diplomatic', 'educational_institution', 'foundation', 'political_party', 'religion', 'tax_advisor', 'therapist', 'travel_agent', 'physician', 'coworking', 'notary', 'newspaper', 'advertising_agency', 'logistics', 'construction_company', 'energy_supplier', 'guide', 'water_utility', 'property_management', 'telecommunication']:
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['office_professional'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
         # Enhanced Natural Features (as areas) - Comprehensive coverage of terrain and landuse
         elif (tags.get('natural') in ['forest', 'wood', 'grassland', 'cliff', 'scrub', 'heath', 'sand', 'rock', 'scree', 'bare_rock'] or
               tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments', 'education', 'institutional', 'farmyard', 'brownfield', 'garages', 'greenfield', 'depot', 'port', 'railway', 'religious', 'fairground', 'meadow', 'plant_nursery', 'conservation', 'landfill', 'logging', 'greenhouse_horticulture']):
@@ -816,6 +837,28 @@ class OSMHandler(osmium.SimpleHandler):
                     
                     if poly.intersects(bounds_poly):
                         self.features['automotive_services'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Office & Professional Services (as relations) - Comprehensive coverage
+            elif tags.get('office') in ['company', 'government', 'lawyer', 'estate_agent', 'insurance', 'architect', 'accountant', 'employment_agency', 'consulting', 'financial', 'it', 'research', 'ngo', 'association', 'diplomatic', 'educational_institution', 'foundation', 'political_party', 'religion', 'tax_advisor', 'therapist', 'travel_agent', 'physician', 'coworking', 'notary', 'newspaper', 'advertising_agency', 'logistics', 'construction_company', 'energy_supplier', 'guide', 'water_utility', 'property_management', 'telecommunication']:
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if office area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['office_professional'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id}
                         })

@@ -364,15 +364,20 @@
 - **Landuse=landfill** ✅ - Waste disposal areas
 - Point, area, and relation rendering with color-coded styling for all landuse categories
 
-### **12. Office & Professional Services (LOWER PRIORITY)**
-- **Office=company** ❌ - Company offices
-- **Office=government** ❌ - Government offices
-- **Office=lawyer** ❌ - Law offices
-- **Office=estate_agent** ❌ - Real estate offices
-- **Office=insurance** ❌ - Insurance offices
-- **Office=architect** ❌ - Architecture firms
-- **Office=accountant** ❌ - Accounting offices
-- **Office=employment_agency** ❌ - Employment agencies
+### **Office & Professional Services (35 types) - COMPREHENSIVE** ✅
+- **Corporate & Business (7 types):** company, consulting, financial, it, research, advertising_agency, logistics
+- **Government & Public Sector (4 types):** government, diplomatic, political_party, educational_institution
+- **Legal & Professional Services (4 types):** lawyer, accountant, notary, tax_advisor
+- **Real Estate & Property (4 types):** estate_agent, property_management, construction_company, architect
+- **Healthcare & Wellness (2 types):** physician, therapist
+- **Employment & HR (1 type):** employment_agency
+- **Insurance & Risk Management (1 type):** insurance
+- **Media & Communication (2 types):** newspaper, telecommunication
+- **Travel & Tourism (2 types):** travel_agent, guide
+- **Non-Profit & Social Sector (4 types):** ngo, association, foundation, religion
+- **Utilities & Infrastructure (2 types):** energy_supplier, water_utility
+- **Modern Work Spaces (1 type):** coworking
+- Point, area, and relation rendering with color-coded styling for different professional service categories
 
 ### **13. Power & Utilities Infrastructure (LOWER PRIORITY)**
 - **Power=line** ❌ - Power lines
@@ -566,9 +571,9 @@ Focus on Phase 1 features first, as these provide the most value for accessibili
 28. **Waterway** ✅ - Water features (linear water integrated with Water) - **COMPREHENSIVE** ✅ **NEW**
 
 ### **Implementation Status by Category:**
-- **✅ Comprehensive (16/28):** Building, Highway, Healthcare, Public Transport, Water, Waterway, Food & Sustenance, Financial Services, Shopping & Retail, Public Facilities, Emergency Services, Tourism & Accommodation, Entertainment & Culture, Automotive Services, Natural Features, Landuse ✅ **+1**
-- **⚠️ Partially Implemented (2/28):** Amenity, Leisure ✅ **-1** (Landuse moved to comprehensive)
-- **❌ Not Implemented (10/28):** All other categories
+- **✅ Comprehensive (17/28):** Building, Highway, Healthcare, Public Transport, Water, Waterway, Food & Sustenance, Financial Services, Shopping & Retail, Public Facilities, Emergency Services, Tourism & Accommodation, Entertainment & Culture, Automotive Services, Natural Features, Landuse, Office & Professional Services ✅ **+1**
+- **⚠️ Partially Implemented (2/28):** Amenity, Leisure
+- **❌ Not Implemented (9/28):** All other categories ✅ **-1**
 
 ### **Currently Implemented (Well-Covered) ✅**
 - **Buildings:** 67 subtypes (comprehensive)
@@ -585,25 +590,26 @@ Focus on Phase 1 features first, as these provide the most value for accessibili
 - **Entertainment & Culture:** 13 types (comprehensive) ✅
 - **Automotive Services:** 23 types (comprehensive) ✅
 - **Enhanced Natural Features:** 42 types (comprehensive) ✅ **UPDATED**
+- **Office & Professional Services:** 35 types (comprehensive) ✅ **NEW**
 - **Parks:** 7 types (basic coverage)
 - **Accessibility:** 15+ features (excellent coverage)
 
-**Total Implemented Features: ~363+ from 18/28 categories** ✅ **+18** (+18 additional landuse types)
+**Total Implemented Features: ~398+ from 17/28 categories** ✅ **+35** (+35 office & professional service types)
 
 ### **Major Unimplemented Categories ❌**
 - **Transportation Infrastructure:** 15 transport features (medium priority)
 - **All Other Categories:** 75+ additional features
 
-**Total Unimplemented Features: ~89+** (was ~107+, -18 additional landuse types)
+**Total Unimplemented Features: ~54+** (was ~89+, -35 office & professional service types)
 
 ### **Implementation Coverage Analysis**
-- **Complete Coverage:** 16/28 categories (57% of OSM key categories) ✅ **+3%**
-- **Partial Coverage:** 2/28 categories (7% of OSM key categories) ✅ **-4%**
-- **No Coverage:** 10/28 categories (36% of OSM key categories)
-- **Overall OSM Coverage:** ~80% of available map features ✅ **+4%**
+- **Complete Coverage:** 17/28 categories (61% of OSM key categories) ✅ **+4%**
+- **Partial Coverage:** 2/28 categories (7% of OSM key categories)
+- **No Coverage:** 9/28 categories (32% of OSM key categories) ✅ **-4%**
+- **Overall OSM Coverage:** ~88% of available map features ✅ **+8%**
 
 ### **Critical Gaps for Accessibility Navigation:**
-1. **Office** (0% coverage) - No professional services mapped
+All major accessibility navigation categories now have comprehensive coverage.
 
 ### **Strength Areas:**
 - **Buildings:** Excellent (67 types, comprehensive styling)
@@ -616,7 +622,8 @@ Focus on Phase 1 features first, as these provide the most value for accessibili
 - **Tourism & Accommodation:** Excellent (11 types, comprehensive visitor and hospitality facilities) ✅
 - **Entertainment & Culture:** Excellent (13 types, comprehensive recreation and community facilities) ✅
 - **Automotive Services:** Excellent (23 types, comprehensive vehicle and transportation services) ✅
-- **Enhanced Natural Features:** Excellent (24 types, comprehensive terrain, landscape, and landuse coverage) ✅ **NEW**
+- **Enhanced Natural Features:** Excellent (42 types, comprehensive terrain, landscape, and landuse coverage) ✅ **UPDATED**
+- **Office & Professional Services:** Excellent (35 types, comprehensive business and professional facilities) ✅ **NEW**
 - **Accessibility:** Outstanding (15+ features, best-in-class)
 
 ### **Major Infrastructure Gaps:**
@@ -626,6 +633,6 @@ Focus on Phase 1 features first, as these provide the most value for accessibili
 - **Barrier** - No accessibility barriers (fences, gates) mapped
 
 ### **Recommendation for Canadian Field Testing:**
-Our current implementation covers **57% of OSM categories comprehensively** (up from 54%). With comprehensive Enhanced Landuse now fully implemented alongside all other Phase 1 priorities (Shopping & Retail, Financial Services, Food & Sustenance, Healthcare, Transit, Water features, Emergency Services, Public Facilities, Tourism, Entertainment & Culture, Automotive Services, and Enhanced Natural Features), we now have exceptional coverage of essential urban and natural navigation needs including complete terrain, landscape, and comprehensive landuse mapping.
+Our current implementation covers **61% of OSM categories comprehensively** (up from 57%). With comprehensive Office & Professional Services now fully implemented alongside all other Phase 1 priorities (Shopping & Retail, Financial Services, Food & Sustenance, Healthcare, Transit, Water features, Emergency Services, Public Facilities, Tourism, Entertainment & Culture, Automotive Services, Enhanced Natural Features, and Enhanced Landuse), we now have exceptional coverage of essential urban, business, and natural navigation needs including complete business directory services and professional facility mapping.
 
-**The system now achieves 80% overall OSM coverage with 16/28 categories comprehensively implemented. The 10 remaining completely missing categories represent highly specialized opportunities to enhance the navigation system's utility. The system provides comprehensive coverage of virtually all daily navigation needs for Canadian urban and natural environments, with only specialized technical categories remaining.**
+**The system now achieves 88% overall OSM coverage with 17/28 categories comprehensively implemented. The 9 remaining completely missing categories are highly specialized infrastructure categories. The system provides comprehensive coverage of virtually all daily navigation needs for Canadian urban, business, and natural environments, with complete professional services directory functionality.**
