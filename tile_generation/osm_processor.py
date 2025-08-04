@@ -134,7 +134,7 @@ class OSMHandler(osmium.SimpleHandler):
         
         # Enhanced Natural Features - Comprehensive coverage of terrain, landscape, and landuse features
         elif (tags.get('natural') in ['forest', 'wood', 'grassland', 'cliff', 'peak', 'valley', 'scrub', 'heath', 'sand', 'rock', 'scree', 'bare_rock', 'cave_entrance'] or
-              tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments']):
+              tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments', 'education', 'institutional', 'farmyard', 'brownfield', 'garages', 'greenfield', 'depot', 'port', 'railway', 'religious', 'fairground', 'meadow', 'plant_nursery', 'conservation', 'landfill', 'logging', 'greenhouse_horticulture']):
             self.features['natural_features'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
@@ -486,7 +486,7 @@ class OSMHandler(osmium.SimpleHandler):
         
         # Enhanced Natural Features (as areas) - Comprehensive coverage of terrain and landuse
         elif (tags.get('natural') in ['forest', 'wood', 'grassland', 'cliff', 'scrub', 'heath', 'sand', 'rock', 'scree', 'bare_rock'] or
-              tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments']):
+              tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments', 'education', 'institutional', 'farmyard', 'brownfield', 'garages', 'greenfield', 'depot', 'port', 'railway', 'religious', 'fairground', 'meadow', 'plant_nursery', 'conservation', 'landfill', 'logging', 'greenhouse_horticulture']):
             try:
                 if w.is_closed():
                     geom = wkb.create_polygon(w)
@@ -824,7 +824,7 @@ class OSMHandler(osmium.SimpleHandler):
             
             # Enhanced Natural Features (as relations) - Comprehensive coverage of terrain and landuse
             elif (tags.get('natural') in ['forest', 'wood', 'grassland', 'cliff', 'scrub', 'heath', 'sand', 'rock', 'scree', 'bare_rock'] or
-                  tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments']):
+                  tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments', 'education', 'institutional', 'farmyard', 'brownfield', 'garages', 'greenfield', 'depot', 'port', 'railway', 'religious', 'fairground', 'meadow', 'plant_nursery', 'conservation', 'landfill', 'logging', 'greenhouse_horticulture']):
                 try:
                     geom = wkb.create_multipolygon(a)
                     poly = loads(geom, hex=True)

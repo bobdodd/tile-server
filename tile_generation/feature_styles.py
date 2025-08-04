@@ -654,7 +654,7 @@ FEATURE_STYLES = {
         'tags': {
             # Enhanced natural features for terrain, landscape, and land use
             'natural': ['forest', 'wood', 'grassland', 'cliff', 'peak', 'valley', 'scrub', 'heath', 'sand', 'rock', 'scree', 'bare_rock', 'cave_entrance'],
-            'landuse': ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments']
+            'landuse': ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments', 'education', 'institutional', 'farmyard', 'brownfield', 'garages', 'greenfield', 'depot', 'port', 'railway', 'religious', 'fairground', 'meadow', 'plant_nursery', 'conservation', 'landfill', 'logging', 'greenhouse_horticulture']
         },
         'styles': {
             # Forest & Woodland - Deep green palette for vegetation
@@ -699,6 +699,37 @@ FEATURE_STYLES = {
             # Special Use Areas - Distinct colors for specific purposes
             'cemetery': {'fill': '#f5f5f5', 'stroke': '#616161', 'stroke_width': 2, 'radius': 9},
             'military': {'fill': '#ffcdd2', 'stroke': '#c62828', 'stroke_width': 2.5, 'radius': 12},
+            
+            # Educational & Institutional Areas - Blue/purple palette for public services
+            'education': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 2.5, 'radius': 11},
+            'institutional': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 2.5, 'radius': 10},
+            'religious': {'fill': '#e1bee7', 'stroke': '#8e24aa', 'stroke_width': 2, 'radius': 9},
+            
+            # Development Areas - Various palettes for different development stages
+            'brownfield': {'fill': '#d7ccc8', 'stroke': '#5d4037', 'stroke_width': 2, 'radius': 10},
+            'greenfield': {'fill': '#e8f5e8', 'stroke': '#388e3c', 'stroke_width': 2, 'radius': 10},
+            
+            # Transportation & Infrastructure - Gray/blue palette for infrastructure
+            'port': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 2.5, 'radius': 13},
+            'railway': {'fill': '#eceff1', 'stroke': '#546e7a', 'stroke_width': 2.5, 'radius': 11},
+            'depot': {'fill': '#e1f5fe', 'stroke': '#0277bd', 'stroke_width': 2, 'radius': 10},
+            'garages': {'fill': '#f5f5f5', 'stroke': '#757575', 'stroke_width': 2, 'radius': 8},
+            
+            # Agricultural & Rural Facilities - Green/brown palette for rural areas
+            'farmyard': {'fill': '#fff3e0', 'stroke': '#f57c00', 'stroke_width': 2, 'radius': 9},
+            'meadow': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 1.5, 'radius': 12},
+            'plant_nursery': {'fill': '#dcedc8', 'stroke': '#689f38', 'stroke_width': 2, 'radius': 8},
+            'greenhouse_horticulture': {'fill': '#c8e6c9', 'stroke': '#388e3c', 'stroke_width': 2, 'radius': 9},
+            'logging': {'fill': '#bcaaa4', 'stroke': '#5d4037', 'stroke_width': 2, 'radius': 10},
+            
+            # Environmental & Conservation - Green palette for environmental protection
+            'conservation': {'fill': '#c8e6c9', 'stroke': '#1b5e20', 'stroke_width': 2.5, 'radius': 12},
+            
+            # Recreation & Events - Colorful palette for entertainment
+            'fairground': {'fill': '#fff3e0', 'stroke': '#ff8f00', 'stroke_width': 2.5, 'radius': 11},
+            
+            # Waste Management - Brown/gray palette for waste facilities
+            'landfill': {'fill': '#efebe9', 'stroke': '#6d4c41', 'stroke_width': 2.5, 'radius': 10},
             
             # Default natural feature style
             'default': {'fill': '#c8e6c9', 'stroke': '#2e7d32', 'stroke_width': 2, 'radius': 8}
