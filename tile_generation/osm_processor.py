@@ -17,6 +17,7 @@ class OSMHandler(osmium.SimpleHandler):
             'food_sustenance': [],
             'financial_services': [],
             'shopping_retail': [],
+            'public_facilities': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -83,6 +84,13 @@ class OSMHandler(osmium.SimpleHandler):
         elif (tags.get('shop') in ['department_store', 'general', 'kiosk', 'mall', 'supermarket', 'wholesale', 'variety_store', 'second_hand', 'charity', 'clothes', 'shoes', 'bag', 'boutique', 'fabric', 'jewelry', 'leather', 'watches', 'tailor', 'computer', 'electronics', 'mobile_phone', 'hifi', 'telecommunication', 'beauty', 'chemist', 'cosmetics', 'hairdresser', 'massage', 'optician', 'perfumery', 'tattoo', 'furniture', 'garden_centre', 'hardware', 'doityourself', 'florist', 'appliance'] or
               tags.get('amenity') in ['marketplace', 'vending_machine']):
             self.features['shopping_retail'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Public Facilities - Comprehensive coverage of essential public amenities
+        elif tags.get('amenity') in ['toilets', 'shower', 'drinking_water', 'bench', 'shelter', 'bicycle_repair_station', 'charging_station', 'waste_basket', 'recycling']:
+            self.features['public_facilities'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
             })
@@ -362,6 +370,19 @@ class OSMHandler(osmium.SimpleHandler):
             except Exception:
                 pass
         
+        # Public Facilities (as areas/buildings) - Comprehensive coverage
+        elif tags.get('amenity') in ['toilets', 'shower', 'drinking_water', 'bench', 'shelter', 'bicycle_repair_station', 'charging_station', 'waste_basket', 'recycling']:
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['public_facilities'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
         # Parks and leisure areas
         elif tags.get('leisure') in ['park', 'garden', 'playground', 'dog_park', 'nature_reserve'] or \
              tags.get('landuse') in ['grass', 'recreation_ground', 'village_green']:
@@ -566,6 +587,28 @@ class OSMHandler(osmium.SimpleHandler):
                     
                     if poly.intersects(bounds_poly):
                         self.features['shopping_retail'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Public Facilities (as relations) - Comprehensive coverage
+            elif tags.get('amenity') in ['toilets', 'shower', 'drinking_water', 'bench', 'shelter', 'bicycle_repair_station', 'charging_station', 'waste_basket', 'recycling']:
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if public facility area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['public_facilities'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id}
                         })

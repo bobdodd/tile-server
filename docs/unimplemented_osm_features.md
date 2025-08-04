@@ -48,7 +48,7 @@
 - **Currency & Money Services:** bureau_de_change, money_transfer, payment_centre
 - Point, area, and relation rendering with color-coded styling for different financial service types
 
-### **Shopping & Retail (42 types) - COMPREHENSIVE** ✅ **NEW**
+### **Shopping & Retail (42 types) - COMPREHENSIVE** ✅
 - **General Retail (9 types):** department_store, general, kiosk, mall, supermarket, wholesale, variety_store, second_hand, charity
 - **Clothing & Fashion (9 types):** clothes, shoes, bag, boutique, fabric, jewelry, leather, watches, tailor
 - **Electronics & Technology (5 types):** computer, electronics, mobile_phone, hifi, telecommunication
@@ -56,6 +56,14 @@
 - **Home & Garden (6 types):** furniture, garden_centre, hardware, doityourself, florist, appliance
 - **Markets & Services (2 types):** marketplace, vending_machine
 - Point, area, and relation rendering with color-coded styling for different retail categories
+
+### **Public Facilities (9 types) - COMPREHENSIVE** ✅ **NEW**
+- **Sanitation & Hygiene (2 types):** toilets, shower
+- **Hydration (1 type):** drinking_water
+- **Comfort & Rest (2 types):** bench, shelter
+- **Services & Maintenance (2 types):** bicycle_repair_station, charging_station
+- **Waste Management (2 types):** waste_basket, recycling
+- Point, area, and relation rendering with color-coded styling for different facility categories
 
 ### **Accessibility Features - EXCELLENT COVERAGE**
 - **Basic Access:** wheelchair_parking, disabled_access
@@ -171,18 +179,7 @@
 - **Emergency=assembly_point** ❌ - Emergency assembly points
 - **Emergency=siren** ❌ - Emergency sirens
 
-### **2. Public Facilities (MEDIUM-HIGH PRIORITY)**
-- **Amenity=toilets** ❌ - Public restrooms
-- **Amenity=shower** ❌ - Public showers
-- **Amenity=drinking_water** ❌ - Water fountains
-- **Amenity=bench** ❌ - Public benches
-- **Amenity=shelter** ❌ - Bus shelters/covered areas
-- **Amenity=bicycle_repair_station** ❌ - Bike repair stations
-- **Amenity=charging_station** ❌ - EV charging stations
-- **Amenity=waste_basket** ❌ - Trash bins
-- **Amenity=recycling** ❌ - Recycling centers
-
-### **7. Tourism & Accommodation (MEDIUM PRIORITY)**
+### **2. Tourism & Accommodation (MEDIUM PRIORITY)**
 - **Tourism=hotel** ❌ - Hotels
 - **Tourism=hostel** ❌ - Hostels  
 - **Tourism=guest_house** ❌ - Guest houses
@@ -447,9 +444,9 @@ Focus on Phase 1 features first, as these provide the most value for accessibili
 28. **Waterway** ✅ - Water features (linear water integrated with Water) - **COMPREHENSIVE** ✅ **NEW**
 
 ### **Implementation Status by Category:**
-- **✅ Comprehensive (9/28):** Building, Highway, Healthcare, Public Transport, Water, Waterway, Food & Sustenance, Financial Services, Shopping & Retail ✅ **+1**
+- **✅ Comprehensive (10/28):** Building, Highway, Healthcare, Public Transport, Water, Waterway, Food & Sustenance, Financial Services, Shopping & Retail, Public Facilities ✅ **+1**
 - **⚠️ Partially Implemented (2/28):** Amenity, Leisure
-- **❌ Not Implemented (17/28):** All other categories ✅ **-1**
+- **❌ Not Implemented (16/28):** All other categories ✅ **-1**
 
 ### **Currently Implemented (Well-Covered) ✅**
 - **Buildings:** 67 subtypes (comprehensive)
@@ -459,28 +456,28 @@ Focus on Phase 1 features first, as these provide the most value for accessibili
 - **Water:** 38+ types (comprehensive)
 - **Food & Sustenance:** 29 types (comprehensive)
 - **Financial Services:** 6 types (comprehensive)
-- **Shopping & Retail:** 42 types (comprehensive) ✅ **NEW**
+- **Shopping & Retail:** 42 types (comprehensive)
+- **Public Facilities:** 9 types (comprehensive) ✅ **NEW**
 - **Parks:** 7 types (basic coverage)
 - **Accessibility:** 15+ features (excellent coverage)
 
-**Total Implemented Features: ~258+ from 11/28 categories** ✅ **+42**
+**Total Implemented Features: ~267+ from 12/28 categories** ✅ **+9**
 
 ### **Major Unimplemented Categories ❌**
 - **Emergency Services:** 7 emergency features (critical gap)
-- **Public Facilities:** 10 essential facilities (high priority gap)
 - **Tourism:** 10 tourism features (medium priority)
 - **Entertainment:** 12 entertainment venues (medium priority)
 - **Transportation Infrastructure:** 15 transport features (medium priority)
 - **Natural Features:** 15 enhanced natural features (medium priority)
-- **All Other Categories:** 100+ additional features
+- **All Other Categories:** 90+ additional features
 
-**Total Unimplemented Features: ~194+** (was ~236+)
+**Total Unimplemented Features: ~185+** (was ~194+)
 
 ### **Implementation Coverage Analysis**
-- **Complete Coverage:** 9/28 categories (32% of OSM key categories) ✅ **+3%**
+- **Complete Coverage:** 10/28 categories (36% of OSM key categories) ✅ **+4%**
 - **Partial Coverage:** 2/28 categories (7% of OSM key categories)
-- **No Coverage:** 17/28 categories (61% of OSM key categories) ✅ **-3%**
-- **Overall OSM Coverage:** ~57% of available map features ✅ **+8%**
+- **No Coverage:** 16/28 categories (57% of OSM key categories) ✅ **-4%**
+- **Overall OSM Coverage:** ~60% of available map features ✅ **+3%**
 
 ### **Critical Gaps for Accessibility Navigation:**
 1. **Emergency** (0% coverage) - No emergency services mapped
@@ -492,7 +489,8 @@ Focus on Phase 1 features first, as these provide the most value for accessibili
 - **Roads:** Excellent (26 types, proper casing and width)
 - **Healthcare:** Excellent (29 types, comprehensive medical facilities)
 - **Financial Services:** Excellent (6 types, comprehensive banking & postal services)
-- **Shopping & Retail:** Excellent (42 types, comprehensive retail categories) ✅ **NEW**
+- **Shopping & Retail:** Excellent (42 types, comprehensive retail categories)
+- **Public Facilities:** Excellent (9 types, comprehensive essential amenities) ✅ **NEW**
 - **Accessibility:** Outstanding (15+ features, best-in-class)
 
 ### **Major Infrastructure Gaps:**

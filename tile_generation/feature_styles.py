@@ -469,5 +469,36 @@ FEATURE_STYLES = {
             # Default retail style  
             'default': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 2, 'radius': 6}
         }
+    },
+    
+    'public_facilities': {
+        'tags': {
+            # Essential public amenities for accessibility and convenience
+            'amenity': ['toilets', 'shower', 'drinking_water', 'bench', 'shelter', 
+                       'bicycle_repair_station', 'charging_station', 'waste_basket', 'recycling']
+        },
+        'styles': {
+            # Sanitation & Hygiene Facilities - Blue palette for cleanliness
+            'toilets': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 2.5, 'radius': 8},
+            'shower': {'fill': '#bbdefb', 'stroke': '#1565c0', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Hydration - Light blue/cyan palette for water
+            'drinking_water': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 2, 'radius': 6},
+            
+            # Comfort & Rest - Brown/earth palette for natural comfort
+            'bench': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 2, 'radius': 5},
+            'shelter': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 2.5, 'radius': 9},
+            
+            # Services & Maintenance - Orange/yellow palette for active services
+            'bicycle_repair_station': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2.5, 'radius': 7},
+            'charging_station': {'fill': '#fff9c4', 'stroke': '#f9a825', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Waste Management - Green palette for environmental responsibility
+            'waste_basket': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 2, 'radius': 4},
+            'recycling': {'fill': '#c8e6c9', 'stroke': '#388e3c', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Default public facility style
+            'default': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 2, 'radius': 6}
+        }
     }
 }
