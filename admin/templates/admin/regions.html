@@ -1,0 +1,138 @@
+{% extends "layout-base.html" %}
+
+{% block title %}Regions Management - Tile Generation Server{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="dashboard">
+    <header class="page-header">
+        <h1>Regions Management</h1>
+        <p class="page-description">Manage tile generation regions and their boundaries</p>
+    </header>
+    
+    <section class="region-actions-header">
+        <div class="actions-grid">
+            <a href="{{ url_for('regions.create') }}" class="btn btn-primary">Create New Region</a>
+            <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </section>
+    
+    {% if regions %}
+    <section class="regions-overview" aria-labelledby="regions-heading">
+        <h2 id="regions-heading">Available Regions</h2>
+        
+        <div class="regions-grid">
+            {% for region in regions %}
+            <div class="region-card">
+                <h3>{{ region.name }}</h3>
+                <div class="region-stats">
+                    <p><strong>Tiles:</strong> {{ region.get('actual_tile_count', region.get('tile_count', 0)) }}</p>
+                    {% if region.get('size_mb', 0) > 0 %}
+                        <p><strong>Size:</strong> {{ region.size_mb }}MB</p>
+                    {% endif %}
+                    {% if region.get('created_at') %}
+                        <p><strong>Created:</strong> {{ region.created_at[:10] }}</p>
+                    {% endif %}
+                    {% if region.get('bounds') %}
+                        <p><strong>Bounds:</strong> 
+                            {{ "%.3f"|format(region.bounds.south) }},{{ "%.3f"|format(region.bounds.west) }} to 
+                            {{ "%.3f"|format(region.bounds.north) }},{{ "%.3f"|format(region.bounds.east) }}
+                        </p>
+                    {% endif %}
+                </div>
+                <div class="region-actions">
+                    <a href="{{ url_for('regions.region_detail', region_name=region.name) }}" class="btn btn-secondary">View Details</a>
+                    {% if region.get('actual_tile_count', 0) > 0 %}
+                        <a href="/tiles/regions/{{ region.name }}/" class="btn btn-secondary">Browse Tiles</a>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('regions.delete_region', region_name=region.name) }}" 
+                          style="display: inline;" 
+                          onsubmit="return confirm('Are you sure you want to delete region \'{{ region.name }}\' and all its tiles? This cannot be undone.')">
+                        <button type="submit" class="btn btn-warning">Delete</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% else %}
+    <div class="empty-state">
+        <h3>No Regions Found</h3>
+        <p>Create your first region to start generating tiles.</p>
+        <a href="{{ url_for('regions.create') }}" class="btn btn-primary">Create Region</a>
+    </div>
+    {% endif %}
+    
+    <section class="region-info">
+        <h2>About Regions</h2>
+        <div class="info-card">
+            <h3>What are Regions?</h3>
+            <p>Regions define geographic areas for tile generation. Each region has:</p>
+            <ul>
+                <li><strong>Boundaries:</strong> North, South, East, West coordinates</li>
+                <li><strong>Tiles:</strong> Generated SVG map tiles covering the area</li>
+                <li><strong>Metadata:</strong> Creation date, tile count, and configuration</li>
+            </ul>
+        </div>
+        
+        <div class="info-card">
+            <h3>Tile Size</h3>
+            <p>Each tile covers 0.01° × 0.01° (approximately 1km × 1km in Toronto). 
+               Larger regions will generate more tiles.</p>
+        </div>
+    </section>
+</div>
+
+<style>
+.region-actions-header {
+    margin-bottom: 2rem;
+}
+
+.region-actions-header .actions-grid {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
+.region-info {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.region-info .info-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.region-info .info-card h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+.region-info .info-card ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.region-info .info-card li {
+    margin-bottom: 0.5rem;
+}
+</style>
+
+{% endblock %}

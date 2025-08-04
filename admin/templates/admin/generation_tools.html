@@ -1,0 +1,463 @@
+{% extends "layout-base.html" %}
+
+{% block title %}Generation Tools - Tile Generation Server{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="dashboard">
+    <header class="page-header">
+        <h1>Generation Tools</h1>
+        <p class="page-description">System tools, diagnostics, and cache management</p>
+    </header>
+    
+    <section class="tools-actions">
+        <div class="actions-grid">
+            <a href="{{ url_for('generation.index') }}" class="btn btn-secondary">← Back to Generation</a>
+        </div>
+    </section>
+    
+    <section class="system-status">
+        <h2>System Status</h2>
+        <div class="status-grid">
+            <div class="status-card">
+                <h3>🐍 Python Environment</h3>
+                <div class="status-details">
+                    {% if tools_status.python_version %}
+                        <p><strong>Version:</strong> {{ tools_status.python_version.split()[0] }}</p>
+                        <p class="status-indicator status-success">✅ Python Available</p>
+                    {% else %}
+                        <p class="status-indicator status-error">❌ Python Not Found</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h3>🗺️ OSMium Tools</h3>
+                <div class="status-details">
+                    {% if tools_status.osmium_available %}
+                        <p class="status-indicator status-success">✅ OSMium Available</p>
+                        {% if tools_status.osmium_version %}
+                            <p><strong>Version:</strong> {{ tools_status.osmium_version.split('\n')[0] }}</p>
+                        {% endif %}
+                        <p><small>Regional filtering enabled for faster tile generation</small></p>
+                    {% else %}
+                        <p class="status-indicator status-warning">⚠️ OSMium Not Available</p>
+                        <p><small>Install with: <code>sudo apt install osmium-tool</code></small></p>
+                        <p><small>Without osmium, tile generation will be slower</small></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cache-management">
+        <h2>OSM Data Cache</h2>
+        <div class="cache-overview">
+            <div class="cache-stats">
+                <div class="cache-stat">
+                    <strong>{{ cache_info.get('total_files', 0) }}</strong>
+                    <span>Cached Files</span>
+                </div>
+                <div class="cache-stat">
+                    <strong>{{ cache_info.get('total_size_gb', 0) }}GB</strong>
+                    <span>Total Size</span>
+                </div>
+                <div class="cache-stat">
+                    <strong>{{ cache_info.get('path', 'Unknown') }}</strong>
+                    <span>Cache Location</span>
+                </div>
+            </div>
+            
+            <div class="cache-actions">
+                {% if cache_info.get('total_files', 0) > 0 %}
+                    <form method="POST" action="{{ url_for('generation.clear_cache') }}" 
+                          style="display: inline;"
+                          onsubmit="return confirm('This will delete all cached OSM data ({{ cache_info.total_size_gb }}GB). This cannot be undone. Continue?')">
+                        <button type="submit" class="btn btn-warning">🗑️ Clear All Cache</button>
+                    </form>
+                {% else %}
+                    <p class="cache-empty">Cache is empty</p>
+                {% endif %}
+                <a href="{{ url_for('dashboard.index') }}#osm-heading" class="btn btn-primary">Manage OSM Data</a>
+            </div>
+        </div>
+        
+        <div class="cache-info">
+            <h3>About OSM Data Cache</h3>
+            <div class="info-content">
+                <p>The OSM data cache stores downloaded map data from Geofabrik for each Canadian province:</p>
+                <ul>
+                    <li><strong>Purpose:</strong> Avoid repeated downloads of large (500MB-2GB) OSM files</li>
+                    <li><strong>Lifespan:</strong> Cache is considered fresh for 28 days</li>
+                    <li><strong>Filtering:</strong> Creates smaller regional extracts when osmium is available</li>
+                    <li><strong>Storage:</strong> Files are stored in PBF format for efficiency</li>
+                </ul>
+                
+                <h4>Cache Types:</h4>
+                <ul>
+                    <li><code>ontario-latest.osm.pbf</code> - Full province data (large)</li>
+                    <li><code>toronto-downtown-filtered.osm.pbf</code> - Regional extract (small)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <section class="diagnostic-tools">
+        <h2>Diagnostic Tools</h2>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <h3>🔍 System Information</h3>
+                <div class="tool-content">
+                    <p>Check system resources and dependencies:</p>
+                    <ul>
+                        <li>Python version and packages</li>
+                        <li>Available disk space</li>
+                        <li>Memory usage</li>
+                        <li>OSM processing tools</li>
+                    </ul>
+                </div>
+                <div class="tool-actions">
+                    <button onclick="showSystemInfo()" class="btn btn-secondary">View System Info</button>
+                </div>
+            </div>
+            
+            <div class="tool-card">
+                <h3>📊 Performance Metrics</h3>
+                <div class="tool-content">
+                    <p>View tile generation performance:</p>
+                    <ul>
+                        <li>Average time per tile</li>
+                        <li>OSM processing speed</li>
+                        <li>Cache hit/miss rates</li>
+                        <li>Error statistics</li>
+                    </ul>
+                </div>
+                <div class="tool-actions">
+                    <button onclick="showPerformanceMetrics()" class="btn btn-secondary">View Metrics</button>
+                </div>
+            </div>
+            
+            <div class="tool-card">
+                <h3>🧪 Test Generation</h3>
+                <div class="tool-content">
+                    <p>Test tile generation with a small sample:</p>
+                    <ul>
+                        <li>Generate a single test tile</li>
+                        <li>Verify OSM data processing</li>
+                        <li>Check SVG output quality</li>
+                        <li>Measure performance</li>
+                    </ul>
+                </div>
+                <div class="tool-actions">
+                    <button onclick="runTestGeneration()" class="btn btn-primary">Run Test</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="troubleshooting">
+        <h2>Troubleshooting</h2>
+        <div class="troubleshooting-grid">
+            <div class="trouble-card">
+                <h3>🐌 Slow Tile Generation</h3>
+                <div class="trouble-content">
+                    <p><strong>Symptoms:</strong> Tiles take 4+ minutes each to generate</p>
+                    <p><strong>Cause:</strong> Missing osmium-tool for regional filtering</p>
+                    <p><strong>Solution:</strong> Install osmium-tool:</p>
+                    <pre><code>sudo apt install osmium-tool</code></pre>
+                </div>
+            </div>
+            
+            <div class="trouble-card">
+                <h3>❌ Generation Failures</h3>
+                <div class="trouble-content">
+                    <p><strong>Symptoms:</strong> Tiles fail to generate with errors</p>
+                    <p><strong>Common Causes:</strong></p>
+                    <ul>
+                        <li>Missing OSM data cache</li>
+                        <li>Corrupted cache files</li>
+                        <li>Insufficient disk space</li>
+                        <li>Network connectivity issues</li>
+                    </ul>
+                    <p><strong>Solution:</strong> Clear cache and re-download OSM data</p>
+                </div>
+            </div>
+            
+            <div class="trouble-card">
+                <h3>💾 Disk Space Issues</h3>
+                <div class="trouble-content">
+                    <p><strong>Symptoms:</strong> Generation stops unexpectedly</p>
+                    <p><strong>Cause:</strong> Insufficient disk space</p>
+                    <p><strong>Requirements:</strong></p>
+                    <ul>
+                        <li>2-5GB for OSM cache per province</li>
+                        <li>10-50MB per generated tile</li>
+                        <li>Extra space for temporary files</li>
+                    </ul>
+                    <p><strong>Solution:</strong> Free up disk space or clear old cache</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+function showSystemInfo() {
+    alert('System information feature coming soon!');
+}
+
+function showPerformanceMetrics() {
+    alert('Performance metrics feature coming soon!');
+}
+
+function runTestGeneration() {
+    if (confirm('This will generate a small test tile. Continue?')) {
+        alert('Test generation feature coming soon!');
+    }
+}
+</script>
+
+<style>
+.tools-actions {
+    margin-bottom: 2rem;
+}
+
+.tools-actions .actions-grid {
+    display: flex;
+    gap: 1rem;
+}
+
+.system-status {
+    margin-bottom: 2rem;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.status-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.status-card h3 {
+    margin: 0 0 1rem 0;
+    color: var(--primary-color);
+}
+
+.status-details p {
+    margin: 0.5rem 0;
+}
+
+.status-indicator {
+    font-weight: 500;
+}
+
+.status-success {
+    color: var(--success-color);
+}
+
+.status-warning {
+    color: var(--warning-color);
+}
+
+.status-error {
+    color: var(--error-color);
+}
+
+.cache-management {
+    margin-bottom: 2rem;
+}
+
+.cache-overview {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.cache-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.cache-stat {
+    text-align: center;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: 4px;
+}
+
+.cache-stat strong {
+    display: block;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+.cache-stat span {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.cache-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.cache-empty {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 0;
+}
+
+.cache-info {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.cache-info h3, .cache-info h4 {
+    color: var(--primary-color);
+    margin-top: 0;
+}
+
+.info-content ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.info-content li {
+    margin-bottom: 0.25rem;
+}
+
+.info-content code {
+    background: var(--background-color);
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.diagnostic-tools {
+    margin-bottom: 2rem;
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.tool-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.tool-card h3 {
+    margin: 0 0 1rem 0;
+    color: var(--primary-color);
+}
+
+.tool-content {
+    margin-bottom: 1rem;
+}
+
+.tool-content ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.tool-content li {
+    margin-bottom: 0.25rem;
+}
+
+.tool-actions {
+    text-align: center;
+}
+
+.troubleshooting-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1rem;
+}
+
+.trouble-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.trouble-card h3 {
+    margin: 0 0 1rem 0;
+    color: var(--warning-color);
+}
+
+.trouble-content p {
+    margin: 0.5rem 0;
+}
+
+.trouble-content ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.trouble-content li {
+    margin-bottom: 0.25rem;
+}
+
+.trouble-content pre {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    overflow-x: auto;
+}
+
+.trouble-content code {
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .status-grid, .tools-grid, .troubleshooting-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cache-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .cache-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+{% endblock %}

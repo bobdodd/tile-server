@@ -1,0 +1,318 @@
+{% extends "layout-base.html" %}
+
+{% block title %}{{ region_name }} - Region Details{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="dashboard">
+    <header class="page-header">
+        <h1>{{ region_name }}</h1>
+        <p class="page-description">Region details and tile information</p>
+    </header>
+    
+    <section class="region-actions-header">
+        <div class="actions-grid">
+            <a href="{{ url_for('regions.index') }}" class="btn btn-secondary">← Back to Regions</a>
+            {% if stats.tile_count > 0 %}
+                <a href="/tiles/regions/{{ region_name }}/" class="btn btn-primary">Browse Tiles</a>
+            {% endif %}
+            <form method="POST" action="/admin/update-tiles/{{ region_name }}" style="display: inline;" 
+                  onsubmit="return confirm('This will regenerate all tiles for {{ region_name }}. Continue?')">
+                <button type="submit" class="btn btn-warning">Regenerate Tiles</button>
+            </form>
+        </div>
+    </section>
+    
+    <div class="region-detail-grid">
+        <!-- Region Metadata -->
+        <div class="detail-section">
+            <div class="detail-card">
+                <h3>Region Information</h3>
+                <div class="detail-content">
+                    <p><strong>Name:</strong> {{ region_name }}</p>
+                    <p><strong>Created:</strong> {{ stats.metadata.created_at[:19].replace('T', ' ') }}</p>
+                    <p><strong>Tile Size:</strong> {{ stats.metadata.tile_size_degrees }}° per tile</p>
+                    <p><strong>SVG Size:</strong> {{ stats.metadata.svg_size }}px viewport</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tile Statistics -->
+        <div class="detail-section">
+            <div class="detail-card">
+                <h3>Tile Statistics</h3>
+                <div class="detail-content">
+                    <p><strong>Generated Tiles:</strong> {{ stats.tile_count }}</p>
+                    <p><strong>Expected Tiles:</strong> {{ stats.metadata.tile_count }}</p>
+                    <p><strong>Total Size:</strong> {{ stats.size_mb }}MB</p>
+                    {% if stats.tile_count > 0 %}
+                        <p><strong>Avg per Tile:</strong> {{ "%.1f"|format(stats.size_mb * 1024 / stats.tile_count) }}KB</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Geographic Bounds -->
+        <div class="detail-section bounds-section">
+            <div class="detail-card">
+                <h3>Geographic Boundaries</h3>
+                <div class="bounds-display">
+                    <div class="bounds-grid">
+                        <div class="bound-item">
+                            <label>North</label>
+                            <span>{{ "%.6f"|format(stats.metadata.bounds.north) }}°</span>
+                        </div>
+                        <div class="bound-item">
+                            <label>South</label>
+                            <span>{{ "%.6f"|format(stats.metadata.bounds.south) }}°</span>
+                        </div>
+                        <div class="bound-item">
+                            <label>East</label>
+                            <span>{{ "%.6f"|format(stats.metadata.bounds.east) }}°</span>
+                        </div>
+                        <div class="bound-item">
+                            <label>West</label>
+                            <span>{{ "%.6f"|format(stats.metadata.bounds.west) }}°</span>
+                        </div>
+                    </div>
+                    <div class="bounds-summary">
+                        <p><strong>Area:</strong> 
+                            {{ "%.3f"|format(stats.metadata.bounds.north - stats.metadata.bounds.south) }}° × 
+                            {{ "%.3f"|format(stats.metadata.bounds.east - stats.metadata.bounds.west) }}°
+                        </p>
+                        <p><strong>Approx Size:</strong> 
+                            {{ "%.1f"|format((stats.metadata.bounds.north - stats.metadata.bounds.south) * 111) }}km × 
+                            {{ "%.1f"|format((stats.metadata.bounds.east - stats.metadata.bounds.west) * 85) }}km
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if stats.tiles %}
+    <section class="tiles-list-section">
+        <h2>Generated Tiles ({{ stats.tile_count }})</h2>
+        
+        <div class="tiles-grid">
+            {% for tile_name in stats.tiles %}
+            <div class="tile-item">
+                <span class="tile-name">{{ tile_name }}</span>
+                <div class="tile-actions">
+                    <a href="/tiles/regions/{{ region_name }}/{{ tile_name }}" 
+                       class="btn btn-sm btn-secondary" target="_blank">View</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if stats.tile_count > 20 %}
+        <div class="tiles-pagination">
+            <p>Showing first 20 tiles. <a href="/tiles/regions/{{ region_name }}/">Browse all tiles →</a></p>
+        </div>
+        {% endif %}
+    </section>
+    {% else %}
+    <section class="no-tiles-section">
+        <div class="empty-state">
+            <h3>No Tiles Generated</h3>
+            <p>This region exists but has no generated tiles yet.</p>
+            <form method="POST" action="/admin/update-tiles/{{ region_name }}" style="display: inline;">
+                <button type="submit" class="btn btn-primary">Generate Tiles Now</button>
+            </form>
+        </div>
+    </section>
+    {% endif %}
+</div>
+
+<style>
+.region-actions-header {
+    margin-bottom: 2rem;
+}
+
+.region-actions-header .actions-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.region-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.bounds-section {
+    grid-column: span 2;
+}
+
+.detail-section {
+    margin-bottom: 1rem;
+}
+
+.detail-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    height: 100%;
+}
+
+.detail-card h3 {
+    margin: 0 0 1rem 0;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.detail-content p {
+    margin: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail-content strong {
+    color: var(--text-primary);
+    min-width: 120px;
+}
+
+.bounds-display {
+    margin-top: 1rem;
+}
+
+.bounds-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.bound-item {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.bound-item label {
+    display: block;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.bound-item span {
+    font-family: monospace;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.bounds-summary {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+.bounds-summary p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+}
+
+.tiles-list-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.tiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1rem;
+    background: var(--background-color);
+}
+
+.tile-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.tile-name {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.tile-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.tiles-pagination {
+    margin-top: 1rem;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.no-tiles-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+@media (max-width: 768px) {
+    .region-detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .bounds-section {
+        grid-column: span 1;
+    }
+    
+    .bounds-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .region-actions-header .actions-grid {
+        flex-direction: column;
+    }
+    
+    .tiles-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+{% endblock %}

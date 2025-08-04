@@ -1,0 +1,405 @@
+{% extends "layout-base.html" %}
+
+{% block title %}Generation Queue - Tile Generation Server{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="dashboard">
+    <header class="page-header">
+        <h1>Generation Queue</h1>
+        <p class="page-description">Monitor active tile generation operations</p>
+    </header>
+    
+    <section class="queue-actions">
+        <div class="actions-grid">
+            <a href="{{ url_for('generation.index') }}" class="btn btn-secondary">← Back to Generation</a>
+            {% if operations %}
+                <button onclick="window.location.reload()" class="btn btn-primary">🔄 Refresh Status</button>
+            {% endif %}
+        </div>
+    </section>
+    
+    {% if operations %}
+    <section class="active-queue">
+        <h2>Active Operations ({{ operations|length }})</h2>
+        
+        <div class="queue-list">
+            {% for operation in operations %}
+            <div class="queue-item">
+                <div class="queue-header">
+                    <div class="queue-title">
+                        <h3>{{ operation.region_name }}</h3>
+                        <span class="queue-type">{{ operation.operation_type.replace('_', ' ').title() }}</span>
+                    </div>
+                    <div class="queue-status">
+                        <span class="status-badge status-{{ operation.status }}">
+                            {{ operation.status.replace('_', ' ').title() }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="queue-details">
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <strong>Started:</strong>
+                            <span>{{ operation.start_time[:19].replace('T', ' ') if operation.start_time else 'Unknown' }}</span>
+                        </div>
+                        {% if operation.current_item %}
+                        <div class="detail-item">
+                            <strong>Current:</strong>
+                            <span>{{ operation.current_item }}</span>
+                        </div>
+                        {% endif %}
+                        {% if operation.estimated_completion and operation.status in ['processing', 'processing_osm', 'rendering_tile'] %}
+                        <div class="detail-item">
+                            <strong>ETA:</strong>
+                            <span>{{ operation.estimated_completion }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="queue-progress">
+                    <div class="progress-header">
+                        <span class="progress-label">
+                            {% if operation.operation_type == 'bulk_update' %}
+                                Regions: {{ operation.progress.completed }}/{{ operation.progress.total }}
+                            {% else %}
+                                Tiles: {{ operation.progress.completed }}/{{ operation.progress.total }}
+                            {% endif %}
+                        </span>
+                        <span class="progress-percentage">{{ operation.progress.percentage }}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ operation.progress.percentage }}%"></div>
+                    </div>
+                </div>
+                
+                <div class="queue-actions">
+                    {% if operation.status in ['processing', 'processing_osm', 'rendering_tile', 'initializing'] %}
+                        <form method="POST" action="{{ url_for('generation.cancel_operation', operation_id=operation.region_id) }}" 
+                              style="display: inline;"
+                              onsubmit="return confirm('Are you sure you want to cancel this operation?')">
+                            <button type="submit" class="btn btn-sm btn-warning">Cancel</button>
+                        </form>
+                    {% endif %}
+                    <button onclick="refreshOperation('{{ operation.region_id }}')" class="btn btn-sm btn-secondary">Refresh</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% else %}
+    <div class="empty-state">
+        <h3>No Active Operations</h3>
+        <p>The generation queue is currently empty.</p>
+        <div class="empty-actions">
+            <a href="{{ url_for('regions.create') }}" class="btn btn-primary">Create New Region</a>
+            <a href="{{ url_for('generation.index') }}" class="btn btn-secondary">Generation Dashboard</a>
+        </div>
+    </div>
+    {% endif %}
+    
+    <section class="queue-help">
+        <h2>About the Generation Queue</h2>
+        <div class="help-grid">
+            <div class="help-card">
+                <h3>📊 Status Indicators</h3>
+                <ul>
+                    <li><strong>Initializing:</strong> Setting up the generation process</li>
+                    <li><strong>Processing OSM:</strong> Reading and filtering map data (slow)</li>
+                    <li><strong>Rendering Tile:</strong> Creating SVG tile content (fast)</li>
+                    <li><strong>Completed:</strong> Operation finished successfully</li>
+                    <li><strong>Error:</strong> Operation failed with an error</li>
+                </ul>
+            </div>
+            
+            <div class="help-card">
+                <h3>⏱️ Performance Notes</h3>
+                <ul>
+                    <li>Each tile takes 30 seconds to 4 minutes to generate</li>
+                    <li>Processing OSM data is the slowest step</li>
+                    <li>Regional filtering dramatically improves speed</li>
+                    <li>Bulk operations process regions sequentially</li>
+                </ul>
+            </div>
+            
+            <div class="help-card">
+                <h3>🔄 Managing Operations</h3>
+                <ul>
+                    <li>Operations run in background threads</li>
+                    <li>You can safely close the browser while operations run</li>
+                    <li>Check back later to see progress</li>
+                    <li>Cancelled operations may take time to stop</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+function refreshOperation(regionId) {
+    // Refresh a specific operation's progress
+    fetch(`/admin/progress/${regionId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Operation status:', data);
+            // Reload the page to show updated status
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error refreshing operation:', error);
+        });
+}
+
+// Auto-refresh the page every 15 seconds if there are active operations
+{% if operations %}
+let refreshInterval = setInterval(() => {
+    window.location.reload();
+}, 15000);
+
+// Stop refreshing if user navigates away
+window.addEventListener('beforeunload', () => {
+    clearInterval(refreshInterval);
+});
+{% endif %}
+</script>
+
+<style>
+.queue-actions {
+    margin-bottom: 2rem;
+}
+
+.queue-actions .actions-grid {
+    display: flex;
+    gap: 1rem;
+}
+
+.active-queue {
+    margin-bottom: 2rem;
+}
+
+.queue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.queue-item {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.queue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.queue-title h3 {
+    margin: 0 0 0.25rem 0;
+    color: var(--text-primary);
+}
+
+.queue-type {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-initializing {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-processing, .status-processing_osm, .status-rendering_tile {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-cancelled {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.queue-details {
+    margin-bottom: 1rem;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--background-color);
+    border-radius: 4px;
+}
+
+.detail-item strong {
+    color: var(--text-primary);
+    min-width: 80px;
+}
+
+.detail-item span {
+    color: var(--text-secondary);
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.queue-progress {
+    margin-bottom: 1rem;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.progress-label {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.progress-percentage {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background-color: var(--background-color);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), #4caf50);
+    transition: width 0.3s ease;
+    border-radius: 6px;
+}
+
+.queue-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.empty-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.queue-help {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.help-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.help-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.help-card h3 {
+    margin: 0 0 1rem 0;
+    color: var(--primary-color);
+}
+
+.help-card ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.help-card li {
+    margin-bottom: 0.5rem;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .queue-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    .queue-actions {
+        justify-content: center;
+    }
+    
+    .empty-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+</style>
+
+{% endblock %}

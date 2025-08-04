@@ -1,0 +1,206 @@
+{% extends "layout-base.html" %}
+
+{% block title %}Tiles Browser - Tile Generation Server{% endblock %}
+
+{% block content %}
+
+<div class="dashboard">
+    <header class="page-header">
+        <h1>Tiles Browser</h1>
+        <p class="page-description">Browse and view generated map tiles by region</p>
+    </header>
+    
+    {% if error %}
+    <div class="flash-messages">
+        <div class="flash-message flash-error">
+            Error loading tiles: {{ error }}
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if regions %}
+    <section class="tiles-overview" aria-labelledby="tiles-heading">
+        <h2 id="tiles-heading">Available Tile Regions</h2>
+        
+        <div class="tiles-stats">
+            <div class="stat-card">
+                <h3>Total Regions</h3>
+                <p class="stat-number">{{ regions|length }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Tiles</h3>
+                <p class="stat-number">{{ regions|sum(attribute='tile_count') }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Size</h3>
+                <p class="stat-number">{{ "%.1f"|format(regions|sum(attribute='size_mb')) }}MB</p>
+            </div>
+        </div>
+        
+        <div class="regions-grid">
+            {% for region in regions %}
+            <div class="region-card">
+                <h3>{{ region.display_name }}</h3>
+                <div class="region-stats">
+                    <p><strong>Tiles:</strong> {{ region.tile_count }}</p>
+                    <p><strong>Size:</strong> {{ region.size_mb }}MB</p>
+                    {% if region.metadata and region.metadata.created_at %}
+                        <p><strong>Created:</strong> {{ region.metadata.created_at[:10] }}</p>
+                    {% endif %}
+                    {% if region.metadata and region.metadata.bounds %}
+                        <p><strong>Area:</strong> 
+                            {{ "%.3f"|format(region.metadata.bounds.north - region.metadata.bounds.south) }}° × 
+                            {{ "%.3f"|format(region.metadata.bounds.east - region.metadata.bounds.west) }}°
+                        </p>
+                    {% endif %}
+                </div>
+                <div class="region-actions">
+                    <a href="{{ url_for('tiles.region_tiles', region_name=region.name) }}" 
+                       class="btn btn-primary">Browse Tiles</a>
+                    <a href="{{ url_for('regions.region_detail', region_name=region.name) }}" 
+                       class="btn btn-secondary">Region Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% else %}
+    <div class="empty-state">
+        <h3>No Tiles Found</h3>
+        <p>No regions with generated tiles were found.</p>
+        <div class="empty-actions">
+            <a href="{{ url_for('regions.create') }}" class="btn btn-primary">Create Region</a>
+            <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary">Dashboard</a>
+        </div>
+    </div>
+    {% endif %}
+    
+    <section class="tiles-info">
+        <h2>About Tiles</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>🗺️ Tile Format</h3>
+                <p>Tiles are generated as compressed SVG files (.svg.gz) containing map features:</p>
+                <ul>
+                    <li>Buildings and structures</li>
+                    <li>Roads and pathways</li>
+                    <li>Water features</li>
+                    <li>Transit infrastructure</li>
+                    <li>Parks and recreation areas</li>
+                </ul>
+            </div>
+            
+            <div class="info-card">
+                <h3>📐 Tile Coverage</h3>
+                <p>Each tile covers a geographic area of:</p>
+                <ul>
+                    <li><strong>Size:</strong> 0.01° × 0.01°</li>
+                    <li><strong>Approx:</strong> 1km × 1km (at Toronto latitude)</li>
+                    <li><strong>Viewport:</strong> 1000×1000 pixel SVG</li>
+                    <li><strong>Compression:</strong> Gzip compressed for efficiency</li>
+                </ul>
+            </div>
+            
+            <div class="info-card">
+                <h3>🔍 Viewing Tiles</h3>
+                <p>You can view tiles in several ways:</p>
+                <ul>
+                    <li><strong>Browser:</strong> Click "Browse Tiles" to see all tiles in a region</li>
+                    <li><strong>Individual:</strong> Click on any tile to view it directly</li>
+                    <li><strong>Download:</strong> Access raw compressed files for development</li>
+                    <li><strong>API:</strong> Use the API endpoints for programmatic access</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+.tiles-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.tiles-stats .stat-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.tiles-stats .stat-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tiles-stats .stat-number {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.empty-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.tiles-info {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.info-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.info-card h3 {
+    margin: 0 0 1rem 0;
+    color: var(--primary-color);
+}
+
+.info-card ul {
+    margin: 1rem 0 0 0;
+    padding-left: 1.5rem;
+}
+
+.info-card li {
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .tiles-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .empty-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,302 @@
+{% extends "layout-base.html" %}
+
+{% block title %}Create Region - Tile Generation Server{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="dashboard">
+    <header class="page-header">
+        <h1>Create New Region</h1>
+        <p class="page-description">Define a new geographic region for tile generation</p>
+    </header>
+    
+    <section class="create-region-form">
+        <form method="POST" class="region-form">
+            <div class="form-section">
+                <h3>Region Information</h3>
+                
+                <div class="form-group">
+                    <label for="name">Internal Name *</label>
+                    <input type="text" id="name" name="name" required 
+                           placeholder="e.g., ottawa-downtown" 
+                           pattern="[a-z0-9-]+" 
+                           title="Use lowercase letters, numbers, and hyphens only">
+                    <small>Used in URLs and file names. Use lowercase letters, numbers, and hyphens only.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="display_name">Display Name *</label>
+                    <input type="text" id="display_name" name="display_name" required 
+                           placeholder="e.g., Ottawa Downtown">
+                    <small>Human-readable name shown in the interface.</small>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3>Geographic Boundaries</h3>
+                <p class="form-description">
+                    Define the rectangular area for tile generation. 
+                    Use decimal degrees (e.g., 45.4215 for latitude, -75.6972 for longitude).
+                </p>
+                
+                <div class="bounds-grid">
+                    <div class="form-group">
+                        <label for="north">North Latitude *</label>
+                        <input type="number" id="north" name="north" step="0.001" required 
+                               placeholder="e.g., 45.430">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="south">South Latitude *</label>
+                        <input type="number" id="south" name="south" step="0.001" required 
+                               placeholder="e.g., 45.410">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="east">East Longitude *</label>
+                        <input type="number" id="east" name="east" step="0.001" required 
+                               placeholder="e.g., -75.680">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="west">West Longitude *</label>
+                        <input type="number" id="west" name="west" step="0.001" required 
+                               placeholder="e.g., -75.720">
+                    </div>
+                </div>
+                
+                <div class="bounds-info">
+                    <p><strong>Tile Estimation:</strong> <span id="tile-estimate">Enter bounds to see estimate</span></p>
+                    <p><strong>Area Size:</strong> <span id="area-estimate">Enter bounds to see area</span></p>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Create Region & Generate Tiles</button>
+                <a href="{{ url_for('regions.index') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </section>
+    
+    <section class="create-region-help">
+        <h2>Tips for Creating Regions</h2>
+        
+        <div class="help-grid">
+            <div class="help-card">
+                <h3>📍 Coordinate System</h3>
+                <p>Use decimal degrees in WGS84 format:</p>
+                <ul>
+                    <li>Latitude: Positive for North, Negative for South</li>
+                    <li>Longitude: Positive for East, Negative for West</li>
+                    <li>Canada is typically 45°-85°N, 50°-140°W</li>
+                </ul>
+            </div>
+            
+            <div class="help-card">
+                <h3>🗺️ Region Size</h3>
+                <p>Each tile covers 0.01° × 0.01° (≈1km × 1km):</p>
+                <ul>
+                    <li>Small area (0.03° × 0.05°): ~15 tiles</li>
+                    <li>Downtown core (0.05° × 0.08°): ~40 tiles</li>
+                    <li>City district (0.1° × 0.1°): ~100 tiles</li>
+                </ul>
+            </div>
+            
+            <div class="help-card">
+                <h3>⏱️ Generation Time</h3>
+                <p>Tile generation takes time:</p>
+                <ul>
+                    <li>~30 seconds per tile (with regional filtering)</li>
+                    <li>~4 minutes per tile (without filtering)</li>
+                    <li>Progress is shown in the admin dashboard</li>
+                </ul>
+            </div>
+            
+            <div class="help-card">
+                <h3>🔍 Finding Coordinates</h3>
+                <p>You can find coordinates using:</p>
+                <ul>
+                    <li>Google Maps (right-click → coordinates)</li>
+                    <li>OpenStreetMap.org</li>
+                    <li>GPS devices or smartphone apps</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+// Real-time tile estimation
+function updateEstimates() {
+    const north = parseFloat(document.getElementById('north').value) || 0;
+    const south = parseFloat(document.getElementById('south').value) || 0;
+    const east = parseFloat(document.getElementById('east').value) || 0;
+    const west = parseFloat(document.getElementById('west').value) || 0;
+    
+    if (north > south && east > west) {
+        const latRange = north - south;
+        const lngRange = east - west;
+        const tileCount = Math.ceil(latRange / 0.01) * Math.ceil(lngRange / 0.01);
+        const estimatedMinutes = Math.round(tileCount * 0.5); // Optimistic estimate with filtering
+        
+        document.getElementById('tile-estimate').textContent = 
+            `~${tileCount} tiles (${estimatedMinutes} minutes)`;
+        document.getElementById('area-estimate').textContent = 
+            `${latRange.toFixed(3)}° × ${lngRange.toFixed(3)}° (${(latRange * 111).toFixed(1)}km × ${(lngRange * 85).toFixed(1)}km)`;
+    } else {
+        document.getElementById('tile-estimate').textContent = 'Invalid bounds';
+        document.getElementById('area-estimate').textContent = 'Invalid bounds';
+    }
+}
+
+// Add event listeners to all coordinate inputs
+['north', 'south', 'east', 'west'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updateEstimates);
+});
+</script>
+
+<style>
+.create-region-form {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.region-form {
+    max-width: 800px;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+}
+
+.form-section h3 {
+    margin: 0 0 1rem 0;
+    color: var(--primary-color);
+}
+
+.form-description {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.bounds-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.bounds-info {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+.bounds-info p {
+    margin: 0.5rem 0;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.help-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.help-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.help-card h3 {
+    margin: 0 0 1rem 0;
+    color: var(--primary-color);
+}
+
+.help-card ul {
+    margin: 1rem 0 0 0;
+    padding-left: 1.5rem;
+}
+
+.help-card li {
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .bounds-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .help-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+{% endblock %}

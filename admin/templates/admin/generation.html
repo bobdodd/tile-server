@@ -1,0 +1,363 @@
+{% extends "layout-base.html" %}
+
+{% block title %}Generation Management - Tile Generation Server{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="dashboard">
+    <header class="page-header">
+        <h1>Generation Management</h1>
+        <p class="page-description">Monitor and manage tile generation processes</p>
+    </header>
+    
+    <section class="generation-overview">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Regions</h3>
+                <p class="stat-number">{{ stats.get('total_regions', 0) }}</p>
+                <p class="stat-label">Available for generation</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Total Tiles</h3>
+                <p class="stat-number">{{ stats.get('total_tiles', 0) }}</p>
+                <p class="stat-label">Generated tiles</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>OSM Data</h3>
+                <p class="stat-number">{{ stats.get('osm_provinces', 0) }}</p>
+                <p class="stat-label">{{ stats.get('osm_size_gb', 0) }}GB cached</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Active Operations</h3>
+                <p class="stat-number {{ 'status-healthy' if stats.get('active_operations', 0) == 0 else 'status-warning' }}">
+                    {{ stats.get('active_operations', 0) }}
+                </p>
+                <p class="stat-label">Running processes</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="quick-actions-section">
+        <h2>Quick Actions</h2>
+        <div class="actions-grid">
+            <a href="{{ url_for('generation.queue') }}" class="action-card">
+                <h3>🔄 View Queue</h3>
+                <p>Monitor active generation operations and progress</p>
+            </a>
+            <a href="{{ url_for('regions.create') }}" class="action-card">
+                <h3>➕ Create Region</h3>
+                <p>Define a new region and start tile generation</p>
+            </a>
+            <a href="{{ url_for('generation.tools') }}" class="action-card">
+                <h3>🛠️ Generation Tools</h3>
+                <p>System tools, cache management, and diagnostics</p>
+            </a>
+            <div class="action-card" onclick="startBulkGeneration()">
+                <h3>🚀 Bulk Generation</h3>
+                <p>Regenerate tiles for all existing regions</p>
+            </div>
+        </div>
+    </section>
+    
+    {% if stats.get('active_ops') %}
+    <section class="active-operations">
+        <h2>Active Operations</h2>
+        <div class="operations-list">
+            {% for op_id, operation in stats.active_ops.items() %}
+            <div class="operation-card">
+                <div class="operation-header">
+                    <h4>{{ 'All Regions' if op_id == 'all' else op_id.replace('-', ' ').title() }}</h4>
+                    <span class="operation-status status-{{ operation.status }}">
+                        {{ operation.status.replace('_', ' ').title() }}
+                    </span>
+                </div>
+                <div class="operation-details">
+                    <p><strong>Type:</strong> {{ operation.operation_type.replace('_', ' ').title() }}</p>
+                    <p><strong>Started:</strong> {{ operation.start_time[:19].replace('T', ' ') if operation.start_time else 'Unknown' }}</p>
+                    {% if operation.get('current_tile') %}
+                        <p><strong>Current:</strong> {{ operation.current_tile }}</p>
+                    {% elif operation.get('current_region') %}
+                        <p><strong>Current:</strong> {{ operation.current_region }}</p>
+                    {% endif %}
+                </div>
+                <div class="operation-progress">
+                    {% set completed = operation.get('completed_tiles', operation.get('completed_regions', 0)) %}
+                    {% set total = operation.get('total_tiles', operation.get('total_regions', 1)) %}
+                    {% set percentage = (completed / total * 100) if total > 0 else 0 %}
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ percentage }}%"></div>
+                    </div>
+                    <p class="progress-text">{{ completed }}/{{ total }} ({{ "%.0f"|format(percentage) }}%)</p>
+                </div>
+                <div class="operation-actions">
+                    <a href="{{ url_for('generation.queue') }}" class="btn btn-sm btn-secondary">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    
+    {% if stats.get('osm_cache') %}
+    <section class="osm-status">
+        <h2>OSM Data Status</h2>
+        <div class="osm-grid">
+            {% for province, cache_info in stats.osm_cache.items() %}
+            <div class="osm-card">
+                <h4>{{ province.title() }}</h4>
+                <div class="osm-info">
+                    {% if cache_info.exists %}
+                        <p class="status-indicator status-success">✅ Available</p>
+                        <p><strong>Size:</strong> {{ cache_info.size_mb }}MB</p>
+                        <p><strong>Age:</strong> {{ cache_info.age_days }} days</p>
+                        {% if not cache_info.is_fresh %}
+                            <p class="status-warning">⚠️ Cache is {{ cache_info.age_days }} days old</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="status-indicator status-error">❌ Missing</p>
+                        <p>No OSM data cached for this province</p>
+                    {% endif %}
+                </div>
+                <div class="osm-regions">
+                    <small><strong>Regions:</strong> {{ cache_info.regions|join(', ') }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="osm-actions">
+            <a href="{{ url_for('dashboard.index') }}#osm-heading" class="btn btn-primary">Manage OSM Data</a>
+        </div>
+    </section>
+    {% endif %}
+</div>
+
+<script>
+function startBulkGeneration() {
+    if (confirm('This will regenerate ALL tiles for ALL regions. This may take several hours. Continue?')) {
+        fetch('/admin/update-all-regions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        }).then(response => {
+            if (response.ok) {
+                window.location.href = '/admin/generation/queue';
+            } else {
+                alert('Error starting bulk generation');
+            }
+        }).catch(error => {
+            alert('Network error: ' + error);
+        });
+    }
+}
+
+// Auto-refresh active operations every 30 seconds
+{% if stats.get('active_ops') %}
+setTimeout(() => {
+    window.location.reload();
+}, 30000);
+{% endif %}
+</script>
+
+<style>
+.generation-overview {
+    margin-bottom: 2rem;
+}
+
+.quick-actions-section {
+    margin-bottom: 2rem;
+}
+
+.quick-actions-section .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.active-operations {
+    margin-bottom: 2rem;
+}
+
+.operations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.operation-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.operation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.operation-header h4 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.operation-status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-initializing, .status-processing, .status-processing_osm, .status-rendering_tile {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.operation-details {
+    margin-bottom: 1rem;
+}
+
+.operation-details p {
+    margin: 0.25rem 0;
+    color: var(--text-secondary);
+}
+
+.operation-progress {
+    margin-bottom: 1rem;
+}
+
+.operation-progress .progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: var(--background-color);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.operation-progress .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), #4caf50);
+    transition: width 0.3s ease;
+}
+
+.operation-progress .progress-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.operation-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.osm-status {
+    margin-bottom: 2rem;
+}
+
+.osm-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.osm-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.osm-card h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    text-transform: capitalize;
+}
+
+.osm-info p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+}
+
+.osm-regions {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.osm-regions small {
+    color: var(--text-secondary);
+}
+
+.status-indicator {
+    font-weight: 500;
+}
+
+.status-success {
+    color: var(--success-color);
+}
+
+.status-warning {
+    color: var(--warning-color);
+}
+
+.status-error {
+    color: var(--error-color);
+}
+
+.osm-actions {
+    text-align: center;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .operation-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .osm-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+{% endblock %}
