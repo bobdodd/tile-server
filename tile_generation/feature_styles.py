@@ -596,5 +596,57 @@ FEATURE_STYLES = {
             # Default entertainment/culture style
             'default': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 2.5, 'radius': 9}
         }
+    },
+    
+    'automotive_services': {
+        'tags': {
+            # Automotive and vehicle-related services and infrastructure
+            'amenity': ['fuel', 'car_wash', 'car_rental', 'car_sharing', 'vehicle_inspection', 'compressed_air', 'driver_training', 'parking', 'parking_entrance', 'motorcycle_parking'],
+            'shop': ['car', 'car_parts', 'car_repair', 'motorcycle', 'motorcycle_repair', 'tyres', 'truck', 'trailer'],
+            'highway': ['motorway_junction', 'services', 'rest_area', 'emergency_bay', 'toll_gantry']
+        },
+        'styles': {
+            # Fuel & Energy Services - Red/orange palette for energy and power
+            'fuel': {'fill': '#ffebee', 'stroke': '#d32f2f', 'stroke_width': 3, 'radius': 10},
+            'compressed_air': {'fill': '#fff3e0', 'stroke': '#f57c00', 'stroke_width': 2, 'radius': 6},
+            
+            # Vehicle Sales & Dealerships - Blue palette for trust and major purchases
+            'car': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 3, 'radius': 12},
+            'motorcycle': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 2.5, 'radius': 9},
+            'truck': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 3, 'radius': 13},
+            'trailer': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 2.5, 'radius': 10},
+            
+            # Repair & Maintenance Services - Brown/orange palette for hands-on services
+            'car_repair': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2.5, 'radius': 9},
+            'motorcycle_repair': {'fill': '#ffecd2', 'stroke': '#f57c00', 'stroke_width': 2.5, 'radius': 8},
+            'car_wash': {'fill': '#e0f7fa', 'stroke': '#0097a7', 'stroke_width': 2.5, 'radius': 8},
+            'vehicle_inspection': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Parts & Accessories - Purple palette for specialized goods
+            'car_parts': {'fill': '#ede7f6', 'stroke': '#512da8', 'stroke_width': 2.5, 'radius': 8},
+            'tyres': {'fill': '#eceff1', 'stroke': '#455a64', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Rental & Sharing Services - Green palette for shared resources
+            'car_rental': {'fill': '#e8f5e8', 'stroke': '#388e3c', 'stroke_width': 2.5, 'radius': 9},
+            'car_sharing': {'fill': '#c8e6c9', 'stroke': '#2e7d32', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Parking Services - Gray/blue palette for infrastructure
+            'parking': {'fill': '#eceff1', 'stroke': '#546e7a', 'stroke_width': 2, 'radius': 8},
+            'parking_entrance': {'fill': '#e1f5fe', 'stroke': '#0288d1', 'stroke_width': 2, 'radius': 6},
+            'motorcycle_parking': {'fill': '#e8f5e8', 'stroke': '#43a047', 'stroke_width': 2, 'radius': 6},
+            
+            # Training & Education - Yellow/amber palette for learning
+            'driver_training': {'fill': '#fffde7', 'stroke': '#f57f17', 'stroke_width': 2.5, 'radius': 9},
+            
+            # Highway Infrastructure - Bold colors for major infrastructure
+            'motorway_junction': {'fill': '#ffcdd2', 'stroke': '#c62828', 'stroke_width': 4, 'radius': 15},
+            'services': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 12},
+            'rest_area': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 3, 'radius': 11},
+            'emergency_bay': {'fill': '#fff9c4', 'stroke': '#f9a825', 'stroke_width': 2.5, 'radius': 8},
+            'toll_gantry': {'fill': '#ffccbc', 'stroke': '#ff5722', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Default automotive service style
+            'default': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 2.5, 'radius': 8}
+        }
     }
 }

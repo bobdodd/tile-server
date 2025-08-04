@@ -21,6 +21,7 @@ class OSMHandler(osmium.SimpleHandler):
             'emergency_services': [],
             'tourism_accommodation': [],
             'entertainment_culture': [],
+            'automotive_services': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -117,6 +118,15 @@ class OSMHandler(osmium.SimpleHandler):
         elif (tags.get('amenity') in ['cinema', 'theatre', 'library', 'community_centre', 'arts_centre', 'social_centre'] or
               tags.get('leisure') in ['sports_centre', 'swimming_pool', 'golf_course', 'stadium', 'fitness_centre', 'bowling_alley', 'amusement_arcade']):
             self.features['entertainment_culture'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Automotive Services - Comprehensive coverage of vehicle-related services and infrastructure
+        elif (tags.get('amenity') in ['fuel', 'car_wash', 'car_rental', 'car_sharing', 'vehicle_inspection', 'compressed_air', 'driver_training', 'parking_entrance', 'motorcycle_parking'] or
+              tags.get('shop') in ['car', 'car_parts', 'car_repair', 'motorcycle', 'motorcycle_repair', 'tyres', 'truck', 'trailer'] or
+              tags.get('highway') in ['motorway_junction', 'services', 'rest_area', 'emergency_bay', 'toll_gantry']):
+            self.features['automotive_services'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
             })
@@ -450,6 +460,21 @@ class OSMHandler(osmium.SimpleHandler):
             except Exception:
                 pass
         
+        # Automotive Services (as areas/buildings) - Comprehensive coverage
+        elif (tags.get('amenity') in ['fuel', 'car_wash', 'car_rental', 'car_sharing', 'vehicle_inspection', 'compressed_air', 'driver_training', 'parking', 'parking_entrance', 'motorcycle_parking'] or
+              tags.get('shop') in ['car', 'car_parts', 'car_repair', 'motorcycle', 'motorcycle_repair', 'tyres', 'truck', 'trailer'] or
+              tags.get('highway') in ['services', 'rest_area']):
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['automotive_services'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
         # Parks and leisure areas
         elif tags.get('leisure') in ['park', 'garden', 'playground', 'dog_park', 'nature_reserve'] or \
              tags.get('landuse') in ['grass', 'recreation_ground', 'village_green']:
@@ -744,6 +769,30 @@ class OSMHandler(osmium.SimpleHandler):
                     
                     if poly.intersects(bounds_poly):
                         self.features['entertainment_culture'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Automotive Services (as relations) - Comprehensive coverage
+            elif (tags.get('amenity') in ['fuel', 'car_wash', 'car_rental', 'car_sharing', 'vehicle_inspection', 'compressed_air', 'driver_training', 'parking', 'parking_entrance', 'motorcycle_parking'] or
+                  tags.get('shop') in ['car', 'car_parts', 'car_repair', 'motorcycle', 'motorcycle_repair', 'tyres', 'truck', 'trailer'] or
+                  tags.get('highway') in ['services', 'rest_area']):
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if automotive service area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['automotive_services'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id}
                         })
