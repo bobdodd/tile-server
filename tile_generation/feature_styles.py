@@ -725,6 +725,88 @@ FEATURE_STYLES = {
         }
     },
     
+    'power_utilities': {
+        'tags': {
+            # Power infrastructure
+            'power': ['line', 'minor_line', 'cable', 'pole', 'tower', 'substation', 'transformer', 
+                     'generator', 'plant', 'switch', 'converter', 'compensator', 'portal', 
+                     'terminal', 'insulator', 'busbar', 'bay'],
+            # Utility infrastructure  
+            'utility': ['gas', 'water', 'sewerage', 'telecom', 'electrical', 'power'],
+            # Man-made utility structures
+            'man_made': ['pipeline', 'pumping_station', 'storage_tank', 'water_tower', 'gasometer', 
+                        'silo', 'wastewater_plant', 'water_works'],
+            # Pipeline types
+            'pipeline': ['gas', 'oil', 'water', 'sewerage', 'district_heating', 'steam', 'hot_water'],
+            # Telecommunications
+            'telecom': ['data_center', 'exchange', 'service_device']
+        },
+        'styles': {
+            # Power Generation & Distribution - High voltage yellow/red for power
+            'plant': {'fill': '#fff3e0', 'stroke': '#e65100', 'stroke_width': 4, 'radius': 15},
+            'generator': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 3.5, 'radius': 12},
+            'substation': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 3, 'radius': 10},
+            'transformer': {'fill': '#fff59d', 'stroke': '#fbc02d', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Power Transmission - Bold colors for transmission infrastructure
+            'tower': {'fill': '#ffcdd2', 'stroke': '#c62828', 'stroke_width': 3, 'radius': 8},
+            'pole': {'fill': '#ffecb3', 'stroke': '#f57c00', 'stroke_width': 2, 'radius': 4},
+            'line': {'fill': '#fff9c4', 'stroke': '#f9a825', 'stroke_width': 3, 'radius': 2},
+            'minor_line': {'fill': '#fff9c4', 'stroke': '#f9a825', 'stroke_width': 2, 'radius': 2},
+            'cable': {'fill': '#fff59d', 'stroke': '#fbc02d', 'stroke_width': 2, 'radius': 2},
+            
+            # Power Equipment - Orange palette for electrical equipment
+            'switch': {'fill': '#ffcc80', 'stroke': '#ef6c00', 'stroke_width': 2, 'radius': 5},
+            'converter': {'fill': '#ffe0b2', 'stroke': '#f57c00', 'stroke_width': 2.5, 'radius': 7},
+            'compensator': {'fill': '#fff3e0', 'stroke': '#e65100', 'stroke_width': 2.5, 'radius': 6},
+            'portal': {'fill': '#ffccbc', 'stroke': '#ff5722', 'stroke_width': 2, 'radius': 5},
+            'terminal': {'fill': '#ffe0b2', 'stroke': '#f57c00', 'stroke_width': 2, 'radius': 4},
+            'insulator': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 1.5, 'radius': 3},
+            'busbar': {'fill': '#fff59d', 'stroke': '#fbc02d', 'stroke_width': 2, 'radius': 4},
+            'bay': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 2.5, 'radius': 6},
+            
+            # Gas Infrastructure - Blue palette for gas systems
+            'gas': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 2.5, 'radius': 8},
+            'gasometer': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 12},
+            'pipeline': {'fill': '#e1f5fe', 'stroke': '#0277bd', 'stroke_width': 2.5, 'radius': 3},
+            
+            # Water Infrastructure - Teal/cyan palette for water systems
+            'water': {'fill': '#e0f7fa', 'stroke': '#00838f', 'stroke_width': 2.5, 'radius': 8},
+            'water_tower': {'fill': '#b2ebf2', 'stroke': '#00acc1', 'stroke_width': 3, 'radius': 10},
+            'water_works': {'fill': '#b3e5fc', 'stroke': '#0277bd', 'stroke_width': 3, 'radius': 12},
+            'pumping_station': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 2.5, 'radius': 9},
+            'storage_tank': {'fill': '#e0f7fa', 'stroke': '#00838f', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Sewerage Infrastructure - Brown palette for waste systems
+            'sewerage': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 2.5, 'radius': 7},
+            'wastewater_plant': {'fill': '#d7ccc8', 'stroke': '#6d4c41', 'stroke_width': 3, 'radius': 13},
+            
+            # Telecommunications - Purple palette for telecom
+            'telecom': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 2.5, 'radius': 8},
+            'data_center': {'fill': '#ede7f6', 'stroke': '#673ab7', 'stroke_width': 3.5, 'radius': 14},
+            'exchange': {'fill': '#e1bee7', 'stroke': '#9c27b0', 'stroke_width': 3, 'radius': 10},
+            'service_device': {'fill': '#f8bbd9', 'stroke': '#e91e63', 'stroke_width': 2, 'radius': 5},
+            
+            # District Systems - Green palette for heating/cooling
+            'district_heating': {'fill': '#ffcdd2', 'stroke': '#d32f2f', 'stroke_width': 2, 'radius': 4},
+            'steam': {'fill': '#ffebee', 'stroke': '#c62828', 'stroke_width': 2, 'radius': 3},
+            'hot_water': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2, 'radius': 3},
+            
+            # Industrial Storage - Gray palette for storage facilities
+            'silo': {'fill': '#eceff1', 'stroke': '#455a64', 'stroke_width': 2.5, 'radius': 9},
+            
+            # Oil Infrastructure - Dark red palette for petroleum
+            'oil': {'fill': '#d32f2f', 'stroke': '#b71c1c', 'stroke_width': 2.5, 'radius': 4},
+            
+            # Electrical Utility - Amber palette for electrical services
+            'electrical': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 2.5, 'radius': 7},
+            'power': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Default power/utility style
+            'default': {'fill': '#fff3e0', 'stroke': '#e65100', 'stroke_width': 2.5, 'radius': 6}
+        }
+    },
+    
     'natural_features': {
         'tags': {
             # Enhanced natural features for terrain, landscape, and land use

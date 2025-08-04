@@ -24,6 +24,7 @@ class OSMHandler(osmium.SimpleHandler):
             'automotive_services': [],
             'natural_features': [],
             'office_professional': [],
+            'power_utilities': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -136,6 +137,17 @@ class OSMHandler(osmium.SimpleHandler):
         # Office & Professional Services - Comprehensive coverage of business and professional facilities
         elif tags.get('office') in ['company', 'government', 'lawyer', 'estate_agent', 'insurance', 'architect', 'accountant', 'employment_agency', 'consulting', 'financial', 'it', 'research', 'ngo', 'association', 'diplomatic', 'educational_institution', 'foundation', 'political_party', 'religion', 'tax_advisor', 'therapist', 'travel_agent', 'physician', 'coworking', 'notary', 'newspaper', 'advertising_agency', 'logistics', 'construction_company', 'energy_supplier', 'guide', 'water_utility', 'property_management', 'telecommunication']:
             self.features['office_professional'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Power & Utilities Infrastructure - Comprehensive coverage of electrical and utility infrastructure
+        elif (tags.get('power') in ['line', 'minor_line', 'cable', 'pole', 'tower', 'substation', 'transformer', 'generator', 'plant', 'switch', 'converter', 'compensator', 'portal', 'terminal', 'insulator', 'busbar', 'bay'] or
+              tags.get('utility') in ['gas', 'water', 'sewerage', 'telecom', 'electrical', 'power'] or
+              tags.get('man_made') in ['pipeline', 'pumping_station', 'storage_tank', 'water_tower', 'gasometer', 'silo'] or
+              tags.get('pipeline') in ['gas', 'oil', 'water', 'sewerage', 'district_heating', 'steam', 'hot_water'] or
+              tags.get('telecom') in ['data_center', 'exchange', 'service_device']):
+            self.features['power_utilities'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
             })
@@ -505,6 +517,28 @@ class OSMHandler(osmium.SimpleHandler):
             except Exception:
                 pass
         
+        # Power & Utilities Infrastructure (as areas/facilities) - Comprehensive coverage  
+        elif (tags.get('power') in ['substation', 'generator', 'plant', 'transformer'] or
+              tags.get('utility') in ['gas', 'water', 'sewerage', 'telecom', 'electrical', 'power'] or
+              tags.get('man_made') in ['pipeline', 'pumping_station', 'storage_tank', 'water_tower', 'gasometer', 'silo', 'wastewater_plant', 'water_works'] or
+              tags.get('telecom') in ['data_center', 'exchange']):
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['power_utilities'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+                else:
+                    # Handle linear infrastructure like power lines and pipelines
+                    self.features['power_utilities'].append({
+                        'geometry': line,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
         # Enhanced Natural Features (as areas) - Comprehensive coverage of terrain and landuse
         elif (tags.get('natural') in ['forest', 'wood', 'grassland', 'cliff', 'scrub', 'heath', 'sand', 'rock', 'scree', 'bare_rock'] or
               tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments', 'education', 'institutional', 'farmyard', 'brownfield', 'garages', 'greenfield', 'depot', 'port', 'railway', 'religious', 'fairground', 'meadow', 'plant_nursery', 'conservation', 'landfill', 'logging', 'greenhouse_horticulture']):
@@ -859,6 +893,31 @@ class OSMHandler(osmium.SimpleHandler):
                     
                     if poly.intersects(bounds_poly):
                         self.features['office_professional'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Power & Utilities Infrastructure (as relations) - Comprehensive coverage
+            elif (tags.get('power') in ['substation', 'generator', 'plant', 'transformer'] or
+                  tags.get('utility') in ['gas', 'water', 'sewerage', 'telecom', 'electrical', 'power'] or
+                  tags.get('man_made') in ['pipeline', 'pumping_station', 'storage_tank', 'water_tower', 'gasometer', 'silo', 'wastewater_plant', 'water_works'] or
+                  tags.get('telecom') in ['data_center', 'exchange']):
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if power/utility area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['power_utilities'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id}
                         })
