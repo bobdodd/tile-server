@@ -79,6 +79,10 @@
                 <div class="region-actions">
                     {% if region.local_tile_count > 0 %}
                         <a href="/tiles/regions/{{ region.region_id }}/" class="btn btn-secondary">View Local</a>
+                        <form method="POST" action="/admin/update-tiles/{{ region.region_id }}" style="display: inline;" 
+                              onsubmit="return startTileUpdate('{{ region.region_id }}', '{{ region.name }}', this)">
+                            <button type="submit" class="btn btn-warning">Update Tiles</button>
+                        </form>
                     {% endif %}
                     {% if region.server_tile_count > 0 %}
                         <a href="https://bobd77.sg-host.com/tiles/" class="btn btn-secondary" target="_blank">View Server (Flat)</a>
@@ -148,6 +152,58 @@ SITEGROUND_PASSWORD=your-ftp-password</pre>
         {% endif %}
     </section>
     
+    <section class="osm-data-management" aria-labelledby="osm-heading">
+        <h2 id="osm-heading">OSM Data Management</h2>
+        
+        {% if stats.osm_cache %}
+        <div class="osm-cache-grid">
+            {% for province, cache_info in stats.osm_cache.items() %}
+            <div class="osm-cache-card">
+                <h4>{{ province.title() }}</h4>
+                <div class="cache-stats">
+                    {% if cache_info.exists %}
+                        <p><strong>Status:</strong> 
+                            {% if cache_info.is_fresh %}
+                                <span class="status status-synced">✅ Fresh</span>
+                            {% else %}
+                                <span class="status status-partial">⚠️ Old</span>
+                            {% endif %}
+                        </p>
+                        <p><strong>Size:</strong> {{ cache_info.size_mb }}MB</p>
+                        <p><strong>Age:</strong> {{ cache_info.age_days }} days</p>
+                        <p><strong>Regions:</strong> {{ cache_info.regions|join(', ') }}</p>
+                    {% else %}
+                        <p><strong>Status:</strong> <span class="status status-error">❌ Missing</span></p>
+                        <p><strong>Regions:</strong> {{ cache_info.regions|join(', ') }}</p>
+                    {% endif %}
+                </div>
+                <div class="cache-actions">
+                    <form method="POST" action="/admin/update-osm-data" style="display: inline;">
+                        <input type="hidden" name="province" value="{{ province }}">
+                        <button type="submit" class="btn btn-sm btn-outline">Update {{ province.title() }}</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="osm-bulk-actions">
+            <form method="POST" action="/admin/update-osm-data" style="display: inline;">
+                <button type="submit" class="btn btn-warning" 
+                        onclick="return confirm('This will download large OSM files for all provinces. Continue?')">
+                    Update All OSM Data
+                </button>
+            </form>
+            <p class="osm-note">💡 OSM data is cached for 28 days. Update only when needed to avoid large downloads.</p>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>OSM Cache Status Unavailable</h3>
+            <p>Unable to check OSM data cache status.</p>
+        </div>
+        {% endif %}
+    </section>
+    
     <section class="quick-actions" aria-labelledby="actions-heading">
         <h2 id="actions-heading">Quick Actions</h2>
         <div class="actions-grid">
@@ -163,11 +219,222 @@ SITEGROUND_PASSWORD=your-ftp-password</pre>
                 <h3>View Live Tiles</h3>
                 <p>See tiles served from SiteGround (flat structure)</p>
             </div>
-            <div class="action-card">
-                <h3>Generate New Tiles</h3>
-                <p>Coming soon - tile generation interface</p>
+            <div class="action-card" onclick="startBulkUpdate()">
+                <h3>Update All Regions</h3>
+                <p>Regenerate tiles for all existing regions with enhanced water features</p>
+                <form id="update-all-form" method="POST" action="/admin/update-all-regions" style="display: none;">
+                </form>
             </div>
         </div>
     </section>
 </div>
+
+<!-- Progress Modal -->
+<div id="progress-modal" class="progress-modal" style="display: none;">
+    <div class="progress-modal-content">
+        <div class="progress-header">
+            <h3 id="progress-title">Updating Tiles</h3>
+            <button class="progress-close" onclick="closeProgressModal()">&times;</button>
+        </div>
+        <div class="progress-body">
+            <div class="progress-info">
+                <p><strong>Region:</strong> <span id="progress-region">-</span></p>
+                <p><strong>Status:</strong> <span id="progress-status">Initializing...</span></p>
+                <p><strong>Progress:</strong> <span id="progress-text">0/0 tiles</span></p>
+                <p><strong>Current Tile:</strong> <span id="progress-current">-</span></p>
+                <p><strong>Estimated Time:</strong> <span id="progress-eta">Calculating...</span></p>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-percentage" id="progress-percentage">0%</div>
+            </div>
+            <div class="progress-actions">
+                <button id="progress-close-btn" class="btn btn-secondary" onclick="closeProgressModal()" style="display: none;">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let progressInterval = null;
+let currentRegion = null;
+
+function startTileUpdate(regionId, regionName, form) {
+    if (!confirm(`This will regenerate all tiles for ${regionName}. Continue?`)) {
+        return false;
+    }
+    
+    currentRegion = regionId;
+    showProgressModal(regionName, 'single');
+    
+    // Submit form via AJAX
+    fetch(form.action, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+    }).then(response => {
+        if (response.ok) {
+            startProgressPolling();
+        } else {
+            updateProgressStatus('Error starting update', 'error');
+        }
+    }).catch(error => {
+        updateProgressStatus('Network error', 'error');
+    });
+    
+    return false; // Prevent default form submission
+}
+
+function startBulkUpdate() {
+    if (!confirm('This will regenerate ALL tiles for ALL regions. This may take a long time. Continue?')) {
+        return;
+    }
+    
+    currentRegion = 'all';
+    showProgressModal('All Regions', 'bulk');
+    
+    fetch('/admin/update-all-regions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+    }).then(response => {
+        if (response.ok) {
+            startProgressPolling();
+        } else {
+            updateProgressStatus('Error starting bulk update', 'error');
+        }
+    }).catch(error => {
+        updateProgressStatus('Network error', 'error');
+    });
+}
+
+function showProgressModal(regionName, updateType) {
+    document.getElementById('progress-modal').style.display = 'block';
+    document.getElementById('progress-region').textContent = regionName;
+    document.getElementById('progress-title').textContent = 
+        updateType === 'bulk' ? 'Updating All Regions' : `Updating ${regionName}`;
+    
+    // Reset progress indicators
+    document.getElementById('progress-status').textContent = 'Initializing...';
+    document.getElementById('progress-text').textContent = '0/0 tiles';
+    document.getElementById('progress-current').textContent = '-';
+    document.getElementById('progress-eta').textContent = 'Calculating...';
+    document.getElementById('progress-fill').style.width = '0%';
+    document.getElementById('progress-percentage').textContent = '0%';
+    document.getElementById('progress-close-btn').style.display = 'none';
+}
+
+function startProgressPolling() {
+    if (progressInterval) {
+        clearInterval(progressInterval);
+    }
+    
+    progressInterval = setInterval(() => {
+        fetch(`/admin/progress/${currentRegion}`)
+            .then(response => response.json())
+            .then(data => updateProgress(data))
+            .catch(error => console.error('Progress polling error:', error));
+    }, 2000); // Poll every 2 seconds
+}
+
+function updateProgress(data) {
+    console.log('Progress update:', data);
+    
+    if (data.status === 'not_running') {
+        // Check if we just finished
+        clearInterval(progressInterval);
+        progressInterval = null;
+        updateProgressStatus('Completed', 'completed');
+        document.getElementById('progress-close-btn').style.display = 'inline-block';
+        return;
+    }
+    
+    if (data.status === 'error') {
+        clearInterval(progressInterval);
+        progressInterval = null;
+        updateProgressStatus(`Error: ${data.error}`, 'error');
+        document.getElementById('progress-close-btn').style.display = 'inline-block';
+        return;
+    }
+    
+    // Update progress indicators with better status messages
+    let statusText = data.status;
+    if (statusText === 'processing_osm') {
+        statusText = 'Processing OSM Data (3-5 min per tile)';
+    } else if (statusText === 'rendering_tile') {
+        statusText = 'Rendering SVG Tile';
+    } else {
+        statusText = statusText.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+    document.getElementById('progress-status').textContent = statusText;
+    
+    // Handle bulk operations differently
+    if (data.operation_type === 'bulk_update') {
+        const completed = data.completed_regions || 0;
+        const total = data.total_regions || 1;
+        const percentage = Math.round((completed / total) * 100);
+        
+        document.getElementById('progress-text').textContent = `${completed}/${total} regions`;
+        document.getElementById('progress-fill').style.width = `${percentage}%`;
+        document.getElementById('progress-percentage').textContent = `${percentage}%`;
+        
+        if (data.current_region) {
+            document.getElementById('progress-current').textContent = `Region: ${data.current_region}`;
+        }
+    } else if (data.total_tiles > 0) {
+        const completed = data.completed_tiles || 0;
+        const total = data.total_tiles;
+        const percentage = Math.round((completed / total) * 100);
+        
+        document.getElementById('progress-text').textContent = `${completed}/${total} tiles`;
+        document.getElementById('progress-fill').style.width = `${percentage}%`;
+        document.getElementById('progress-percentage').textContent = `${percentage}%`;
+    }
+    
+    if (data.current_tile) {
+        document.getElementById('progress-current').textContent = data.current_tile;
+    }
+    
+    if (data.estimated_completion) {
+        document.getElementById('progress-eta').textContent = data.estimated_completion;
+    }
+    
+    if (data.status === 'completed') {
+        clearInterval(progressInterval);
+        progressInterval = null;
+        document.getElementById('progress-close-btn').style.display = 'inline-block';
+        // Reload page after a short delay to show updated tile counts
+        setTimeout(() => {
+            window.location.reload();
+        }, 3000);
+    }
+}
+
+function updateProgressStatus(message, type) {
+    const statusElement = document.getElementById('progress-status');
+    statusElement.textContent = message;
+    statusElement.className = `status-${type}`;
+}
+
+function closeProgressModal() {
+    document.getElementById('progress-modal').style.display = 'none';
+    if (progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
+    }
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('progress-modal');
+    if (event.target === modal) {
+        closeProgressModal();
+    }
+}
+</script>
+
 {% endblock %}

@@ -80,8 +80,12 @@ class OSMHandler(osmium.SimpleHandler):
                 'properties': {**tags, 'osm_id': n.id}
             })
             
-        # Water features (fountains)
-        if tags.get('amenity') == 'fountain':
+        # Water features (point features)
+        elif (tags.get('amenity') in ['fountain', 'swimming_pool'] or
+              tags.get('natural') in ['spring', 'hot_spring', 'geyser'] or
+              tags.get('man_made') in ['water_tower', 'water_well', 'water_works', 'lighthouse'] or
+              tags.get('leisure') in ['boat_sharing'] or
+              tags.get('waterway') in ['waterfall', 'lock_gate', 'fuel']):
             self.features['water'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
@@ -305,8 +309,15 @@ class OSMHandler(osmium.SimpleHandler):
             except Exception:
                 pass
         
-        # Water areas
-        elif tags.get('natural') in ['water', 'coastline', 'beach', 'bay', 'strait']:
+        # Linear Water Features (waterways)
+        elif tags.get('waterway') in ['river', 'stream', 'canal', 'drain', 'ditch', 'rapids', 'dam', 'weir', 'dock', 'boatyard']:
+            self.features['water'].append({
+                'geometry': line,
+                'properties': {**tags, 'osm_id': w.id}
+            })
+        
+        # Water areas - Natural water bodies
+        elif tags.get('natural') in ['water', 'coastline', 'beach', 'bay', 'strait', 'shoal', 'reef', 'wetland']:
             try:
                 if w.is_closed():
                     geom = wkb.create_polygon(w)
@@ -319,6 +330,71 @@ class OSMHandler(osmium.SimpleHandler):
                     # Coastlines are lines
                     self.features['water'].append({
                         'geometry': line,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
+        # Man-made Water Features (areas and lines)
+        elif tags.get('man_made') in ['reservoir', 'pier', 'breakwater', 'groyne', 'floating_dock']:
+            try:
+                if w.is_closed() and tags.get('man_made') in ['reservoir']:
+                    # Area features
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['water'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+                else:
+                    # Linear features (piers, breakwaters, etc.)
+                    self.features['water'].append({
+                        'geometry': line,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
+        # Leisure Water Areas
+        elif tags.get('leisure') in ['swimming_pool', 'water_park', 'marina', 'slipway']:
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['water'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+                else:
+                    # Linear slipways
+                    self.features['water'].append({
+                        'geometry': line,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
+        # Landuse Water Areas
+        elif tags.get('landuse') in ['reservoir', 'salt_pond', 'aquaculture', 'basin']:
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['water'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
+        # Amenity Water Areas
+        elif tags.get('amenity') in ['swimming_pool']:
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['water'].append({
+                        'geometry': poly,
                         'properties': {**tags, 'osm_id': w.id}
                     })
             except Exception:
@@ -431,8 +507,12 @@ class OSMHandler(osmium.SimpleHandler):
                 except Exception:
                     pass
             
-            # Water areas
-            elif tags.get('natural') in ['water', 'beach', 'bay']:
+            # Water areas - comprehensive coverage
+            elif (tags.get('natural') in ['water', 'beach', 'bay', 'strait', 'shoal', 'reef', 'wetland'] or
+                  tags.get('man_made') in ['reservoir', 'water_works'] or
+                  tags.get('leisure') in ['swimming_pool', 'water_park', 'marina'] or
+                  tags.get('landuse') in ['reservoir', 'salt_pond', 'aquaculture', 'basin'] or
+                  tags.get('amenity') in ['swimming_pool']):
                 try:
                     geom = wkb.create_multipolygon(a)
                     poly = loads(geom, hex=True)

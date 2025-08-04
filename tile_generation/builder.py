@@ -62,6 +62,15 @@ class TileBuilder:
             'estimated_completion': None
         }
         
+        # Region to province mapping
+        self.region_to_province = {
+            'toronto-downtown': 'ontario',
+            'vancouver-downtown': 'british-columbia', 
+            'calgary-downtown': 'alberta',
+            'ottawa-downtown': 'ontario',
+            'montreal-downtown': 'quebec'
+        }
+        
     def generate_tiles_for_region(self, region_name, bounds, options=None):
         """Generate tiles for a specific region - Flask callable."""
         options = options or {}
@@ -90,9 +99,16 @@ class TileBuilder:
             self.current_progress['status'] = 'downloading_data'
             
             print(f"Will generate {len(tiles_to_generate)} tiles")
+            estimated_minutes = len(tiles_to_generate) * 4  # Estimate 4 minutes per tile
+            print(f"⏱️  Estimated completion time: {estimated_minutes} minutes ({estimated_minutes/60:.1f} hours)")
+            print(f"💡 Each tile processes the full OSM file - this is why it's slow")
             
-            # Download OSM data for region
-            osm_file = self.download_region_data(region_name, bounds)
+            # Get cached OSM data for region (with optional pre-filtering)
+            try:
+                osm_file = self.get_region_osm_file(region_name, bounds)
+            except FileNotFoundError as e:
+                print(f"Error: {e}")
+                raise Exception(f"OSM data not cached for region {region_name}. Please update OSM data first.")
             
             self.current_progress['status'] = 'processing'
             
@@ -171,72 +187,85 @@ class TileBuilder:
         
         return tiles
     
-    def download_region_data(self, region_name, bounds):
-        """Download OSM data for the region."""
-        # Check cache first
-        cache_file = self.data_dir / 'osm_cache' / f"{region_name}.osm.pbf"
+    def get_region_osm_file(self, region_name, bounds=None):
+        """Get the OSM file for a region, with optional pre-filtering for efficiency."""
+        province = self.region_to_province.get(region_name, 'ontario')  # Default to Ontario
+        cache_file = self.data_dir / 'osm_cache' / f"{province}-latest.osm.pbf"
         
-        if cache_file.exists():
-            # Check if cache is recent (within 24 hours)
+        if not cache_file.exists():
+            raise FileNotFoundError(f"No cached OSM data found for {province}. Please update OSM data first.")
+        
+        # Check if we have a pre-filtered regional file
+        if bounds:
+            regional_cache_file = self.data_dir / 'osm_cache' / f"{region_name}-filtered.osm.pbf"
+            
+            # Create regional filter if it doesn't exist or is older than main cache
+            if (not regional_cache_file.exists() or 
+                regional_cache_file.stat().st_mtime < cache_file.stat().st_mtime):
+                
+                print(f"Creating filtered OSM data for {region_name} to improve performance...")
+                success = self.create_regional_filter(cache_file, regional_cache_file, bounds)
+                
+                if success:
+                    print(f"Using filtered {region_name} OSM data: {regional_cache_file}")
+                    return regional_cache_file
+                else:
+                    print(f"Filter creation failed, using full {province} OSM data: {cache_file}")
+                    return cache_file
+            else:
+                print(f"Using cached filtered {region_name} OSM data: {regional_cache_file}")
+                return regional_cache_file
+        else:
+            print(f"Using cached {province} OSM data: {cache_file}")
+            return cache_file
+    
+    def download_region_data(self, region_name, bounds=None, force_update=False):
+        """Download OSM data for the region using Geofabrik extracts."""
+        # Map regions to their province/territory for Geofabrik downloads
+        region_to_province = {
+            'toronto-downtown': 'ontario',
+            'vancouver-downtown': 'british-columbia', 
+            'calgary-downtown': 'alberta',
+            'ottawa-downtown': 'ontario',
+            'montreal-downtown': 'quebec'
+        }
+        
+        province = region_to_province.get(region_name, 'ontario')  # Default to Ontario
+        cache_file = self.data_dir / 'osm_cache' / f"{province}-latest.osm.pbf"
+        
+        if cache_file.exists() and not force_update:
+            # Check if cache is recent (within 28 days)
             cache_age = datetime.now().timestamp() - cache_file.stat().st_mtime
-            if cache_age < 86400:  # 24 hours
-                print(f"Using cached OSM data: {cache_file}")
+            if cache_age < 2419200:  # 28 days (28 * 24 * 3600)
+                print(f"Using cached {province} OSM data: {cache_file}")
                 return cache_file
         
-        print(f"Downloading OSM data for {region_name}...")
+        print(f"Downloading {province} OSM data from Geofabrik (includes {region_name})...")
         
-        # Create Overpass query for the bounds
-        overpass_query = f"""
-        [out:pbf][timeout:300];
-        (
-          way["building"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          way["highway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          way["waterway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          way["leisure"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          way["landuse"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          way["natural"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          node["amenity"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          node["healthcare"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          node["highway"="bus_stop"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          node["railway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          node["public_transport"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          node["aerialway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          node["aeroway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          way["railway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          way["public_transport"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          way["aerialway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          way["aeroway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          way["amenity"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          way["healthcare"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          relation["building"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          relation["leisure"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          relation["landuse"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          relation["amenity"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          relation["healthcare"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          relation["railway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          relation["public_transport"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          relation["aerialway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-          relation["aeroway"]({bounds['south']},{bounds['west']},{bounds['north']},{bounds['east']});
-        );
-        out body;
-        >;
-        out skel qt;
-        """
+        # Geofabrik download URL
+        url = f"https://download.geofabrik.de/north-america/canada/{province}-latest.osm.pbf"
         
-        # Query Overpass API
         try:
-            response = requests.post(
-                'https://overpass-api.de/api/interpreter',
-                data=overpass_query,
-                timeout=300
-            )
+            print(f"Downloading from {url}...")
+            response = requests.get(url, stream=True)
             response.raise_for_status()
             
-            # Save to cache
-            with open(cache_file, 'wb') as f:
-                f.write(response.content)
+            # Get file size for progress
+            total_size = int(response.headers.get('content-length', 0))
+            downloaded = 0
             
-            print(f"Downloaded and cached OSM data: {cache_file}")
+            print(f"Downloading {total_size / (1024*1024):.1f}MB...")
+            
+            with open(cache_file, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+                        downloaded += len(chunk)
+                        if total_size > 0:
+                            percent = (downloaded / total_size) * 100
+                            print(f"\rProgress: {percent:.1f}% ({downloaded / (1024*1024):.1f}MB)", end='')
+            
+            print(f"\n✅ Downloaded and cached {province} OSM data: {cache_file}")
             return cache_file
             
         except Exception as e:
@@ -255,7 +284,25 @@ class TileBuilder:
             
             # Process OSM data for this tile
             handler = OSMHandler(bounds)
-            handler.apply_file(str(osm_file))
+            try:
+                print(f"  Processing OSM data for tile {tile_lat:.3f}, {tile_lng:.3f} (this may take several minutes for large files)")
+                
+                # Update progress to show OSM processing status
+                self.current_progress['status'] = 'processing_osm'
+                self.current_progress['current_tile'] = f"{tile_lat:.3f}_{tile_lng:.3f} (processing OSM data)"
+                
+                handler.apply_file(str(osm_file), locations=True)
+                
+                # Update progress to show tile rendering status
+                self.current_progress['status'] = 'rendering_tile'
+                self.current_progress['current_tile'] = f"{tile_lat:.3f}_{tile_lng:.3f} (rendering SVG)"
+                
+                print(f"  OSM processing complete for tile {tile_lat:.3f}, {tile_lng:.3f}")
+            except Exception as osm_error:
+                if "out of order" in str(osm_error):
+                    print(f"OSM data sorting issue for tile {tile_lat:.3f}, {tile_lng:.3f}: {osm_error}")
+                    print("This may be due to unsorted Overpass API data. Consider clearing cache.")
+                raise osm_error
             
             # Create SVG content
             svg_content = self.create_tile_svg(tile_lat, tile_lng, handler.features, bounds)
@@ -270,7 +317,7 @@ class TileBuilder:
             return tile_path
             
         except Exception as e:
-            print(f"Failed to generate tile {tile_lat}, {tile_lng}: {e}")
+            print(f"Failed to generate tile {tile_lat:.3f}, {tile_lng:.3f}: {e}")
             return None
     
     def get_tile_bounds(self, tile_lat, tile_lng):
@@ -531,12 +578,26 @@ class TileBuilder:
             
             return 'default'
         elif feature_type == 'water':
+            # Linear Water Features (waterway)
             if properties.get('waterway'):
                 return properties.get('waterway')
-            elif properties.get('natural'):
+            # Large Water Bodies (natural)
+            elif properties.get('natural') in ['water', 'bay', 'strait', 'coastline', 'beach', 'shoal', 'reef', 'wetland', 'spring', 'hot_spring', 'geyser']:
                 return properties.get('natural')
+            # Man-made Water Features (man_made)
+            elif properties.get('man_made') in ['reservoir', 'water_tower', 'water_well', 'water_works', 'pier', 'breakwater', 'groyne', 'lighthouse', 'floating_dock']:
+                return properties.get('man_made')
+            # Amenity Water Features
             elif properties.get('amenity') == 'fountain':
                 return 'fountain'
+            elif properties.get('amenity') == 'swimming_pool':
+                return 'swimming_pool'
+            # Leisure Water Features
+            elif properties.get('leisure') in ['swimming_pool', 'water_park', 'marina', 'slipway', 'boat_sharing']:
+                return properties.get('leisure')
+            # Landuse Water Areas
+            elif properties.get('landuse') in ['reservoir', 'salt_pond', 'aquaculture', 'basin']:
+                return properties.get('landuse')
             return 'water'
         elif feature_type == 'parks':
             return properties.get('leisure', properties.get('landuse', 'park'))
@@ -603,10 +664,38 @@ class TileBuilder:
                 feature_type = properties.get('aerialway').replace('_', ' ')
         elif properties.get('aeroway'):
             feature_type = properties.get('aeroway').replace('_', ' ')
+        elif properties.get('man_made'):
+            if properties.get('man_made') == 'water_tower':
+                feature_type = 'water tower'
+            elif properties.get('man_made') == 'water_well':
+                feature_type = 'water well'
+            elif properties.get('man_made') == 'water_works':
+                feature_type = 'water treatment plant'
+            elif properties.get('man_made') == 'hot_spring':
+                feature_type = 'hot spring'
+            elif properties.get('man_made') == 'floating_dock':
+                feature_type = 'floating dock'
+            else:
+                feature_type = properties.get('man_made').replace('_', ' ')
+        elif properties.get('waterway'):
+            feature_type = properties.get('waterway').replace('_', ' ')
         elif properties.get('leisure'):
-            feature_type = properties.get('leisure').replace('_', ' ')
+            if properties.get('leisure') == 'water_park':
+                feature_type = 'water park'
+            elif properties.get('leisure') == 'boat_sharing':
+                feature_type = 'boat sharing station'
+            else:
+                feature_type = properties.get('leisure').replace('_', ' ')
         elif properties.get('natural'):
-            feature_type = properties.get('natural').replace('_', ' ')
+            if properties.get('natural') == 'hot_spring':
+                feature_type = 'hot spring'
+            else:
+                feature_type = properties.get('natural').replace('_', ' ')
+        elif properties.get('landuse'):
+            if properties.get('landuse') == 'salt_pond':
+                feature_type = 'salt pond'
+            else:
+                feature_type = properties.get('landuse').replace('_', ' ')
         
         if name and feature_type:
             return f"{name}, {feature_type}"
@@ -673,3 +762,122 @@ class TileBuilder:
                             print(f"Error reading metadata for {region_dir.name}: {e}")
         
         return regions
+    
+    def get_osm_cache_status(self):
+        """Get status of all cached OSM data files."""
+        cache_status = {}
+        
+        for region_name, province in self.region_to_province.items():
+            cache_file = self.data_dir / 'osm_cache' / f"{province}-latest.osm.pbf"
+            
+            if cache_file.exists():
+                stat = cache_file.stat()
+                cache_age = datetime.now().timestamp() - stat.st_mtime
+                size_mb = stat.st_size / (1024 * 1024)
+                
+                cache_status[province] = {
+                    'exists': True,
+                    'file_path': str(cache_file),
+                    'size_mb': round(size_mb, 1),
+                    'age_hours': round(cache_age / 3600, 1),
+                    'age_days': round(cache_age / 86400, 1),
+                    'last_modified': datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                    'is_fresh': cache_age < 2419200,  # Fresh if less than 28 days old
+                    'regions': [r for r, p in self.region_to_province.items() if p == province]
+                }
+            else:
+                cache_status[province] = {
+                    'exists': False,
+                    'file_path': str(cache_file),
+                    'size_mb': 0,
+                    'age_hours': 0,
+                    'age_days': 0,
+                    'last_modified': None,
+                    'is_fresh': False,
+                    'regions': [r for r, p in self.region_to_province.items() if p == province]
+                }
+        
+        return cache_status
+    
+    def update_osm_data(self, province=None, force=True):
+        """Update OSM data for a specific province or all provinces."""
+        results = {}
+        
+        if province:
+            # Update specific province
+            provinces_to_update = [province]
+        else:
+            # Update all provinces that have associated regions
+            provinces_to_update = list(set(self.region_to_province.values()))
+        
+        for prov in provinces_to_update:
+            try:
+                # Find a region that uses this province
+                region_name = next(r for r, p in self.region_to_province.items() if p == prov)
+                cache_file = self.download_region_data(region_name, force_update=force)
+                results[prov] = {
+                    'success': True,
+                    'file_path': str(cache_file),
+                    'message': f'Successfully updated {prov} OSM data'
+                }
+            except Exception as e:
+                results[prov] = {
+                    'success': False,
+                    'file_path': None,
+                    'message': f'Failed to update {prov}: {str(e)}'
+                }
+        
+        return results
+    
+    def create_regional_filter(self, source_file, output_file, bounds):
+        """Create a filtered OSM file for a specific region to improve processing speed."""
+        try:
+            # Add small buffer to bounds to ensure we don't miss edge features
+            buffer = 0.005  # About 500m buffer
+            
+            bbox = f"{bounds['west'] - buffer},{bounds['south'] - buffer},{bounds['east'] + buffer},{bounds['north'] + buffer}"
+            
+            # Use osmium extract command if available
+            import subprocess
+            import shutil
+            
+            # Check if osmium is available as command line tool
+            if shutil.which('osmium'):
+                cmd = [
+                    'osmium', 'extract', 
+                    '--bbox', bbox,
+                    '--output', str(output_file),
+                    str(source_file)
+                ]
+                
+                print(f"  Running: {' '.join(cmd)}")
+                result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)  # 5 minute timeout
+                
+                if result.returncode == 0:
+                    # Check if output file was created and has reasonable size
+                    if output_file.exists() and output_file.stat().st_size > 1000:  # At least 1KB
+                        size_mb = output_file.stat().st_size / (1024 * 1024)
+                        print(f"  ✅ Created filtered OSM file: {size_mb:.1f}MB (was {source_file.stat().st_size / (1024 * 1024):.0f}MB)")
+                        return True
+                    else:
+                        print(f"  ❌ Filtered file too small or missing")
+                        if output_file.exists():
+                            output_file.unlink()
+                        return False
+                else:
+                    print(f"  ❌ osmium extract failed: {result.stderr}")
+                    return False
+            else:
+                print(f"  ❌ osmium command line tool not available, using full province file")
+                return False
+                
+        except subprocess.TimeoutExpired:
+            print(f"  ❌ osmium extract timed out after 5 minutes")
+            if output_file.exists():
+                output_file.unlink()
+            return False
+        except Exception as e:
+            print(f"  ❌ Error creating regional filter: {e}")
+            if output_file.exists():
+                output_file.unlink()
+            return False

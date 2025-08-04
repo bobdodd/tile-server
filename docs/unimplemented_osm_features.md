@@ -25,10 +25,14 @@
 - **Airport Infrastructure:** terminal, gate, runway, taxiway, aerodrome
 - Point, line, and area rendering with comprehensive styling and accessibility features
 
-### **Water Features (6 types) - BASIC COVERAGE**
-- **Area water:** water, coastline, beach, bay, strait
-- **Linear water:** river, stream, canal, drain, ditch  
-- **Point water:** fountain
+### **Water Features (38+ types) - COMPREHENSIVE**
+- **Large Water Bodies:** water, bay, strait, coastline, beach, shoal, reef, wetland
+- **Springs & Geothermal:** spring, hot_spring, geyser
+- **Linear Water Features:** river, stream, canal, drain, ditch, rapids, waterfall, dam, weir, lock_gate, dock, boatyard, fuel
+- **Man-made Water Infrastructure:** reservoir, water_tower, water_well, water_works, pier, breakwater, groyne, lighthouse, floating_dock
+- **Recreation Water Features:** fountain, swimming_pool, water_park, marina, slipway, boat_sharing
+- **Specialized Water Areas:** salt_pond, aquaculture, basin
+- Point, line, and area rendering with comprehensive styling for all water feature categories
 
 ### **Parks/Recreation (7 types) - BASIC COVERAGE**
 - park, garden, playground, dog_park, nature_reserve, grass, recreation_ground, village_green
@@ -418,24 +422,24 @@ Focus on Phase 1 features first, as these provide the most value for accessibili
 24. **Shop** ❌ - Retail establishments (45+ types completely missing)
 25. **Telecom** ❌ - Communication infrastructure (towers, cables)
 26. **Tourism** ❌ - Tourist facilities (hotels, attractions, information)
-27. **Water** ❌ - Water features (enhanced beyond basic coverage)
-28. **Waterway** ⚠️ - Water transportation (basic linear water) - **BASIC COVERAGE**
+27. **Water** ✅ - Water features (38+ types) - **COMPREHENSIVE** ✅ **NEW**
+28. **Waterway** ✅ - Water features (linear water integrated with Water) - **COMPREHENSIVE** ✅ **NEW**
 
 ### **Implementation Status by Category:**
-- **✅ Comprehensive (3/28):** Building, Highway, Healthcare ✅ **+1**
-- **⚠️ Partially Implemented (5/28):** Amenity, Leisure, Natural, Public Transport, Waterway
-- **❌ Not Implemented (20/28):** All other categories ✅ **-1**
+- **✅ Comprehensive (6/28):** Building, Highway, Healthcare, Public Transport, Water, Waterway ✅ **+3**
+- **⚠️ Partially Implemented (2/28):** Amenity, Leisure ✅ **-3** 
+- **❌ Not Implemented (20/28):** All other categories
 
 ### **Currently Implemented (Well-Covered) ✅**
 - **Buildings:** 67 subtypes (comprehensive)
 - **Roads:** 26 road types (comprehensive)
-- **Healthcare:** 29 healthcare facilities (comprehensive) ✅ **NEW**
-- **Transit:** 8 types (basic coverage)
-- **Water:** 6 types (basic coverage)
+- **Healthcare:** 29 healthcare facilities (comprehensive)
+- **Transit:** 40+ types (comprehensive)
+- **Water:** 38+ types (comprehensive) ✅ **NEW**
 - **Parks:** 7 types (basic coverage)
 - **Accessibility:** 15+ features (excellent coverage)
 
-**Total Implemented Features: ~149 from 8/28 categories**
+**Total Implemented Features: ~181+ from 8/28 categories**
 
 ### **Major Unimplemented Categories ❌**
 - **Food & Sustenance:** 29 food-related tags (critical gap)
@@ -451,10 +455,10 @@ Focus on Phase 1 features first, as these provide the most value for accessibili
 **Total Unimplemented Features: ~271+** (was ~300+)
 
 ### **Implementation Coverage Analysis**
-- **Complete Coverage:** 3/28 categories (11% of OSM key categories) ✅ **+4%**
-- **Partial Coverage:** 5/28 categories (18% of OSM key categories) 
-- **No Coverage:** 20/28 categories (71% of OSM key categories) ✅ **-4%** 
-- **Overall OSM Coverage:** ~29% of available map features ✅ **+4%**
+- **Complete Coverage:** 6/28 categories (21% of OSM key categories) ✅ **+10%**
+- **Partial Coverage:** 2/28 categories (7% of OSM key categories) ✅ **-11%**
+- **No Coverage:** 20/28 categories (71% of OSM key categories)
+- **Overall OSM Coverage:** ~40% of available map features ✅ **+11%**
 
 ### **Critical Gaps for Accessibility Navigation:**
 1. **Shop** (0% coverage) - No retail establishments mapped
@@ -477,6 +481,6 @@ Focus on Phase 1 features first, as these provide the most value for accessibili
 - **Landuse** - No zoning information (residential, commercial areas)
 
 ### **Recommendation for Canadian Field Testing:**
-Our current implementation covers **11% of OSM categories comprehensively** (up from 7%). With healthcare now implemented, the next Phase 1 priorities for effective accessibility navigation in Canadian urban environments are Shop, Emergency, and Public amenities categories.
+Our current implementation covers **21% of OSM categories comprehensively** (up from 11%). With comprehensive water features now implemented alongside healthcare and transit, the next Phase 1 priorities for effective accessibility navigation in Canadian urban environments are Shop, Emergency, and Public amenities categories.
 
 **The 20 remaining completely missing categories still represent a significant opportunity to enhance the navigation system's utility for accessibility users.**

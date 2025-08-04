@@ -182,16 +182,79 @@ FEATURE_STYLES = {
     },
     'water': {
         'tags': {
-            'natural': ['water', 'coastline', 'beach', 'bay', 'strait'],
-            'waterway': ['river', 'stream', 'canal', 'drain', 'ditch'],
-            'amenity': ['fountain']
+            # Large Water Bodies
+            'natural': ['water', 'bay', 'strait', 'coastline', 'beach', 'shoal', 'reef', 'wetland', 
+                       'spring', 'hot_spring', 'geyser'],
+            # Linear Water Features
+            'waterway': ['river', 'stream', 'canal', 'drain', 'ditch', 'rapids', 'waterfall', 
+                        'dam', 'weir', 'lock_gate', 'dock', 'boatyard', 'fuel'],
+            # Man-made Water Features
+            'amenity': ['fountain', 'swimming_pool'],
+            'man_made': ['reservoir', 'water_tower', 'water_well', 'water_works', 'pier', 
+                        'breakwater', 'groyne', 'lighthouse', 'floating_dock'],
+            # Leisure Water Features
+            'leisure': ['swimming_pool', 'water_park', 'marina', 'slipway', 'boat_sharing'],
+            # Landuse Water Areas
+            'landuse': ['reservoir', 'salt_pond', 'aquaculture', 'basin']
         },
         'styles': {
+            # Large Water Bodies
             'water': {'fill': '#aad3df', 'stroke': '#4a80aa', 'stroke_width': 1},
-            'river': {'color': '#4a80aa', 'width': 3},
+            'bay': {'fill': '#87ceeb', 'stroke': '#4682b4', 'stroke_width': 1.5},
+            'strait': {'fill': '#87ceeb', 'stroke': '#4682b4', 'stroke_width': 1.5},
+            'coastline': {'color': '#2e5984', 'width': 2},
+            'beach': {'fill': '#fff8dc', 'stroke': '#daa520', 'stroke_width': 1},
+            'shoal': {'fill': '#e6f3ff', 'stroke': '#87ceeb', 'stroke_width': 1, 'opacity': 0.7},
+            'reef': {'fill': '#ffcccb', 'stroke': '#ff6347', 'stroke_width': 1.5},
+            'wetland': {'fill': '#b8e6b8', 'stroke': '#228b22', 'stroke_width': 1, 'pattern': 'wetland'},
+            
+            # Springs and Geothermal
+            'spring': {'fill': '#00ffff', 'stroke': '#0080ff', 'stroke_width': 2, 'radius': 4},
+            'hot_spring': {'fill': '#ff6b6b', 'stroke': '#ff3333', 'stroke_width': 2, 'radius': 5},
+            'geyser': {'fill': '#ffa500', 'stroke': '#ff8c00', 'stroke_width': 2.5, 'radius': 6},
+            
+            # Linear Water Features
+            'river': {'color': '#4a80aa', 'width': 4},
             'stream': {'color': '#6a90ba', 'width': 2},
-            'canal': {'color': '#4a80aa', 'width': 2.5},
-            'fountain': {'fill': '#87ceeb', 'stroke': '#4682b4', 'stroke_width': 2, 'radius': 4},
+            'canal': {'color': '#4a80aa', 'width': 3},
+            'drain': {'color': '#708090', 'width': 1.5, 'stroke_dasharray': '4,2'},
+            'ditch': {'color': '#708090', 'width': 1, 'stroke_dasharray': '2,2'},
+            'rapids': {'color': '#ffffff', 'width': 3, 'stroke_dasharray': '2,1'},
+            'waterfall': {'fill': '#e0f6ff', 'stroke': '#0080ff', 'stroke_width': 3, 'radius': 8},
+            
+            # Water Infrastructure
+            'dam': {'fill': '#696969', 'stroke': '#2f4f4f', 'stroke_width': 3},
+            'weir': {'fill': '#708090', 'stroke': '#2f4f4f', 'stroke_width': 2},
+            'lock_gate': {'fill': '#8b4513', 'stroke': '#654321', 'stroke_width': 2, 'radius': 6},
+            'reservoir': {'fill': '#b0e0e6', 'stroke': '#4682b4', 'stroke_width': 1.5},
+            'water_tower': {'fill': '#c0c0c0', 'stroke': '#808080', 'stroke_width': 2, 'radius': 10},
+            'water_well': {'fill': '#8b4513', 'stroke': '#654321', 'stroke_width': 2, 'radius': 4},
+            'water_works': {'fill': '#87ceeb', 'stroke': '#4682b4', 'stroke_width': 2},
+            
+            # Marine Infrastructure
+            'dock': {'fill': '#8b4513', 'stroke': '#654321', 'stroke_width': 2},
+            'boatyard': {'fill': '#deb887', 'stroke': '#d2691e', 'stroke_width': 1.5},
+            'fuel': {'fill': '#ff6347', 'stroke': '#ff4500', 'stroke_width': 2, 'radius': 6},
+            'pier': {'fill': '#8b4513', 'stroke': '#654321', 'stroke_width': 2},
+            'breakwater': {'fill': '#696969', 'stroke': '#2f4f4f', 'stroke_width': 2.5},
+            'groyne': {'fill': '#708090', 'stroke': '#2f4f4f', 'stroke_width': 2},
+            'lighthouse': {'fill': '#ff0000', 'stroke': '#8b0000', 'stroke_width': 2.5, 'radius': 8},
+            'floating_dock': {'fill': '#daa520', 'stroke': '#b8860b', 'stroke_width': 1.5},
+            
+            # Recreation Water Features
+            'fountain': {'fill': '#87ceeb', 'stroke': '#4682b4', 'stroke_width': 2, 'radius': 5},
+            'swimming_pool': {'fill': '#00bfff', 'stroke': '#0080ff', 'stroke_width': 2},
+            'water_park': {'fill': '#40e0d0', 'stroke': '#20b2aa', 'stroke_width': 2},
+            'marina': {'fill': '#f0e68c', 'stroke': '#bdb76b', 'stroke_width': 1.5},
+            'slipway': {'fill': '#bc8f8f', 'stroke': '#a0522d', 'stroke_width': 2},
+            'boat_sharing': {'fill': '#87ceeb', 'stroke': '#4682b4', 'stroke_width': 1.5, 'radius': 6},
+            
+            # Specialized Water Areas
+            'salt_pond': {'fill': '#ffc0cb', 'stroke': '#ff69b4', 'stroke_width': 1},
+            'aquaculture': {'fill': '#add8e6', 'stroke': '#4682b4', 'stroke_width': 1, 'pattern': 'grid'},
+            'basin': {'fill': '#b0e0e6', 'stroke': '#4682b4', 'stroke_width': 1},
+            
+            # Default
             'default': {'fill': '#aad3df', 'stroke': '#4a80aa', 'stroke_width': 1}
         }
     },
