@@ -500,5 +500,38 @@ FEATURE_STYLES = {
             # Default public facility style
             'default': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 2, 'radius': 6}
         }
+    },
+    
+    'emergency_services': {
+        'tags': {
+            # Emergency and safety facilities for public protection
+            'amenity': ['police', 'fire_station'],
+            'emergency': ['phone', 'defibrillator', 'fire_hydrant', 'assembly_point', 'siren']
+        },
+        'styles': {
+            # Law Enforcement - Dark blue palette for authority and security
+            'police': {'fill': '#e8eaf6', 'stroke': '#283593', 'stroke_width': 3, 'radius': 10},
+            
+            # Fire & Rescue Services - Red palette for emergency response
+            'fire_station': {'fill': '#ffebee', 'stroke': '#c62828', 'stroke_width': 3, 'radius': 10},
+            
+            # Emergency Communication - Orange palette for urgent communication
+            'phone': {'fill': '#fff3e0', 'stroke': '#e65100', 'stroke_width': 2.5, 'radius': 6},
+            
+            # Medical Emergency Equipment - Green cross palette for medical aid
+            'defibrillator': {'fill': '#e8f5e8', 'stroke': '#1b5e20', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Fire Safety Infrastructure - Bright red palette for fire safety
+            'fire_hydrant': {'fill': '#ffcdd2', 'stroke': '#d32f2f', 'stroke_width': 2, 'radius': 5},
+            
+            # Emergency Assembly - Purple palette for gathering points
+            'assembly_point': {'fill': '#f3e5f5', 'stroke': '#6a1b9a', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Warning Systems - Yellow/amber palette for alerts
+            'siren': {'fill': '#fffde7', 'stroke': '#f57f17', 'stroke_width': 2, 'radius': 6},
+            
+            # Default emergency service style
+            'default': {'fill': '#e8eaf6', 'stroke': '#283593', 'stroke_width': 2.5, 'radius': 7}
+        }
     }
 }
