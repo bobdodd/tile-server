@@ -883,6 +883,104 @@ FEATURE_STYLES = {
         }
     },
     
+    'barriers_boundaries': {
+        'tags': {
+            # Physical barriers
+            'barrier': ['fence', 'wall', 'hedge', 'gate', 'bollard', 'kerb', 'block', 'bollards', 'chain', 
+                       'rope', 'handrail', 'guardrail', 'cable_barrier', 'jersey_barrier', 'lift_gate', 
+                       'swing_gate', 'toll_booth', 'turnstile', 'stile', 'chicane', 'motorcycle_barrier', 
+                       'height_restrictor', 'sally_port', 'tank_trap', 'border_control', 'cycle_barrier', 
+                       'entrance', 'ditch', 'debris', 'log', 'spikes'],
+            # Administrative and legal boundaries
+            'boundary': ['administrative', 'national_park', 'postal_code', 'political', 'civil', 'maritime', 
+                        'territorial_waters', 'low_emission_zone', 'traffic_calming', 'census', 'parish', 
+                        'statistical', 'lot', 'parcel', 'forest', 'marker']
+        },
+        'styles': {
+            # Physical Barriers - Solid colors for physical obstacles
+            'fence': {'fill': '#8d6e63', 'stroke': '#5d4037', 'stroke_width': 2, 'radius': 3},
+            'wall': {'fill': '#bcaaa4', 'stroke': '#6d4c41', 'stroke_width': 2.5, 'radius': 4},
+            'hedge': {'fill': '#a5d6a7', 'stroke': '#2e7d32', 'stroke_width': 2, 'radius': 4},
+            'kerb': {'fill': '#e0e0e0', 'stroke': '#757575', 'stroke_width': 1.5, 'radius': 2},
+            'block': {'fill': '#9e9e9e', 'stroke': '#424242', 'stroke_width': 2, 'radius': 3},
+            
+            # Access Control Barriers - Red/orange palette for controlled access
+            'gate': {'fill': '#ffccbc', 'stroke': '#d84315', 'stroke_width': 2.5, 'radius': 5},
+            'bollard': {'fill': '#fff3e0', 'stroke': '#e65100', 'stroke_width': 2, 'radius': 3},
+            'bollards': {'fill': '#fff3e0', 'stroke': '#e65100', 'stroke_width': 2, 'radius': 3},
+            'lift_gate': {'fill': '#ffcc80', 'stroke': '#ef6c00', 'stroke_width': 2.5, 'radius': 6},
+            'swing_gate': {'fill': '#ffe0b2', 'stroke': '#f57c00', 'stroke_width': 2.5, 'radius': 6},
+            'toll_booth': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 3, 'radius': 8},
+            'turnstile': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 2, 'radius': 4},
+            'entrance': {'fill': '#c8e6c9', 'stroke': '#2e7d32', 'stroke_width': 2.5, 'radius': 5},
+            
+            # Safety Barriers - Yellow/amber palette for safety
+            'guardrail': {'fill': '#fff59d', 'stroke': '#f9a825', 'stroke_width': 2.5, 'radius': 3},
+            'handrail': {'fill': '#fff9c4', 'stroke': '#fbc02d', 'stroke_width': 2, 'radius': 3},
+            'cable_barrier': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 2, 'radius': 2},
+            'jersey_barrier': {'fill': '#fff3e0', 'stroke': '#e65100', 'stroke_width': 2.5, 'radius': 4},
+            
+            # Traffic Control - Red palette for traffic restrictions
+            'chicane': {'fill': '#ffcdd2', 'stroke': '#c62828', 'stroke_width': 2.5, 'radius': 6},
+            'motorcycle_barrier': {'fill': '#ffebee', 'stroke': '#d32f2f', 'stroke_width': 2, 'radius': 4},
+            'height_restrictor': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2.5, 'radius': 7},
+            'cycle_barrier': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 2, 'radius': 4},
+            
+            # Flexible Barriers - Light colors for temporary/flexible barriers
+            'chain': {'fill': '#f5f5f5', 'stroke': '#616161', 'stroke_width': 1.5, 'radius': 2},
+            'rope': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 1.5, 'radius': 2},
+            
+            # Pedestrian Barriers - Accessibility-focused colors
+            'stile': {'fill': '#d7ccc8', 'stroke': '#6d4c41', 'stroke_width': 2, 'radius': 5},
+            
+            # Security Barriers - Dark colors for security features
+            'sally_port': {'fill': '#616161', 'stroke': '#212121', 'stroke_width': 3, 'radius': 7},
+            'tank_trap': {'fill': '#424242', 'stroke': '#212121', 'stroke_width': 3, 'radius': 6},
+            'border_control': {'fill': '#ffcdd2', 'stroke': '#b71c1c', 'stroke_width': 3, 'radius': 9},
+            
+            # Natural/Debris Barriers - Earth tone colors
+            'ditch': {'fill': '#d7ccc8', 'stroke': '#5d4037', 'stroke_width': 2, 'radius': 4},
+            'debris': {'fill': '#8d6e63', 'stroke': '#4e342e', 'stroke_width': 2, 'radius': 4},
+            'log': {'fill': '#a1887f', 'stroke': '#3e2723', 'stroke_width': 2, 'radius': 5},
+            'spikes': {'fill': '#ffcdd2', 'stroke': '#d32f2f', 'stroke_width': 2.5, 'radius': 3},
+            
+            # Administrative Boundaries - Blue palette for official boundaries
+            'administrative': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 2.5, 'radius': 1, 'dasharray': '10,5'},
+            'political': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 2.5, 'radius': 1, 'dasharray': '8,4'},
+            'civil': {'fill': '#ede7f6', 'stroke': '#673ab7', 'stroke_width': 2, 'radius': 1, 'dasharray': '6,3'},
+            
+            # Protected Areas - Green palette for conservation
+            'national_park': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 3, 'radius': 1, 'dasharray': '12,6'},
+            'forest': {'fill': '#c8e6c9', 'stroke': '#1b5e20', 'stroke_width': 2.5, 'radius': 1, 'dasharray': '8,4'},
+            
+            # Service Boundaries - Teal palette for utilities and services
+            'postal_code': {'fill': '#e0f7fa', 'stroke': '#00838f', 'stroke_width': 2, 'radius': 1, 'dasharray': '5,5'},
+            'census': {'fill': '#b2ebf2', 'stroke': '#00acc1', 'stroke_width': 2, 'radius': 1, 'dasharray': '4,4'},
+            'statistical': {'fill': '#e1f5fe', 'stroke': '#0277bd', 'stroke_width': 2, 'radius': 1, 'dasharray': '6,3'},
+            
+            # Maritime Boundaries - Ocean blue palette
+            'maritime': {'fill': '#e1f5fe', 'stroke': '#0288d1', 'stroke_width': 2.5, 'radius': 1, 'dasharray': '10,5'},
+            'territorial_waters': {'fill': '#b3e5fc', 'stroke': '#0277bd', 'stroke_width': 2.5, 'radius': 1, 'dasharray': '8,8'},
+            
+            # Environmental Boundaries - Amber palette for environmental zones
+            'low_emission_zone': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 2.5, 'radius': 1, 'dasharray': '15,5'},
+            'traffic_calming': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 2, 'radius': 1, 'dasharray': '6,6'},
+            
+            # Property Boundaries - Brown palette for land parcels
+            'lot': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 2, 'radius': 1, 'dasharray': '4,2'},
+            'parcel': {'fill': '#d7ccc8', 'stroke': '#6d4c41', 'stroke_width': 2, 'radius': 1, 'dasharray': '3,3'},
+            
+            # Religious Boundaries - Purple palette for parishes
+            'parish': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 2, 'radius': 1, 'dasharray': '8,4'},
+            
+            # Survey Markers - Yellow palette for reference points
+            'marker': {'fill': '#fff59d', 'stroke': '#fbc02d', 'stroke_width': 2, 'radius': 4},
+            
+            # Default barrier/boundary style
+            'default': {'fill': '#e0e0e0', 'stroke': '#757575', 'stroke_width': 2, 'radius': 3}
+        }
+    },
+    
     'natural_features': {
         'tags': {
             # Enhanced natural features for terrain, landscape, and land use

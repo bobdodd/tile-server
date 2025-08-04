@@ -26,6 +26,7 @@ class OSMHandler(osmium.SimpleHandler):
             'office_professional': [],
             'power_utilities': [],
             'man_made_structures': [],
+            'barriers_boundaries': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -156,6 +157,14 @@ class OSMHandler(osmium.SimpleHandler):
         # Man-made Structures - Comprehensive coverage of human-built infrastructure and structures
         elif tags.get('man_made') in ['bridge', 'tunnel', 'tower', 'mast', 'antenna', 'chimney', 'pier', 'breakwater', 'groyne', 'lighthouse', 'windmill', 'watermill', 'windpump', 'adit', 'mineshaft', 'crane', 'kiln', 'works', 'embankment', 'cutline', 'dyke', 'levee', 'retaining_wall', 'city_wall', 'dike', 'surveillance', 'monitoring_station', 'survey_point', 'beacon', 'communication_tower', 'observatory', 'telescope', 'flagpole', 'cross', 'obelisk', 'column', 'campanile', 'bunker_silo', 'reservoir_covered', 'clearcut']:
             self.features['man_made_structures'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Barriers & Boundaries - Comprehensive coverage of physical barriers and administrative boundaries
+        elif (tags.get('barrier') in ['fence', 'wall', 'hedge', 'gate', 'bollard', 'kerb', 'block', 'bollards', 'chain', 'rope', 'handrail', 'guardrail', 'cable_barrier', 'jersey_barrier', 'lift_gate', 'swing_gate', 'toll_booth', 'turnstile', 'stile', 'chicane', 'motorcycle_barrier', 'height_restrictor', 'sally_port', 'tank_trap', 'border_control', 'cycle_barrier', 'entrance', 'ditch', 'debris', 'log', 'spikes'] or
+              tags.get('boundary') in ['administrative', 'national_park', 'postal_code', 'political', 'civil', 'maritime', 'territorial_waters', 'low_emission_zone', 'traffic_calming', 'census', 'parish', 'statistical', 'lot', 'parcel', 'forest', 'marker']):
+            self.features['barriers_boundaries'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
             })
@@ -566,6 +575,26 @@ class OSMHandler(osmium.SimpleHandler):
             except Exception:
                 pass
         
+        # Barriers & Boundaries (as areas/linear features) - Comprehensive coverage
+        elif (tags.get('barrier') in ['fence', 'wall', 'hedge', 'gate', 'bollard', 'kerb', 'block', 'bollards', 'chain', 'rope', 'handrail', 'guardrail', 'cable_barrier', 'jersey_barrier', 'lift_gate', 'swing_gate', 'toll_booth', 'turnstile', 'stile', 'chicane', 'motorcycle_barrier', 'height_restrictor', 'sally_port', 'tank_trap', 'border_control', 'cycle_barrier', 'entrance', 'ditch', 'debris', 'log', 'spikes'] or
+              tags.get('boundary') in ['administrative', 'national_park', 'postal_code', 'political', 'civil', 'maritime', 'territorial_waters', 'low_emission_zone', 'traffic_calming', 'census', 'parish', 'statistical', 'lot', 'parcel', 'forest', 'marker']):
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['barriers_boundaries'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+                else:
+                    # Handle linear barriers like fences, walls, boundaries
+                    self.features['barriers_boundaries'].append({
+                        'geometry': line,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
         # Enhanced Natural Features (as areas) - Comprehensive coverage of terrain and landuse
         elif (tags.get('natural') in ['forest', 'wood', 'grassland', 'cliff', 'scrub', 'heath', 'sand', 'rock', 'scree', 'bare_rock'] or
               tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments', 'education', 'institutional', 'farmyard', 'brownfield', 'garages', 'greenfield', 'depot', 'port', 'railway', 'religious', 'fairground', 'meadow', 'plant_nursery', 'conservation', 'landfill', 'logging', 'greenhouse_horticulture']):
@@ -967,6 +996,29 @@ class OSMHandler(osmium.SimpleHandler):
                     
                     if poly.intersects(bounds_poly):
                         self.features['man_made_structures'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Barriers & Boundaries (as relations) - Comprehensive coverage
+            elif (tags.get('barrier') in ['fence', 'wall', 'hedge', 'gate', 'bollard', 'kerb', 'block', 'bollards', 'chain', 'rope', 'handrail', 'guardrail', 'cable_barrier', 'jersey_barrier', 'lift_gate', 'swing_gate', 'toll_booth', 'turnstile', 'stile', 'chicane', 'motorcycle_barrier', 'height_restrictor', 'sally_port', 'tank_trap', 'border_control', 'cycle_barrier', 'entrance', 'ditch', 'debris', 'log', 'spikes'] or
+                  tags.get('boundary') in ['administrative', 'national_park', 'postal_code', 'political', 'civil', 'maritime', 'territorial_waters', 'low_emission_zone', 'traffic_calming', 'census', 'parish', 'statistical', 'lot', 'parcel', 'forest', 'marker']):
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if barrier/boundary area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['barriers_boundaries'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id}
                         })
