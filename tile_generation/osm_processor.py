@@ -25,6 +25,7 @@ class OSMHandler(osmium.SimpleHandler):
             'natural_features': [],
             'office_professional': [],
             'power_utilities': [],
+            'man_made_structures': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -148,6 +149,13 @@ class OSMHandler(osmium.SimpleHandler):
               tags.get('pipeline') in ['gas', 'oil', 'water', 'sewerage', 'district_heating', 'steam', 'hot_water'] or
               tags.get('telecom') in ['data_center', 'exchange', 'service_device']):
             self.features['power_utilities'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Man-made Structures - Comprehensive coverage of human-built infrastructure and structures
+        elif tags.get('man_made') in ['bridge', 'tunnel', 'tower', 'mast', 'antenna', 'chimney', 'pier', 'breakwater', 'groyne', 'lighthouse', 'windmill', 'watermill', 'windpump', 'adit', 'mineshaft', 'crane', 'kiln', 'works', 'embankment', 'cutline', 'dyke', 'levee', 'retaining_wall', 'city_wall', 'dike', 'surveillance', 'monitoring_station', 'survey_point', 'beacon', 'communication_tower', 'observatory', 'telescope', 'flagpole', 'cross', 'obelisk', 'column', 'campanile', 'bunker_silo', 'reservoir_covered', 'clearcut']:
+            self.features['man_made_structures'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
             })
@@ -539,6 +547,25 @@ class OSMHandler(osmium.SimpleHandler):
             except Exception:
                 pass
         
+        # Man-made Structures (as areas/linear features) - Comprehensive coverage
+        elif tags.get('man_made') in ['bridge', 'tunnel', 'tower', 'mast', 'antenna', 'chimney', 'pier', 'breakwater', 'groyne', 'lighthouse', 'windmill', 'watermill', 'windpump', 'adit', 'mineshaft', 'crane', 'kiln', 'works', 'embankment', 'cutline', 'dyke', 'levee', 'retaining_wall', 'city_wall', 'dike', 'surveillance', 'monitoring_station', 'survey_point', 'beacon', 'communication_tower', 'observatory', 'telescope', 'flagpole', 'cross', 'obelisk', 'column', 'campanile', 'bunker_silo', 'reservoir_covered', 'clearcut']:
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['man_made_structures'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+                else:
+                    # Handle linear structures like bridges, tunnels, embankments
+                    self.features['man_made_structures'].append({
+                        'geometry': line,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
         # Enhanced Natural Features (as areas) - Comprehensive coverage of terrain and landuse
         elif (tags.get('natural') in ['forest', 'wood', 'grassland', 'cliff', 'scrub', 'heath', 'sand', 'rock', 'scree', 'bare_rock'] or
               tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments', 'education', 'institutional', 'farmyard', 'brownfield', 'garages', 'greenfield', 'depot', 'port', 'railway', 'religious', 'fairground', 'meadow', 'plant_nursery', 'conservation', 'landfill', 'logging', 'greenhouse_horticulture']):
@@ -918,6 +945,28 @@ class OSMHandler(osmium.SimpleHandler):
                     
                     if poly.intersects(bounds_poly):
                         self.features['power_utilities'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Man-made Structures (as relations) - Comprehensive coverage
+            elif tags.get('man_made') in ['bridge', 'tunnel', 'tower', 'mast', 'antenna', 'chimney', 'pier', 'breakwater', 'groyne', 'lighthouse', 'windmill', 'watermill', 'windpump', 'adit', 'mineshaft', 'crane', 'kiln', 'works', 'embankment', 'cutline', 'dyke', 'levee', 'retaining_wall', 'city_wall', 'dike', 'surveillance', 'monitoring_station', 'survey_point', 'beacon', 'communication_tower', 'observatory', 'telescope', 'flagpole', 'cross', 'obelisk', 'column', 'campanile', 'bunker_silo', 'reservoir_covered', 'clearcut']:
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if man-made structure area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['man_made_structures'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id}
                         })

@@ -807,6 +807,82 @@ FEATURE_STYLES = {
         }
     },
     
+    'man_made_structures': {
+        'tags': {
+            # Comprehensive man-made structures and infrastructure
+            'man_made': ['bridge', 'tunnel', 'tower', 'mast', 'antenna', 'chimney', 'pier', 'breakwater', 
+                        'groyne', 'lighthouse', 'windmill', 'watermill', 'windpump', 'adit', 'mineshaft', 
+                        'crane', 'kiln', 'works', 'embankment', 'cutline', 'dyke', 'levee', 'retaining_wall', 
+                        'city_wall', 'dike', 'surveillance', 'monitoring_station', 'survey_point', 'beacon', 
+                        'communication_tower', 'observatory', 'telescope', 'flagpole', 'cross', 'obelisk', 
+                        'column', 'campanile', 'bunker_silo', 'reservoir_covered', 'clearcut']
+        },
+        'styles': {
+            # Transportation Infrastructure - Bold colors for major infrastructure
+            'bridge': {'fill': '#eceff1', 'stroke': '#455a64', 'stroke_width': 4, 'radius': 12},
+            'tunnel': {'fill': '#cfd8dc', 'stroke': '#37474f', 'stroke_width': 4, 'radius': 10},
+            
+            # Communication & Observation - Purple/blue palette for communication
+            'tower': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3.5, 'radius': 12},
+            'mast': {'fill': '#ede7f6', 'stroke': '#673ab7', 'stroke_width': 3, 'radius': 10},
+            'antenna': {'fill': '#f3e5f5', 'stroke': '#9c27b0', 'stroke_width': 2.5, 'radius': 8},
+            'communication_tower': {'fill': '#e1bee7', 'stroke': '#8e24aa', 'stroke_width': 3.5, 'radius': 11},
+            'observatory': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 13},
+            'telescope': {'fill': '#c5cae9', 'stroke': '#303f9f', 'stroke_width': 2.5, 'radius': 9},
+            'surveillance': {'fill': '#ffcdd2', 'stroke': '#d32f2f', 'stroke_width': 2.5, 'radius': 6},
+            'monitoring_station': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Industrial Structures - Gray/brown palette for industrial
+            'chimney': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 3, 'radius': 8},
+            'crane': {'fill': '#fff9c4', 'stroke': '#f9a825', 'stroke_width': 3, 'radius': 10},
+            'kiln': {'fill': '#ffccbc', 'stroke': '#ff5722', 'stroke_width': 2.5, 'radius': 9},
+            'works': {'fill': '#cfd8dc', 'stroke': '#37474f', 'stroke_width': 2.5, 'radius': 11},
+            'bunker_silo': {'fill': '#d7ccc8', 'stroke': '#6d4c41', 'stroke_width': 2.5, 'radius': 10},
+            
+            # Water & Coastal Infrastructure - Blue/teal palette for water-related
+            'pier': {'fill': '#b3e5fc', 'stroke': '#0277bd', 'stroke_width': 3, 'radius': 15},
+            'breakwater': {'fill': '#b2ebf2', 'stroke': '#00acc1', 'stroke_width': 3, 'radius': 12},
+            'groyne': {'fill': '#e0f7fa', 'stroke': '#00838f', 'stroke_width': 2.5, 'radius': 8},
+            'lighthouse': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 3.5, 'radius': 12},
+            'beacon': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 2.5, 'radius': 7},
+            'reservoir_covered': {'fill': '#e1f5fe', 'stroke': '#0288d1', 'stroke_width': 2.5, 'radius': 13},
+            
+            # Historical & Wind-powered - Traditional green/brown palette
+            'windmill': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 3, 'radius': 11},
+            'watermill': {'fill': '#c8e6c9', 'stroke': '#1b5e20', 'stroke_width': 3, 'radius': 10},
+            'windpump': {'fill': '#dcedc8', 'stroke': '#33691e', 'stroke_width': 2.5, 'radius': 9},
+            
+            # Mining & Underground - Dark palette for underground structures
+            'adit': {'fill': '#424242', 'stroke': '#212121', 'stroke_width': 2.5, 'radius': 7},
+            'mineshaft': {'fill': '#616161', 'stroke': '#424242', 'stroke_width': 3, 'radius': 8},
+            
+            # Defensive & Protective Structures - Strong colors for barriers
+            'embankment': {'fill': '#d7ccc8', 'stroke': '#5d4037', 'stroke_width': 2.5, 'radius': 8},
+            'dyke': {'fill': '#bcaaa4', 'stroke': '#4e342e', 'stroke_width': 2.5, 'radius': 7},
+            'levee': {'fill': '#efebe9', 'stroke': '#6d4c41', 'stroke_width': 2.5, 'radius': 8},
+            'retaining_wall': {'fill': '#eceff1', 'stroke': '#455a64', 'stroke_width': 2.5, 'radius': 6},
+            'city_wall': {'fill': '#d7ccc8', 'stroke': '#5d4037', 'stroke_width': 3, 'radius': 9},
+            'dike': {'fill': '#a1887f', 'stroke': '#3e2723', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Religious & Memorial Structures - Dignified colors for monuments  
+            'cross': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 2.5, 'radius': 7},
+            'obelisk': {'fill': '#eceff1', 'stroke': '#455a64', 'stroke_width': 3, 'radius': 9},
+            'column': {'fill': '#fff3e0', 'stroke': '#e65100', 'stroke_width': 2.5, 'radius': 8},
+            'campanile': {'fill': '#ede7f6', 'stroke': '#673ab7', 'stroke_width': 3, 'radius': 10},
+            
+            # Survey & Navigation - Professional colors for surveying
+            'survey_point': {'fill': '#fff59d', 'stroke': '#fbc02d', 'stroke_width': 2, 'radius': 5},
+            'flagpole': {'fill': '#ffcdd2', 'stroke': '#c62828', 'stroke_width': 2, 'radius': 6},
+            
+            # Land Management - Natural colors for land features
+            'cutline': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 2, 'radius': 4},
+            'clearcut': {'fill': '#fff8e1', 'stroke': '#f9a825', 'stroke_width': 2, 'radius': 8},
+            
+            # Default man-made structure style
+            'default': {'fill': '#eceff1', 'stroke': '#455a64', 'stroke_width': 2.5, 'radius': 8}
+        }
+    },
+    
     'natural_features': {
         'tags': {
             # Enhanced natural features for terrain, landscape, and land use
