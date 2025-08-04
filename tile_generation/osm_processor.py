@@ -20,6 +20,7 @@ class OSMHandler(osmium.SimpleHandler):
             'public_facilities': [],
             'emergency_services': [],
             'tourism_accommodation': [],
+            'entertainment_culture': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -108,6 +109,14 @@ class OSMHandler(osmium.SimpleHandler):
         # Tourism & Accommodation - Comprehensive coverage of tourist facilities and lodging
         elif tags.get('tourism') in ['hotel', 'hostel', 'guest_house', 'camp_site', 'attraction', 'museum', 'gallery', 'viewpoint', 'information', 'artwork', 'zoo']:
             self.features['tourism_accommodation'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Entertainment & Culture - Comprehensive coverage of cultural and recreational facilities
+        elif (tags.get('amenity') in ['cinema', 'theatre', 'library', 'community_centre', 'arts_centre', 'social_centre'] or
+              tags.get('leisure') in ['sports_centre', 'swimming_pool', 'golf_course', 'stadium', 'fitness_centre', 'bowling_alley', 'amusement_arcade']):
+            self.features['entertainment_culture'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
             })
@@ -427,6 +436,20 @@ class OSMHandler(osmium.SimpleHandler):
             except Exception:
                 pass
         
+        # Entertainment & Culture (as areas/buildings) - Comprehensive coverage
+        elif (tags.get('amenity') in ['cinema', 'theatre', 'library', 'community_centre', 'arts_centre', 'social_centre'] or
+              tags.get('leisure') in ['sports_centre', 'swimming_pool', 'golf_course', 'stadium', 'fitness_centre', 'bowling_alley', 'amusement_arcade']):
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['entertainment_culture'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
         # Parks and leisure areas
         elif tags.get('leisure') in ['park', 'garden', 'playground', 'dog_park', 'nature_reserve'] or \
              tags.get('landuse') in ['grass', 'recreation_ground', 'village_green']:
@@ -698,6 +721,29 @@ class OSMHandler(osmium.SimpleHandler):
                     
                     if poly.intersects(bounds_poly):
                         self.features['tourism_accommodation'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Entertainment & Culture (as relations) - Comprehensive coverage
+            elif (tags.get('amenity') in ['cinema', 'theatre', 'library', 'community_centre', 'arts_centre', 'social_centre'] or
+                  tags.get('leisure') in ['sports_centre', 'swimming_pool', 'golf_course', 'stadium', 'fitness_centre', 'bowling_alley', 'amusement_arcade']):
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if entertainment/culture area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['entertainment_culture'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id}
                         })

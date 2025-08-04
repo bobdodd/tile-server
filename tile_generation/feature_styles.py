@@ -563,5 +563,38 @@ FEATURE_STYLES = {
             # Default tourism style
             'default': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 2.5, 'radius': 8}
         }
+    },
+    
+    'entertainment_culture': {
+        'tags': {
+            # Entertainment and cultural facilities for recreation and community activities
+            'amenity': ['cinema', 'theatre', 'library', 'community_centre', 'arts_centre', 'social_centre'],
+            'leisure': ['sports_centre', 'swimming_pool', 'golf_course', 'stadium', 'fitness_centre', 'bowling_alley', 'amusement_arcade']
+        },
+        'styles': {
+            # Performance & Entertainment Venues - Deep purple palette for arts and performance
+            'cinema': {'fill': '#ede7f6', 'stroke': '#512da8', 'stroke_width': 3, 'radius': 10},
+            'theatre': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 10},
+            'amusement_arcade': {'fill': '#fce4ec', 'stroke': '#e91e63', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Knowledge & Community Centers - Warm brown/orange palette for learning and community
+            'library': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 3, 'radius': 10},
+            'community_centre': {'fill': '#ffecd2', 'stroke': '#f57c00', 'stroke_width': 3, 'radius': 11},
+            'arts_centre': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 3, 'radius': 10},
+            'social_centre': {'fill': '#e8f5e8', 'stroke': '#43a047', 'stroke_width': 2.5, 'radius': 9},
+            
+            # Sports & Recreation - Green palette for health and activity
+            'sports_centre': {'fill': '#e8f5e8', 'stroke': '#388e3c', 'stroke_width': 3, 'radius': 12},
+            'fitness_centre': {'fill': '#c8e6c9', 'stroke': '#2e7d32', 'stroke_width': 2.5, 'radius': 9},
+            'swimming_pool': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 2.5, 'radius': 9},
+            'bowling_alley': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Large Sports Venues - Bold colors for major facilities
+            'stadium': {'fill': '#ffebee', 'stroke': '#c62828', 'stroke_width': 4, 'radius': 15},
+            'golf_course': {'fill': '#e8f5e8', 'stroke': '#1b5e20', 'stroke_width': 3, 'radius': 13},
+            
+            # Default entertainment/culture style
+            'default': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 2.5, 'radius': 9}
+        }
     }
 }
