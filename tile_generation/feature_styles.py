@@ -318,5 +318,60 @@ FEATURE_STYLES = {
             # Default healthcare style
             'default': {'fill': '#ffe0e0', 'stroke': '#cc6666', 'stroke_width': 1.5, 'radius': 5}
         }
+    },
+    
+    'food_sustenance': {
+        'tags': {
+            # Basic Food Amenities
+            'amenity': ['restaurant', 'cafe', 'fast_food', 'bar', 'pub', 'food_court', 'ice_cream', 
+                       'biergarten', 'nightclub'],
+            # Specialized Food Shops
+            'shop': ['alcohol', 'bakery', 'beverages', 'butcher', 'cheese', 'chocolate', 'coffee',
+                    'confectionery', 'convenience', 'deli', 'farm', 'frozen_food', 'greengrocer',
+                    'health_food', 'nuts', 'pastry', 'seafood', 'tea', 'wine', 'supermarket']
+        },
+        'styles': {
+            # Basic Food Amenities - Warm orange/red palette for dining
+            'restaurant': {'fill': '#ffcc80', 'stroke': '#ff8a65', 'stroke_width': 2, 'radius': 6},
+            'cafe': {'fill': '#d7ccc8', 'stroke': '#8d6e63', 'stroke_width': 1.5, 'radius': 5},
+            'fast_food': {'fill': '#ffab91', 'stroke': '#ff5722', 'stroke_width': 1.5, 'radius': 5},
+            'bar': {'fill': '#ce93d8', 'stroke': '#9c27b0', 'stroke_width': 2, 'radius': 5},
+            'pub': {'fill': '#ddbf94', 'stroke': '#8d6e63', 'stroke_width': 2, 'radius': 6},
+            'food_court': {'fill': '#ffcc80', 'stroke': '#ff8a65', 'stroke_width': 2.5, 'radius': 8},
+            'ice_cream': {'fill': '#f8bbd9', 'stroke': '#e91e63', 'stroke_width': 1.5, 'radius': 4},
+            'biergarten': {'fill': '#c8e6c9', 'stroke': '#4caf50', 'stroke_width': 2, 'radius': 7},
+            'nightclub': {'fill': '#b39ddb', 'stroke': '#673ab7', 'stroke_width': 2, 'radius': 6},
+            
+            # Grocery & General Food Stores - Green palette for fresh/healthy
+            'supermarket': {'fill': '#a5d6a7', 'stroke': '#4caf50', 'stroke_width': 2.5, 'radius': 8},
+            'convenience': {'fill': '#c5e1a5', 'stroke': '#689f38', 'stroke_width': 2, 'radius': 6},
+            'greengrocer': {'fill': '#81c784', 'stroke': '#388e3c', 'stroke_width': 2, 'radius': 5},
+            'farm': {'fill': '#aed581', 'stroke': '#689f38', 'stroke_width': 2, 'radius': 6},
+            'health_food': {'fill': '#c8e6c9', 'stroke': '#4caf50', 'stroke_width': 1.5, 'radius': 5},
+            'frozen_food': {'fill': '#b3e5fc', 'stroke': '#03a9f4', 'stroke_width': 1.5, 'radius': 5},
+            
+            # Bakery & Sweets - Yellow/golden palette for baked goods
+            'bakery': {'fill': '#fff176', 'stroke': '#fbc02d', 'stroke_width': 2, 'radius': 5},
+            'pastry': {'fill': '#ffcc02', 'stroke': '#ff8f00', 'stroke_width': 1.5, 'radius': 4},
+            'confectionery': {'fill': '#ffcdd2', 'stroke': '#e57373', 'stroke_width': 1.5, 'radius': 4},
+            'chocolate': {'fill': '#d7ccc8', 'stroke': '#8d6e63', 'stroke_width': 1.5, 'radius': 4},
+            'nuts': {'fill': '#ddbf94', 'stroke': '#a1887f', 'stroke_width': 1, 'radius': 3},
+            
+            # Beverages - Blue palette for drinks
+            'beverages': {'fill': '#90caf9', 'stroke': '#2196f3', 'stroke_width': 1.5, 'radius': 5},
+            'coffee': {'fill': '#d7ccc8', 'stroke': '#6d4c41', 'stroke_width': 2, 'radius': 5},
+            'tea': {'fill': '#c8e6c9', 'stroke': '#388e3c', 'stroke_width': 1.5, 'radius': 4},
+            'wine': {'fill': '#f8bbd9', 'stroke': '#ad1457', 'stroke_width': 2, 'radius': 5},
+            'alcohol': {'fill': '#ce93d8', 'stroke': '#7b1fa2', 'stroke_width': 2, 'radius': 5},
+            
+            # Meat & Dairy - Red/pink palette for animal products
+            'butcher': {'fill': '#ef9a9a', 'stroke': '#f44336', 'stroke_width': 2, 'radius': 5},
+            'seafood': {'fill': '#80deea', 'stroke': '#00acc1', 'stroke_width': 2, 'radius': 5},
+            'cheese': {'fill': '#fff59d', 'stroke': '#f9a825', 'stroke_width': 1.5, 'radius': 4},
+            'deli': {'fill': '#ffccd5', 'stroke': '#e57373', 'stroke_width': 2, 'radius': 5},
+            
+            # Default food establishment style
+            'default': {'fill': '#ffcc80', 'stroke': '#ff8a65', 'stroke_width': 1.5, 'radius': 5}
+        }
     }
 }

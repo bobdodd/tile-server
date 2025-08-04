@@ -14,6 +14,7 @@ class OSMHandler(osmium.SimpleHandler):
             'buildings': [],
             'roads': [],
             'healthcare': [],
+            'food_sustenance': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -59,6 +60,14 @@ class OSMHandler(osmium.SimpleHandler):
             self.features['healthcare'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id, 'healthcare_type': 'healthcare'}
+            })
+        
+        # Food & Sustenance establishments (amenity and shop-based)
+        elif (tags.get('amenity') in ['restaurant', 'cafe', 'fast_food', 'bar', 'pub', 'food_court', 'ice_cream', 'biergarten', 'nightclub'] or
+              tags.get('shop') in ['alcohol', 'bakery', 'beverages', 'butcher', 'cheese', 'chocolate', 'coffee', 'confectionery', 'convenience', 'deli', 'farm', 'frozen_food', 'greengrocer', 'health_food', 'nuts', 'pastry', 'seafood', 'tea', 'wine', 'supermarket']):
+            self.features['food_sustenance'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
             })
         
         # Comprehensive Transit Infrastructure
@@ -295,6 +304,20 @@ class OSMHandler(osmium.SimpleHandler):
             except Exception:
                 pass
         
+        # Food & Sustenance establishments (as areas/buildings)
+        elif (tags.get('amenity') in ['restaurant', 'cafe', 'fast_food', 'bar', 'pub', 'food_court', 'ice_cream', 'biergarten', 'nightclub'] or
+              tags.get('shop') in ['alcohol', 'bakery', 'beverages', 'butcher', 'cheese', 'chocolate', 'coffee', 'confectionery', 'convenience', 'deli', 'farm', 'frozen_food', 'greengrocer', 'health_food', 'nuts', 'pastry', 'seafood', 'tea', 'wine', 'supermarket']):
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['food_sustenance'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
         # Parks and leisure areas
         elif tags.get('leisure') in ['park', 'garden', 'playground', 'dog_park', 'nature_reserve'] or \
              tags.get('landuse') in ['grass', 'recreation_ground', 'village_green']:
@@ -433,6 +456,29 @@ class OSMHandler(osmium.SimpleHandler):
                         self.features['healthcare'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id, 'healthcare_type': healthcare_type}
+                        })
+                except Exception:
+                    pass
+            
+            # Food & Sustenance establishments (as relations)
+            elif (tags.get('amenity') in ['restaurant', 'cafe', 'fast_food', 'bar', 'pub', 'food_court', 'ice_cream', 'biergarten', 'nightclub'] or
+                  tags.get('shop') in ['alcohol', 'bakery', 'beverages', 'butcher', 'cheese', 'chocolate', 'coffee', 'confectionery', 'convenience', 'deli', 'farm', 'frozen_food', 'greengrocer', 'health_food', 'nuts', 'pastry', 'seafood', 'tea', 'wine', 'supermarket']):
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if food establishment area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['food_sustenance'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
                         })
                 except Exception:
                     pass
