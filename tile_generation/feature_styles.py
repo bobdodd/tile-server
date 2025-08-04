@@ -648,5 +648,60 @@ FEATURE_STYLES = {
             # Default automotive service style
             'default': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 2.5, 'radius': 8}
         }
+    },
+    
+    'natural_features': {
+        'tags': {
+            # Enhanced natural features for terrain, landscape, and land use
+            'natural': ['forest', 'wood', 'grassland', 'cliff', 'peak', 'valley', 'scrub', 'heath', 'sand', 'rock', 'scree', 'bare_rock', 'cave_entrance'],
+            'landuse': ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments']
+        },
+        'styles': {
+            # Forest & Woodland - Deep green palette for vegetation
+            'forest': {'fill': '#c8e6c9', 'stroke': '#1b5e20', 'stroke_width': 2, 'radius': 12},
+            'wood': {'fill': '#dcedc8', 'stroke': '#33691e', 'stroke_width': 2, 'radius': 10},
+            
+            # Grassland & Open Areas - Light green palette for open vegetation
+            'grassland': {'fill': '#f1f8e9', 'stroke': '#558b2f', 'stroke_width': 1.5, 'radius': 8},
+            'scrub': {'fill': '#e8f5e8', 'stroke': '#689f38', 'stroke_width': 1.5, 'radius': 6},
+            'heath': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 1.5, 'radius': 7},
+            
+            # Terrain Features - Brown/gray palette for geological features
+            'cliff': {'fill': '#efebe9', 'stroke': '#3e2723', 'stroke_width': 3, 'radius': 8},
+            'peak': {'fill': '#eceff1', 'stroke': '#263238', 'stroke_width': 2.5, 'radius': 6},
+            'valley': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 2, 'radius': 9},
+            'rock': {'fill': '#d7ccc8', 'stroke': '#5d4037', 'stroke_width': 2, 'radius': 7},
+            'scree': {'fill': '#bcaaa4', 'stroke': '#4e342e', 'stroke_width': 1.5, 'radius': 5},
+            'bare_rock': {'fill': '#a1887f', 'stroke': '#3e2723', 'stroke_width': 2, 'radius': 6},
+            'cave_entrance': {'fill': '#424242', 'stroke': '#212121', 'stroke_width': 2.5, 'radius': 4},
+            
+            # Sand & Beach Areas - Beige/yellow palette for sandy terrain
+            'sand': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 1.5, 'radius': 8},
+            
+            # Residential Areas - Warm beige palette for human habitation
+            'residential': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 1.5, 'radius': 10},
+            
+            # Commercial & Business Areas - Blue palette for commerce
+            'commercial': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 2, 'radius': 12},
+            'retail': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 2, 'radius': 10},
+            
+            # Industrial Areas - Gray palette for industry
+            'industrial': {'fill': '#eceff1', 'stroke': '#455a64', 'stroke_width': 2, 'radius': 13},
+            'quarry': {'fill': '#cfd8dc', 'stroke': '#37474f', 'stroke_width': 2.5, 'radius': 11},
+            'construction': {'fill': '#fff9c4', 'stroke': '#f9a825', 'stroke_width': 2, 'radius': 9, 'dasharray': '5,3'},
+            
+            # Agricultural Areas - Green/brown palette for farming
+            'farmland': {'fill': '#c8e6c9', 'stroke': '#2e7d32', 'stroke_width': 1.5, 'radius': 15},
+            'orchard': {'fill': '#dcedc8', 'stroke': '#388e3c', 'stroke_width': 1.5, 'radius': 12},
+            'vineyard': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 1.5, 'radius': 10},
+            'allotments': {'fill': '#e8f5e8', 'stroke': '#43a047', 'stroke_width': 1.5, 'radius': 8},
+            
+            # Special Use Areas - Distinct colors for specific purposes
+            'cemetery': {'fill': '#f5f5f5', 'stroke': '#616161', 'stroke_width': 2, 'radius': 9},
+            'military': {'fill': '#ffcdd2', 'stroke': '#c62828', 'stroke_width': 2.5, 'radius': 12},
+            
+            # Default natural feature style
+            'default': {'fill': '#c8e6c9', 'stroke': '#2e7d32', 'stroke_width': 2, 'radius': 8}
+        }
     }
 }

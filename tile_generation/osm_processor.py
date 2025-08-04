@@ -22,6 +22,7 @@ class OSMHandler(osmium.SimpleHandler):
             'tourism_accommodation': [],
             'entertainment_culture': [],
             'automotive_services': [],
+            'natural_features': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -127,6 +128,14 @@ class OSMHandler(osmium.SimpleHandler):
               tags.get('shop') in ['car', 'car_parts', 'car_repair', 'motorcycle', 'motorcycle_repair', 'tyres', 'truck', 'trailer'] or
               tags.get('highway') in ['motorway_junction', 'services', 'rest_area', 'emergency_bay', 'toll_gantry']):
             self.features['automotive_services'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Enhanced Natural Features - Comprehensive coverage of terrain, landscape, and landuse features
+        elif (tags.get('natural') in ['forest', 'wood', 'grassland', 'cliff', 'peak', 'valley', 'scrub', 'heath', 'sand', 'rock', 'scree', 'bare_rock', 'cave_entrance'] or
+              tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments']):
+            self.features['natural_features'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
             })
@@ -475,6 +484,20 @@ class OSMHandler(osmium.SimpleHandler):
             except Exception:
                 pass
         
+        # Enhanced Natural Features (as areas) - Comprehensive coverage of terrain and landuse
+        elif (tags.get('natural') in ['forest', 'wood', 'grassland', 'cliff', 'scrub', 'heath', 'sand', 'rock', 'scree', 'bare_rock'] or
+              tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments']):
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['natural_features'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
         # Parks and leisure areas
         elif tags.get('leisure') in ['park', 'garden', 'playground', 'dog_park', 'nature_reserve'] or \
              tags.get('landuse') in ['grass', 'recreation_ground', 'village_green']:
@@ -793,6 +816,29 @@ class OSMHandler(osmium.SimpleHandler):
                     
                     if poly.intersects(bounds_poly):
                         self.features['automotive_services'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Enhanced Natural Features (as relations) - Comprehensive coverage of terrain and landuse
+            elif (tags.get('natural') in ['forest', 'wood', 'grassland', 'cliff', 'scrub', 'heath', 'sand', 'rock', 'scree', 'bare_rock'] or
+                  tags.get('landuse') in ['residential', 'commercial', 'industrial', 'retail', 'farmland', 'forest', 'orchard', 'vineyard', 'cemetery', 'military', 'quarry', 'construction', 'allotments']):
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if natural feature area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['natural_features'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id}
                         })
