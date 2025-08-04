@@ -15,6 +15,8 @@ class OSMHandler(osmium.SimpleHandler):
             'roads': [],
             'healthcare': [],
             'food_sustenance': [],
+            'financial_services': [],
+            'shopping_retail': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -66,6 +68,21 @@ class OSMHandler(osmium.SimpleHandler):
         elif (tags.get('amenity') in ['restaurant', 'cafe', 'fast_food', 'bar', 'pub', 'food_court', 'ice_cream', 'biergarten', 'nightclub'] or
               tags.get('shop') in ['alcohol', 'bakery', 'beverages', 'butcher', 'cheese', 'chocolate', 'coffee', 'confectionery', 'convenience', 'deli', 'farm', 'frozen_food', 'greengrocer', 'health_food', 'nuts', 'pastry', 'seafood', 'tea', 'wine', 'supermarket']):
             self.features['food_sustenance'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Financial Services establishments
+        elif tags.get('amenity') in ['bank', 'atm', 'post_office', 'bureau_de_change', 'money_transfer', 'payment_centre']:
+            self.features['financial_services'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Shopping & Retail establishments (shop and amenity-based)
+        elif (tags.get('shop') in ['department_store', 'general', 'kiosk', 'mall', 'supermarket', 'wholesale', 'variety_store', 'second_hand', 'charity', 'clothes', 'shoes', 'bag', 'boutique', 'fabric', 'jewelry', 'leather', 'watches', 'tailor', 'computer', 'electronics', 'mobile_phone', 'hifi', 'telecommunication', 'beauty', 'chemist', 'cosmetics', 'hairdresser', 'massage', 'optician', 'perfumery', 'tattoo', 'furniture', 'garden_centre', 'hardware', 'doityourself', 'florist', 'appliance'] or
+              tags.get('amenity') in ['marketplace', 'vending_machine']):
+            self.features['shopping_retail'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
             })
@@ -318,6 +335,33 @@ class OSMHandler(osmium.SimpleHandler):
             except Exception:
                 pass
         
+        # Financial Services establishments (as areas/buildings)
+        elif tags.get('amenity') in ['bank', 'atm', 'post_office', 'bureau_de_change', 'money_transfer', 'payment_centre']:
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['financial_services'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
+        # Shopping & Retail establishments (as areas/buildings)
+        elif (tags.get('shop') in ['department_store', 'general', 'kiosk', 'mall', 'supermarket', 'wholesale', 'variety_store', 'second_hand', 'charity', 'clothes', 'shoes', 'bag', 'boutique', 'fabric', 'jewelry', 'leather', 'watches', 'tailor', 'computer', 'electronics', 'mobile_phone', 'hifi', 'telecommunication', 'beauty', 'chemist', 'cosmetics', 'hairdresser', 'massage', 'optician', 'perfumery', 'tattoo', 'furniture', 'garden_centre', 'hardware', 'doityourself', 'florist', 'appliance'] or
+              tags.get('amenity') in ['marketplace', 'vending_machine']):
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['shopping_retail'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
         # Parks and leisure areas
         elif tags.get('leisure') in ['park', 'garden', 'playground', 'dog_park', 'nature_reserve'] or \
              tags.get('landuse') in ['grass', 'recreation_ground', 'village_green']:
@@ -477,6 +521,51 @@ class OSMHandler(osmium.SimpleHandler):
                     
                     if poly.intersects(bounds_poly):
                         self.features['food_sustenance'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Financial Services establishments (as relations)
+            elif tags.get('amenity') in ['bank', 'atm', 'post_office', 'bureau_de_change', 'money_transfer', 'payment_centre']:
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if financial services area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['financial_services'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Shopping & Retail establishments (as relations)
+            elif (tags.get('shop') in ['department_store', 'general', 'kiosk', 'mall', 'supermarket', 'wholesale', 'variety_store', 'second_hand', 'charity', 'clothes', 'shoes', 'bag', 'boutique', 'fabric', 'jewelry', 'leather', 'watches', 'tailor', 'computer', 'electronics', 'mobile_phone', 'hifi', 'telecommunication', 'beauty', 'chemist', 'cosmetics', 'hairdresser', 'massage', 'optician', 'perfumery', 'tattoo', 'furniture', 'garden_centre', 'hardware', 'doityourself', 'florist', 'appliance'] or
+                  tags.get('amenity') in ['marketplace', 'vending_machine']):
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if shopping/retail area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['shopping_retail'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id}
                         })

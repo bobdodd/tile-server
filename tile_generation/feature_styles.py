@@ -373,5 +373,101 @@ FEATURE_STYLES = {
             # Default food establishment style
             'default': {'fill': '#ffcc80', 'stroke': '#ff8a65', 'stroke_width': 1.5, 'radius': 5}
         }
+    },
+    
+    'financial_services': {
+        'tags': {
+            # Financial Amenities
+            'amenity': ['bank', 'atm', 'post_office', 'bureau_de_change', 'money_transfer', 'payment_centre']
+        },
+        'styles': {
+            # Major Financial Institutions - Blue/green palette for trust and stability
+            'bank': {'fill': '#bbdefb', 'stroke': '#1976d2', 'stroke_width': 2.5, 'radius': 8},
+            'atm': {'fill': '#c8e6c9', 'stroke': '#388e3c', 'stroke_width': 2, 'radius': 4},
+            
+            # Postal Services - Traditional red palette
+            'post_office': {'fill': '#ffcdd2', 'stroke': '#d32f2f', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Currency & Money Services - Gold/yellow palette for money
+            'bureau_de_change': {'fill': '#fff59d', 'stroke': '#f57f17', 'stroke_width': 2, 'radius': 6},
+            'money_transfer': {'fill': '#ffe082', 'stroke': '#ff8f00', 'stroke_width': 2, 'radius': 6},
+            'payment_centre': {'fill': '#ffcc80', 'stroke': '#ef6c00', 'stroke_width': 2, 'radius': 6},
+            
+            # Default financial service style
+            'default': {'fill': '#bbdefb', 'stroke': '#1976d2', 'stroke_width': 2, 'radius': 6}
+        }
+    },
+    
+    'shopping_retail': {
+        'tags': {
+            # General Retail
+            'shop': ['department_store', 'general', 'kiosk', 'mall', 'supermarket', 'wholesale', 
+                    'variety_store', 'second_hand', 'charity',
+                    # Clothing & Fashion
+                    'clothes', 'shoes', 'bag', 'boutique', 'fabric', 'jewelry', 'leather', 'watches', 'tailor',
+                    # Electronics & Technology
+                    'computer', 'electronics', 'mobile_phone', 'hifi', 'telecommunication',
+                    # Health & Beauty
+                    'beauty', 'chemist', 'cosmetics', 'hairdresser', 'massage', 'optician', 'perfumery', 'tattoo',
+                    # Home & Garden
+                    'furniture', 'garden_centre', 'hardware', 'doityourself', 'florist', 'appliance'],
+            # Markets and retail amenities
+            'amenity': ['marketplace', 'vending_machine']
+        },
+        'styles': {
+            # General Retail - Blue palette for major retail
+            'department_store': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 3, 'radius': 10},
+            'mall': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 12},
+            'supermarket': {'fill': '#e0f2f1', 'stroke': '#00796b', 'stroke_width': 2.5, 'radius': 8},
+            'general': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 2, 'radius': 6},
+            'wholesale': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2, 'radius': 7},
+            'variety_store': {'fill': '#fff3e0', 'stroke': '#f57c00', 'stroke_width': 2, 'radius': 6},
+            'kiosk': {'fill': '#ffebee', 'stroke': '#d32f2f', 'stroke_width': 1.5, 'radius': 4},
+            'second_hand': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 1.5, 'radius': 5},
+            'charity': {'fill': '#e8f5e8', 'stroke': '#388e3c', 'stroke_width': 1.5, 'radius': 5},
+            
+            # Clothing & Fashion - Purple/pink palette for fashion
+            'clothes': {'fill': '#f8bbd9', 'stroke': '#e91e63', 'stroke_width': 2, 'radius': 6},
+            'shoes': {'fill': '#f3e5f5', 'stroke': '#9c27b0', 'stroke_width': 2, 'radius': 5},
+            'bag': {'fill': '#ede7f6', 'stroke': '#673ab7', 'stroke_width': 1.5, 'radius': 4},
+            'boutique': {'fill': '#fce4ec', 'stroke': '#ad1457', 'stroke_width': 2.5, 'radius': 6},
+            'fabric': {'fill': '#e1bee7', 'stroke': '#8e24aa', 'stroke_width': 1.5, 'radius': 4},
+            'jewelry': {'fill': '#fff59d', 'stroke': '#fbc02d', 'stroke_width': 2.5, 'radius': 5},
+            'leather': {'fill': '#d7ccc8', 'stroke': '#6d4c41', 'stroke_width': 2, 'radius': 5},
+            'watches': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 2, 'radius': 4},
+            'tailor': {'fill': '#f8bbd9', 'stroke': '#c2185b', 'stroke_width': 1.5, 'radius': 4},
+            
+            # Electronics & Technology - Orange/red palette for tech
+            'electronics': {'fill': '#ffccbc', 'stroke': '#ff5722', 'stroke_width': 2.5, 'radius': 7},
+            'computer': {'fill': '#ffe0b2', 'stroke': '#f57c00', 'stroke_width': 2.5, 'radius': 6},
+            'mobile_phone': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2, 'radius': 5},
+            'hifi': {'fill': '#ffccbc', 'stroke': '#d84315', 'stroke_width': 2, 'radius': 5},
+            'telecommunication': {'fill': '#ffe0b2', 'stroke': '#e65100', 'stroke_width': 2, 'radius': 6},
+            
+            # Health & Beauty - Light green/teal palette for wellness
+            'beauty': {'fill': '#e0f2f1', 'stroke': '#00796b', 'stroke_width': 2, 'radius': 5},
+            'chemist': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 2.5, 'radius': 6},
+            'cosmetics': {'fill': '#f1f8e9', 'stroke': '#558b2f', 'stroke_width': 2, 'radius': 5},
+            'hairdresser': {'fill': '#e0f7fa', 'stroke': '#0097a7', 'stroke_width': 2, 'radius': 5},
+            'massage': {'fill': '#e8f5e8', 'stroke': '#388e3c', 'stroke_width': 1.5, 'radius': 4},
+            'optician': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 2, 'radius': 5},
+            'perfumery': {'fill': '#fce4ec', 'stroke': '#ad1457', 'stroke_width': 1.5, 'radius': 4},
+            'tattoo': {'fill': '#ffebee', 'stroke': '#c62828', 'stroke_width': 1.5, 'radius': 4},
+            
+            # Home & Garden - Brown/green palette for home improvement
+            'furniture': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 2.5, 'radius': 7},
+            'garden_centre': {'fill': '#c8e6c9', 'stroke': '#388e3c', 'stroke_width': 2.5, 'radius': 7},
+            'hardware': {'fill': '#eceff1', 'stroke': '#455a64', 'stroke_width': 2.5, 'radius': 6},
+            'doityourself': {'fill': '#fff8e1', 'stroke': '#f9a825', 'stroke_width': 2.5, 'radius': 7},
+            'florist': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 2, 'radius': 5},
+            'appliance': {'fill': '#e1f5fe', 'stroke': '#0288d1', 'stroke_width': 2, 'radius': 6},
+            
+            # Markets and retail amenities
+            'marketplace': {'fill': '#fff3e0', 'stroke': '#f57c00', 'stroke_width': 3, 'radius': 10},
+            'vending_machine': {'fill': '#e0e0e0', 'stroke': '#616161', 'stroke_width': 1, 'radius': 2},
+            
+            # Default retail style  
+            'default': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 2, 'radius': 6}
+        }
     }
 }
