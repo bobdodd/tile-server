@@ -10,8 +10,8 @@ from datetime import datetime
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
-# Global progress storage for active operations
-active_operations = {}
+# Import shared state
+from admin.shared_state import active_operations
 
 @dashboard_bp.route('/')
 def index():

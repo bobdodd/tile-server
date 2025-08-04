@@ -26,7 +26,7 @@ def index():
         total_regions = len(regions)
         
         # Check for active operations
-        from admin.routes.dashboard import active_operations
+        from admin.shared_state import active_operations
         active_ops = dict(active_operations)  # Copy to avoid race conditions
         
         stats = {
@@ -50,7 +50,7 @@ def index():
 def queue_status():
     """Show current generation queue and active operations."""
     try:
-        from admin.routes.dashboard import active_operations
+        from admin.shared_state import active_operations
         
         # Get active operations
         active_ops = []
@@ -164,7 +164,7 @@ def clear_cache():
 def cancel_operation(operation_id):
     """Cancel an active generation operation."""
     try:
-        from admin.routes.dashboard import active_operations
+        from admin.shared_state import active_operations
         
         if operation_id in active_operations:
             # Mark as cancelled (the background thread should check this)
