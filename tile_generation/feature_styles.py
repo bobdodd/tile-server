@@ -533,5 +533,35 @@ FEATURE_STYLES = {
             # Default emergency service style
             'default': {'fill': '#e8eaf6', 'stroke': '#283593', 'stroke_width': 2.5, 'radius': 7}
         }
+    },
+    
+    'tourism_accommodation': {
+        'tags': {
+            # Tourism and accommodation facilities for visitors and travelers
+            'tourism': ['hotel', 'hostel', 'guest_house', 'camp_site', 'attraction', 'museum', 'gallery', 'viewpoint', 'information', 'artwork', 'zoo']
+        },
+        'styles': {
+            # Accommodation - Blue palette for hospitality and trust
+            'hotel': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 3, 'radius': 10},
+            'hostel': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 2.5, 'radius': 8},
+            'guest_house': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2.5, 'radius': 8},
+            'camp_site': {'fill': '#f1f8e9', 'stroke': '#558b2f', 'stroke_width': 2.5, 'radius': 9},
+            
+            # Cultural Attractions - Purple palette for arts and culture
+            'attraction': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 3, 'radius': 12},
+            'museum': {'fill': '#ede7f6', 'stroke': '#512da8', 'stroke_width': 3, 'radius': 10},
+            'gallery': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2.5, 'radius': 9},
+            'artwork': {'fill': '#fff1f3', 'stroke': '#ad1457', 'stroke_width': 2, 'radius': 6},
+            
+            # Scenic & Information - Teal palette for exploration and guidance
+            'viewpoint': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 2.5, 'radius': 8},
+            'information': {'fill': '#e0f7fa', 'stroke': '#0097a7', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Entertainment Facilities - Red palette for excitement and activity
+            'zoo': {'fill': '#ffebee', 'stroke': '#d32f2f', 'stroke_width': 3, 'radius': 11},
+            
+            # Default tourism style
+            'default': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 2.5, 'radius': 8}
+        }
     }
 }

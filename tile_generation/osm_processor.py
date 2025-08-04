@@ -19,6 +19,7 @@ class OSMHandler(osmium.SimpleHandler):
             'shopping_retail': [],
             'public_facilities': [],
             'emergency_services': [],
+            'tourism_accommodation': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -100,6 +101,13 @@ class OSMHandler(osmium.SimpleHandler):
         elif (tags.get('amenity') in ['police', 'fire_station'] or
               tags.get('emergency') in ['phone', 'defibrillator', 'fire_hydrant', 'assembly_point', 'siren']):
             self.features['emergency_services'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Tourism & Accommodation - Comprehensive coverage of tourist facilities and lodging
+        elif tags.get('tourism') in ['hotel', 'hostel', 'guest_house', 'camp_site', 'attraction', 'museum', 'gallery', 'viewpoint', 'information', 'artwork', 'zoo']:
+            self.features['tourism_accommodation'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
             })
@@ -406,6 +414,19 @@ class OSMHandler(osmium.SimpleHandler):
             except Exception:
                 pass
         
+        # Tourism & Accommodation (as areas/buildings) - Comprehensive coverage
+        elif tags.get('tourism') in ['hotel', 'hostel', 'guest_house', 'camp_site', 'attraction', 'museum', 'gallery', 'viewpoint', 'information', 'artwork', 'zoo']:
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['tourism_accommodation'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
         # Parks and leisure areas
         elif tags.get('leisure') in ['park', 'garden', 'playground', 'dog_park', 'nature_reserve'] or \
              tags.get('landuse') in ['grass', 'recreation_ground', 'village_green']:
@@ -655,6 +676,28 @@ class OSMHandler(osmium.SimpleHandler):
                     
                     if poly.intersects(bounds_poly):
                         self.features['emergency_services'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Tourism & Accommodation (as relations) - Comprehensive coverage
+            elif tags.get('tourism') in ['hotel', 'hostel', 'guest_house', 'camp_site', 'attraction', 'museum', 'gallery', 'viewpoint', 'information', 'artwork', 'zoo']:
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if tourism/accommodation area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['tourism_accommodation'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id}
                         })
