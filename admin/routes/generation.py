@@ -46,7 +46,7 @@ def index():
         flash(f'Error loading generation status: {str(e)}', 'error')
         return render_template('admin/generation.html', stats={})
 
-@generation_bp.route('/queue')
+@generation_bp.route('/queue', endpoint='queue')
 def queue_status():
     """Show current generation queue and active operations."""
     try:

@@ -420,6 +420,12 @@ class TileBuilder:
         circle.set('role', 'img')
         circle.set('aria-label', self.generate_aria_label(properties))
         
+        # Add title element for hover tooltips
+        title_text = self.generate_aria_label(properties)
+        title_elem = Element('title')
+        title_elem.text = title_text
+        circle.insert(0, title_elem)  # Insert as first child
+        
         return circle
     
     def create_line_svg(self, geometry, styles, properties, bounds, feature_type):
@@ -460,7 +466,20 @@ class TileBuilder:
             group = Element('g')
             group.append(casing)
             group.append(path)
+            
+            # Add title element to the group for hover tooltips
+            title_text = self.generate_aria_label(properties)
+            title_elem = Element('title')
+            title_elem.text = title_text
+            group.insert(0, title_elem)  # Insert as first child
+            
             return group
+        
+        # Add title element for roads without casing
+        title_text = self.generate_aria_label(properties)
+        title_elem = Element('title')
+        title_elem.text = title_text
+        path.insert(0, title_elem)  # Insert as first child
         
         return path
     
@@ -492,6 +511,12 @@ class TileBuilder:
         # Add accessibility attributes
         polygon.set('role', 'img') 
         polygon.set('aria-label', self.generate_aria_label(properties))
+        
+        # Add title element for hover tooltips
+        title_text = self.generate_aria_label(properties)
+        title_elem = Element('title')
+        title_elem.text = title_text
+        polygon.insert(0, title_elem)  # Insert as first child
         
         return polygon
     
@@ -608,6 +633,20 @@ class TileBuilder:
             elif properties.get('healthcare'):
                 return properties.get('healthcare')
             return 'default'
+        elif feature_type == 'historic_cultural':
+            # Historic sites
+            if properties.get('historic'):
+                return properties.get('historic')
+            # Tourism & cultural attractions
+            elif properties.get('tourism') in ['museum', 'gallery', 'artwork', 'attraction', 'theme_park']:
+                return properties.get('tourism')
+            # Cultural centers
+            elif properties.get('cultural'):
+                return properties.get('cultural')
+            # Cemetery/burial sites
+            elif properties.get('amenity') == 'grave_yard':
+                return 'grave_yard'
+            return 'default'
         
         return 'default'
     
@@ -629,6 +668,20 @@ class TileBuilder:
                 feature_type = 'road'
         elif properties.get('amenity'):
             feature_type = properties.get('amenity').replace('_', ' ')
+        elif properties.get('shop'):
+            # Shop/retail establishments
+            if properties.get('shop') == 'department_store':
+                feature_type = 'department store'
+            elif properties.get('shop') == 'convenience':
+                feature_type = 'convenience store'
+            elif properties.get('shop') == 'mobile_phone':
+                feature_type = 'mobile phone store'
+            elif properties.get('shop') == 'garden_centre':
+                feature_type = 'garden centre'
+            elif properties.get('shop') == 'second_hand':
+                feature_type = 'second hand store'
+            else:
+                feature_type = properties.get('shop').replace('_', ' ')
         elif properties.get('healthcare'):
             feature_type = properties.get('healthcare').replace('_', ' ')
         elif properties.get('railway'):
@@ -696,6 +749,74 @@ class TileBuilder:
                 feature_type = 'salt pond'
             else:
                 feature_type = properties.get('landuse').replace('_', ' ')
+        elif properties.get('historic'):
+            # Historic sites with specific labels
+            if properties.get('historic') == 'archaeological_site':
+                feature_type = 'archaeological site'
+            elif properties.get('historic') == 'wayside_cross':
+                feature_type = 'wayside cross'
+            elif properties.get('historic') == 'wayside_shrine':
+                feature_type = 'wayside shrine'
+            elif properties.get('historic') == 'blue_plaque':
+                feature_type = 'blue plaque'
+            elif properties.get('historic') == 'ghost_sign':
+                feature_type = 'ghost sign'
+            elif properties.get('historic') == 'optical_telegraph':
+                feature_type = 'optical telegraph'
+            elif properties.get('historic') == 'highwater_mark':
+                feature_type = 'high water mark'
+            elif properties.get('historic') == 'pa_system':
+                feature_type = 'PA system'
+            elif properties.get('historic') == 'boundary_stone':
+                feature_type = 'boundary stone'
+            elif properties.get('historic') == 'railway_car':
+                feature_type = 'historic railway car'
+            else:
+                feature_type = properties.get('historic').replace('_', ' ')
+        elif properties.get('tourism') in ['museum', 'gallery', 'artwork', 'attraction', 'theme_park']:
+            if properties.get('tourism') == 'theme_park':
+                feature_type = 'theme park'
+            else:
+                feature_type = properties.get('tourism')
+        elif properties.get('cultural'):
+            if properties.get('cultural') == 'cultural_centre':
+                feature_type = 'cultural centre'
+            elif properties.get('cultural') == 'arts_centre':
+                feature_type = 'arts centre'
+            elif properties.get('cultural') == 'community_centre':
+                feature_type = 'community centre'
+            else:
+                feature_type = properties.get('cultural').replace('_', ' ')
+        elif properties.get('emergency'):
+            # Emergency services and equipment
+            if properties.get('emergency') == 'fire_hydrant':
+                feature_type = 'fire hydrant'
+            elif properties.get('emergency') == 'defibrillator':
+                feature_type = 'defibrillator'
+            elif properties.get('emergency') == 'phone':
+                feature_type = 'emergency phone'
+            else:
+                feature_type = properties.get('emergency').replace('_', ' ')
+        elif properties.get('barrier'):
+            # Barriers and access control
+            if properties.get('barrier') == 'lift_gate':
+                feature_type = 'lift gate'
+            elif properties.get('barrier') == 'toll_booth':
+                feature_type = 'toll booth'
+            elif properties.get('barrier') == 'swing_gate':
+                feature_type = 'swing gate'
+            elif properties.get('barrier') == 'jersey_barrier':
+                feature_type = 'jersey barrier'
+            else:
+                feature_type = properties.get('barrier').replace('_', ' ')
+        elif properties.get('information'):
+            # Tourism information (more specific than the general tourism check)
+            if properties.get('information') == 'guidepost':
+                feature_type = 'guidepost'
+            elif properties.get('information') == 'map':
+                feature_type = 'information map'
+            else:
+                feature_type = f"information {properties.get('information')}"
         
         if name and feature_type:
             return f"{name}, {feature_type}"

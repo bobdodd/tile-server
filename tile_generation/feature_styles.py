@@ -1064,6 +1064,90 @@ FEATURE_STYLES = {
             
             # Default natural feature style
             'default': {'fill': '#c8e6c9', 'stroke': '#2e7d32', 'stroke_width': 2, 'radius': 8}
+        },
+        
+        # Historic & Cultural Sites - Comprehensive coverage of historical sites, monuments, cultural attractions, and archaeological features
+        'historic_cultural': {
+            # Major Historical Sites - Distinctive purple/brown palette for significant historical locations
+            'archaeological_site': {'fill': '#e1bee7', 'stroke': '#6a1b9a', 'stroke_width': 3, 'radius': 12},
+            'battlefield': {'fill': '#ffcdd2', 'stroke': '#c62828', 'stroke_width': 3, 'radius': 10},
+            'castle': {'fill': '#d1c4e9', 'stroke': '#512da8', 'stroke_width': 4, 'radius': 15},
+            'fort': {'fill': '#f8bbd9', 'stroke': '#880e4f', 'stroke_width': 3.5, 'radius': 12},
+            'ruins': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 2.5, 'radius': 10},
+            'heritage': {'fill': '#fff3e0', 'stroke': '#e65100', 'stroke_width': 3, 'radius': 11},
+            
+            # Religious Historical Sites - Warm purple palette for religious heritage
+            'church': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 3, 'radius': 10},
+            'monastery': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 11},
+            'wayside_cross': {'fill': '#fce4ec', 'stroke': '#ad1457', 'stroke_width': 2.5, 'radius': 8},
+            'wayside_shrine': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Monuments & Memorials - Dignified gray/blue palette for commemorative structures
+            'monument': {'fill': '#eceff1', 'stroke': '#37474f', 'stroke_width': 3.5, 'radius': 12},
+            'memorial': {'fill': '#f5f5f5', 'stroke': '#424242', 'stroke_width': 3, 'radius': 10},
+            'obelisk': {'fill': '#e0e0e0', 'stroke': '#424242', 'stroke_width': 3, 'radius': 9},
+            'statue': {'fill': '#eeeeee', 'stroke': '#616161', 'stroke_width': 2.5, 'radius': 8},
+            'plaque': {'fill': '#f5f5f5', 'stroke': '#757575', 'stroke_width': 2, 'radius': 6},
+            'blue_plaque': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 2, 'radius': 6},
+            'cross': {'fill': '#fff3e0', 'stroke': '#f57c00', 'stroke_width': 2.5, 'radius': 7},
+            'tomb': {'fill': '#f9fbe7', 'stroke': '#827717', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Historical Buildings & Structures - Earth tones for built heritage
+            'building': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 2.5, 'radius': 11},
+            'manor': {'fill': '#fafafa', 'stroke': '#616161', 'stroke_width': 3, 'radius': 13},
+            'tower': {'fill': '#efebe9', 'stroke': '#6d4c41', 'stroke_width': 3, 'radius': 10},
+            'city_gate': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3.5, 'radius': 11},
+            'citywalls': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 4, 'radius': 8},
+            'bridge': {'fill': '#e1f5fe', 'stroke': '#0277bd', 'stroke_width': 3, 'radius': 12},
+            'aqueduct': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 3, 'radius': 10},
+            
+            # Military Historical Items - Olive/green palette for military heritage
+            'bunker': {'fill': '#dcedc8', 'stroke': '#558b2f', 'stroke_width': 3, 'radius': 9},
+            'pillory': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2.5, 'radius': 7},
+            'stocks': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 2.5, 'radius': 7},
+            'gallows': {'fill': '#f5f5f5', 'stroke': '#424242', 'stroke_width': 3, 'radius': 8},
+            
+            # Historical Vehicles & Equipment - Dark palette for preserved equipment
+            'aircraft': {'fill': '#cfd8dc', 'stroke': '#455a64', 'stroke_width': 3, 'radius': 12},
+            'anchor': {'fill': '#b0bec5', 'stroke': '#37474f', 'stroke_width': 2.5, 'radius': 8},
+            'cannon': {'fill': '#90a4ae', 'stroke': '#263238', 'stroke_width': 3, 'radius': 9},
+            'locomotive': {'fill': '#607d8b', 'stroke': '#263238', 'stroke_width': 3.5, 'radius': 13},
+            'ship': {'fill': '#b3e5fc', 'stroke': '#0277bd', 'stroke_width': 3, 'radius': 14},
+            'tank': {'fill': '#c8e6c9', 'stroke': '#2e7d32', 'stroke_width': 3, 'radius': 10},
+            'vehicle': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 2.5, 'radius': 9},
+            'railway_car': {'fill': '#ffecb3', 'stroke': '#f57f17', 'stroke_width': 3, 'radius': 11},
+            
+            # Historical Markers & Signs - Yellow/amber palette for informational elements
+            'milestone': {'fill': '#fff9c4', 'stroke': '#f9a825', 'stroke_width': 2, 'radius': 6},
+            'stone': {'fill': '#f5f5f5', 'stroke': '#757575', 'stroke_width': 2, 'radius': 7},
+            'ghost_sign': {'fill': '#fff3e0', 'stroke': '#ff8f00', 'stroke_width': 2, 'radius': 8},
+            'optical_telegraph': {'fill': '#e8f5e8', 'stroke': '#388e3c', 'stroke_width': 2.5, 'radius': 9},
+            'highwater_mark': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 2, 'radius': 6},
+            'pa_system': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2, 'radius': 7},
+            'boundary_stone': {'fill': '#efebe9', 'stroke': '#6d4c41', 'stroke_width': 2.5, 'radius': 6},
+            'wreck': {'fill': '#cfd8dc', 'stroke': '#546e7a', 'stroke_width': 3, 'radius': 11},
+            
+            # Tourism & Cultural Attractions - Bright palette for visitor attractions
+            'museum': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 3, 'radius': 12},
+            'gallery': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 3, 'radius': 11},
+            'artwork': {'fill': '#fce4ec', 'stroke': '#e91e63', 'stroke_width': 2.5, 'radius': 9},
+            'attraction': {'fill': '#fff3e0', 'stroke': '#ff8f00', 'stroke_width': 3, 'radius': 13},
+            'theme_park': {'fill': '#ffebee', 'stroke': '#f44336', 'stroke_width': 3.5, 'radius': 15},
+            
+            # Cultural Centers - Blue/purple palette for community cultural facilities
+            'cultural_centre': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 12},
+            'arts_centre': {'fill': '#f3e5f5', 'stroke': '#9c27b0', 'stroke_width': 3, 'radius': 11},
+            'community_centre': {'fill': '#e3f2fd', 'stroke': '#2196f3', 'stroke_width': 3, 'radius': 12},
+            'theatre': {'fill': '#fce4ec', 'stroke': '#e91e63', 'stroke_width': 3, 'radius': 11},
+            'cinema': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 3, 'radius': 10},
+            'library': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 3, 'radius': 11},
+            'archive': {'fill': '#f9fbe7', 'stroke': '#9e9d24', 'stroke_width': 2.5, 'radius': 10},
+            
+            # Cemetery & Burial Grounds - Respectful gray palette
+            'grave_yard': {'fill': '#f5f5f5', 'stroke': '#616161', 'stroke_width': 2.5, 'radius': 10},
+            
+            # Default historic/cultural style
+            'default': {'fill': '#e1bee7', 'stroke': '#7b1fa2', 'stroke_width': 2.5, 'radius': 9}
         }
     }
 }
