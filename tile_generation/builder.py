@@ -647,6 +647,17 @@ class TileBuilder:
             elif properties.get('amenity') == 'grave_yard':
                 return 'grave_yard'
             return 'default'
+        elif feature_type == 'craft_specialized_services':
+            return properties.get('craft', 'default')
+        elif feature_type == 'communication_technology':
+            # Determine communication/tech subtype based on tags
+            if properties.get('amenity') in ['post_box', 'telephone']:
+                return properties.get('amenity')
+            elif properties.get('telecom') == 'data_center':
+                return 'data_center'
+            elif properties.get('communication') == 'line':
+                return 'line'
+            return 'default'
         
         return 'default'
     
@@ -817,6 +828,20 @@ class TileBuilder:
                 feature_type = 'information map'
             else:
                 feature_type = f"information {properties.get('information')}"
+        elif properties.get('craft'):
+            # Craft and specialized services
+            craft_type = properties.get('craft').replace('_', ' ')
+            feature_type = f"{craft_type} workshop"
+        elif properties.get('amenity') in ['post_box', 'telephone']:
+            # Communication amenities
+            if properties.get('amenity') == 'post_box':
+                feature_type = 'post box'
+            elif properties.get('amenity') == 'telephone':
+                feature_type = 'public telephone'
+        elif properties.get('telecom') == 'data_center':
+            feature_type = 'data center'
+        elif properties.get('communication') == 'line':
+            feature_type = 'communication line'
         
         if name and feature_type:
             return f"{name}, {feature_type}"

@@ -28,6 +28,8 @@ class OSMHandler(osmium.SimpleHandler):
             'man_made_structures': [],
             'barriers_boundaries': [],
             'historic_cultural': [],
+            'craft_specialized_services': [],
+            'communication_technology': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -140,6 +142,21 @@ class OSMHandler(osmium.SimpleHandler):
         # Office & Professional Services - Comprehensive coverage of business and professional facilities
         elif tags.get('office') in ['company', 'government', 'lawyer', 'estate_agent', 'insurance', 'architect', 'accountant', 'employment_agency', 'consulting', 'financial', 'it', 'research', 'ngo', 'association', 'diplomatic', 'educational_institution', 'foundation', 'political_party', 'religion', 'tax_advisor', 'therapist', 'travel_agent', 'physician', 'coworking', 'notary', 'newspaper', 'advertising_agency', 'logistics', 'construction_company', 'energy_supplier', 'guide', 'water_utility', 'property_management', 'telecommunication']:
             self.features['office_professional'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Craft & Specialized Services - Workshops, artisans, and small production facilities
+        elif tags.get('craft') in ['brewery', 'carpenter', 'electrician', 'plumber', 'tailor', 'shoemaker']:
+            self.features['craft_specialized_services'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Communication & Technology - Communication infrastructure and technology services
+        elif (tags.get('amenity') in ['post_box', 'telephone'] or
+              tags.get('telecom') in ['data_center']):
+            self.features['communication_technology'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
             })
@@ -539,6 +556,41 @@ class OSMHandler(osmium.SimpleHandler):
                     geom = wkb.create_polygon(w)
                     poly = loads(geom, hex=True)
                     self.features['office_professional'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
+        # Craft & Specialized Services (as areas/workshops) - Workshops, artisans, and small production facilities
+        elif tags.get('craft') in ['brewery', 'carpenter', 'electrician', 'plumber', 'tailor', 'shoemaker']:
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['craft_specialized_services'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
+        # Communication & Technology (as lines/areas) - Communication infrastructure and technology services
+        elif tags.get('communication') == 'line' or tags.get('telecom') in ['data_center']:
+            try:
+                if tags.get('communication') == 'line':
+                    # Communication lines as linear features
+                    geom = wkb.create_linestring(w)
+                    line = loads(geom, hex=True)
+                    self.features['communication_technology'].append({
+                        'geometry': line,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+                elif w.is_closed() and tags.get('telecom') == 'data_center':
+                    # Data centers as area features
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['communication_technology'].append({
                         'geometry': poly,
                         'properties': {**tags, 'osm_id': w.id}
                     })
@@ -982,6 +1034,50 @@ class OSMHandler(osmium.SimpleHandler):
                     
                     if poly.intersects(bounds_poly):
                         self.features['office_professional'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Craft & Specialized Services (as relations) - Workshops, artisans, and small production facilities
+            elif tags.get('craft') in ['brewery', 'carpenter', 'electrician', 'plumber', 'tailor', 'shoemaker']:
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if craft area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['craft_specialized_services'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Communication & Technology (as relations) - Communication infrastructure and technology services
+            elif tags.get('telecom') in ['data_center']:
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if communication area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['communication_technology'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id}
                         })

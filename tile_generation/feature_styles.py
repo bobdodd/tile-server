@@ -1149,5 +1149,51 @@ FEATURE_STYLES = {
             # Default historic/cultural style
             'default': {'fill': '#e1bee7', 'stroke': '#7b1fa2', 'stroke_width': 2.5, 'radius': 9}
         }
+    },
+    'craft_specialized_services': {
+        'tags': {
+            # Craft and specialized services covering workshops, artisans, and small production
+            'craft': ['brewery', 'carpenter', 'electrician', 'plumber', 'tailor', 'shoemaker']
+        },
+        'styles': {
+            # Food & Beverage Production - Warm amber palette for breweries
+            'brewery': {'fill': '#fff8e1', 'stroke': '#ff8f00', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Construction & Building Trades - Earth tone palette for skilled trades
+            'carpenter': {'fill': '#efebe9', 'stroke': '#6d4c41', 'stroke_width': 2.5, 'radius': 7},
+            'electrician': {'fill': '#fff3e0', 'stroke': '#ff6f00', 'stroke_width': 2.5, 'radius': 7},
+            'plumber': {'fill': '#e1f5fe', 'stroke': '#0288d1', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Textile & Fashion Trades - Soft purple palette for personal crafts
+            'tailor': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 2, 'radius': 6},
+            'shoemaker': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2, 'radius': 6},
+            
+            # Default craft style
+            'default': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2, 'radius': 6}
+        }
+    },
+    'communication_technology': {
+        'tags': {
+            # Communication and technology infrastructure
+            'amenity': ['post_box', 'telephone'],
+            'telecom': ['data_center'],
+            'communication': ['line']
+        },
+        'styles': {
+            # Postal Services - Traditional red palette for mail infrastructure
+            'post_box': {'fill': '#ffcdd2', 'stroke': '#d32f2f', 'stroke_width': 2, 'radius': 5},
+            
+            # Public Communication - Blue palette for public phone services
+            'telephone': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 2, 'radius': 5},
+            
+            # Data Infrastructure - Modern gray/blue palette for tech infrastructure
+            'data_center': {'fill': '#f5f5f5', 'stroke': '#424242', 'stroke_width': 3, 'radius': 12},
+            
+            # Communication Lines - Thin lines for infrastructure
+            'line': {'width': 2, 'color': '#9e9e9e', 'casing': '#616161', 'casing_width': 3, 'dasharray': '5,5'},
+            
+            # Default communication style
+            'default': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 2, 'radius': 6}
+        }
     }
 }
