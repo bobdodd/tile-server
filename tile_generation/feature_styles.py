@@ -123,6 +123,157 @@ FEATURE_STYLES = {
             'default': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 1.5}
         }
     },
+    
+    'sensory_accessibility': {
+        'tags': {
+            'tactile_paving': ['yes', 'no'],
+            'traffic_signals:sound': ['yes'],
+            'traffic_signals:vibration': ['yes'],
+            'acoustic': ['voice_description'],
+            'braille': ['yes'],
+            'audio_loop': ['yes'],
+            'sign_language': ['yes']
+        },
+        'styles': {
+            # Tactile features - Yellow/orange palette for tactile navigation
+            'tactile_paving_yes': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 3, 'radius': 8},
+            'tactile_paving_no': {'fill': '#fafafa', 'stroke': '#9e9e9e', 'stroke_width': 2, 'radius': 6, 'dasharray': '3,2'},
+            
+            # Audio signals - Blue palette for audio assistance
+            'traffic_signals_sound': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 3, 'radius': 10},
+            'traffic_signals_vibration': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 9},
+            'acoustic_voice': {'fill': '#e1f5fe', 'stroke': '#0277bd', 'stroke_width': 2.5, 'radius': 8},
+            'audio_loop': {'fill': '#b3e5fc', 'stroke': '#0288d1', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Visual/tactile text - Purple palette for text-based accessibility
+            'braille': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 2.5, 'radius': 7},
+            'sign_language': {'fill': '#ede7f6', 'stroke': '#673ab7', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Default sensory accessibility
+            'default': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 2, 'radius': 6}
+        }
+    },
+    
+    'accessible_facilities': {
+        'tags': {
+            'toilets:wheelchair': ['yes', 'no'],
+            'changing_table': ['yes', 'no'],
+            'elevator': ['yes', 'no'],
+            'escalator': ['yes', 'no'],
+            'conveying': ['yes', 'no'],
+            'automatic_door': ['yes', 'no'],
+            'door:width': True,
+            'kerb:height': True,
+            'incline': True,
+            'highway': ['elevator', 'escalator']
+        },
+        'styles': {
+            # Toilet facilities - Green palette for sanitary facilities
+            'toilets_wheelchair_yes': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 3, 'radius': 9},
+            'toilets_wheelchair_no': {'fill': '#ffebee', 'stroke': '#c62828', 'stroke_width': 2, 'radius': 7, 'dasharray': '3,2'},
+            'changing_table_yes': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 2.5, 'radius': 8},
+            'changing_table_no': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2, 'radius': 6, 'dasharray': '3,2'},
+            
+            # Vertical transport - Teal palette for elevators/escalators
+            'elevator_yes': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 3, 'radius': 10},
+            'elevator_no': {'fill': '#ffebee', 'stroke': '#c62828', 'stroke_width': 2, 'radius': 8, 'dasharray': '3,2'},
+            'elevator': {'fill': '#e0f7fa', 'stroke': '#00838f', 'stroke_width': 3, 'radius': 10},
+            'escalator_yes': {'fill': '#b2ebf2', 'stroke': '#00acc1', 'stroke_width': 2.5, 'radius': 9},
+            'escalator_no': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2, 'radius': 7, 'dasharray': '3,2'},
+            'escalator': {'fill': '#b3e5fc', 'stroke': '#0277bd', 'stroke_width': 2.5, 'radius': 9},
+            'conveying_yes': {'fill': '#e0f7fa', 'stroke': '#0097a7', 'stroke_width': 2.5, 'radius': 8},
+            'conveying_no': {'fill': '#ffcdd2', 'stroke': '#d32f2f', 'stroke_width': 2, 'radius': 6, 'dasharray': '3,2'},
+            
+            # Door accessibility - Orange palette for entrance features
+            'automatic_door_yes': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2.5, 'radius': 8},
+            'automatic_door_no': {'fill': '#eceff1', 'stroke': '#455a64', 'stroke_width': 2, 'radius': 6, 'dasharray': '3,2'},
+            'door_width': {'fill': '#ffe0b2', 'stroke': '#f57c00', 'stroke_width': 2, 'radius': 7},
+            
+            # Surface accessibility - Brown palette for ground conditions
+            'kerb_height': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 2, 'radius': 6},
+            'incline': {'fill': '#d7ccc8', 'stroke': '#6d4c41', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Default accessible facility
+            'default': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2, 'radius': 7}
+        }
+    },
+    
+    'mobility_access': {
+        'tags': {
+            'wheelchair': ['yes', 'no', 'limited', 'designated'],
+            'ramp': ['yes', 'no'],
+            'ramp:wheelchair': ['yes', 'no'],
+            'ramp:stroller': ['yes', 'no'],
+            'ramp:bicycle': ['yes', 'no'],
+            'step_count': True,
+            'handrail': ['yes', 'no'],
+            'handrail:center': ['yes', 'no'],
+            'handrail:left': ['yes', 'no'],
+            'handrail:right': ['yes', 'no']
+        },
+        'styles': {
+            # Wheelchair accessibility - Green gradient for accessibility levels
+            'wheelchair_yes': {'fill': '#c8e6c9', 'stroke': '#1b5e20', 'stroke_width': 3, 'radius': 10},
+            'wheelchair_limited': {'fill': '#fff9c4', 'stroke': '#f57f17', 'stroke_width': 2.5, 'radius': 8},
+            'wheelchair_no': {'fill': '#ffcdd2', 'stroke': '#c62828', 'stroke_width': 2, 'radius': 7, 'dasharray': '3,2'},
+            'wheelchair_designated': {'fill': '#a5d6a7', 'stroke': '#2e7d32', 'stroke_width': 3.5, 'radius': 11},
+            
+            # Ramp accessibility - Blue palette for ramps
+            'ramp_yes': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 2.5, 'radius': 8},
+            'ramp_no': {'fill': '#fafafa', 'stroke': '#757575', 'stroke_width': 2, 'radius': 6, 'dasharray': '3,2'},
+            'ramp_wheelchair_yes': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 9},
+            'ramp_wheelchair_no': {'fill': '#ffebee', 'stroke': '#c62828', 'stroke_width': 2, 'radius': 7, 'dasharray': '3,2'},
+            'ramp_stroller_yes': {'fill': '#e1f5fe', 'stroke': '#0277bd', 'stroke_width': 2.5, 'radius': 8},
+            'ramp_stroller_no': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2, 'radius': 6, 'dasharray': '3,2'},
+            'ramp_bicycle_yes': {'fill': '#b3e5fc', 'stroke': '#0288d1', 'stroke_width': 2.5, 'radius': 8},
+            'ramp_bicycle_no': {'fill': '#ffcdd2', 'stroke': '#d32f2f', 'stroke_width': 2, 'radius': 6, 'dasharray': '3,2'},
+            
+            # Steps and barriers - Orange/brown palette for physical obstacles
+            'step_count': {'fill': '#ffe0b2', 'stroke': '#f57c00', 'stroke_width': 2, 'radius': 7},
+            
+            # Handrail support - Purple palette for support features
+            'handrail_yes': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 2.5, 'radius': 7},
+            'handrail_no': {'fill': '#f5f5f5', 'stroke': '#616161', 'stroke_width': 2, 'radius': 5, 'dasharray': '3,2'},
+            'handrail_center': {'fill': '#ede7f6', 'stroke': '#673ab7', 'stroke_width': 2.5, 'radius': 6},
+            'handrail_left': {'fill': '#e1bee7', 'stroke': '#9c27b0', 'stroke_width': 2, 'radius': 5},
+            'handrail_right': {'fill': '#f8bbd9', 'stroke': '#e91e63', 'stroke_width': 2, 'radius': 5},
+            
+            # Default mobility access
+            'default': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2, 'radius': 7}
+        }
+    },
+    
+    'accessible_transport': {
+        'tags': {
+            'capacity:disabled': True,
+            'parking:disabled': ['yes', 'no'],
+            'priority': ['disabled'],
+            'bus:wheelchair': ['yes', 'no'],
+            'subway:wheelchair': ['yes', 'no'],
+            'tram:wheelchair': ['yes', 'no'],
+            'train:wheelchair': ['yes', 'no']
+        },
+        'styles': {
+            # Disabled parking - Strong green palette for designated parking
+            'parking_disabled_yes': {'fill': '#a5d6a7', 'stroke': '#1b5e20', 'stroke_width': 4, 'radius': 12},
+            'parking_disabled_no': {'fill': '#ffcdd2', 'stroke': '#c62828', 'stroke_width': 2, 'radius': 8, 'dasharray': '4,3'},
+            'priority_disabled': {'fill': '#c8e6c9', 'stroke': '#2e7d32', 'stroke_width': 3.5, 'radius': 11},
+            'capacity_disabled': {'fill': '#dcedc8', 'stroke': '#33691e', 'stroke_width': 3, 'radius': 10},
+            
+            # Public transport wheelchair access - Transport blue palette
+            'bus_wheelchair_yes': {'fill': '#e3f2fd', 'stroke': '#1565c0', 'stroke_width': 3, 'radius': 10},
+            'bus_wheelchair_no': {'fill': '#ffebee', 'stroke': '#c62828', 'stroke_width': 2, 'radius': 8, 'dasharray': '3,2'},
+            'subway_wheelchair_yes': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 10},
+            'subway_wheelchair_no': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2, 'radius': 8, 'dasharray': '3,2'},
+            'tram_wheelchair_yes': {'fill': '#e1f5fe', 'stroke': '#0277bd', 'stroke_width': 3, 'radius': 10},
+            'tram_wheelchair_no': {'fill': '#ffcdd2', 'stroke': '#d32f2f', 'stroke_width': 2, 'radius': 8, 'dasharray': '3,2'},
+            'train_wheelchair_yes': {'fill': '#b3e5fc', 'stroke': '#0288d1', 'stroke_width': 3, 'radius': 10},
+            'train_wheelchair_no': {'fill': '#ffebee', 'stroke': '#c62828', 'stroke_width': 2, 'radius': 8, 'dasharray': '3,2'},
+            
+            # Default accessible transport
+            'default': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 2.5, 'radius': 8}
+        }
+    },
     'transit': {
         'tags': {
             'highway': ['bus_stop', 'platform', 'bus_guideway'],
@@ -1194,6 +1345,382 @@ FEATURE_STYLES = {
             
             # Default communication style
             'default': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 2, 'radius': 6}
+        }
+    },
+    'education_childcare': {
+        'tags': {
+            # Education and childcare institutions
+            'amenity': ['childcare', 'language_school', 'driving_school', 'music_school', 'research_institute']
+        },
+        'styles': {
+            # Early Childhood - Warm, nurturing colors for childcare
+            'childcare': {'fill': '#fff3e0', 'stroke': '#ff9800', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Specialized Education - Professional colors for specialized learning
+            'language_school': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2.5, 'radius': 8},
+            'music_school': {'fill': '#f3e5f5', 'stroke': '#9c27b0', 'stroke_width': 2.5, 'radius': 8},
+            'driving_school': {'fill': '#fff9c4', 'stroke': '#fbc02d', 'stroke_width': 2, 'radius': 7},
+            
+            # Research & Higher Learning - Academic blue palette
+            'research_institute': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 3, 'radius': 10},
+            
+            # Default education style
+            'default': {'fill': '#f0e5d8', 'stroke': '#8d6e63', 'stroke_width': 2.5, 'radius': 8}
+        }
+    },
+    'sports_fitness': {
+        'tags': {
+            # Sports and fitness facilities
+            'leisure': ['fitness_station', 'track', 'pitch', 'marina', 'slipway'],
+            'sport': ['tennis', 'football', 'soccer', 'basketball', 'baseball', 'swimming', 'athletics', 'golf', 'hockey', 'volleyball', 'badminton', 'squash', 'table_tennis', 'boxing', 'martial_arts', 'climbing', 'cycling', 'running', 'fitness', 'gym', 'yoga', 'dance', 'skateboard', 'bmx', 'equestrian', 'sailing', 'rowing', 'canoe', 'surfing']
+        },
+        'styles': {
+            # Leisure Facilities - Green athletic palette
+            'fitness_station': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2, 'radius': 6},
+            'track': {'width': 4, 'color': '#ff5722', 'casing': '#d84315', 'casing_width': 6},
+            'pitch': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 2.5, 'radius': 12},
+            'marina': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 3, 'radius': 10},
+            'slipway': {'width': 3, 'color': '#2196f3', 'casing': '#0d47a1', 'casing_width': 5},
+            
+            # Ball Sports - Orange/red palette for team sports  
+            'tennis': {'fill': '#fff3e0', 'stroke': '#ff9800', 'stroke_width': 2.5, 'radius': 8},
+            'football': {'fill': '#ffebee', 'stroke': '#f44336', 'stroke_width': 3, 'radius': 12},
+            'soccer': {'fill': '#ffebee', 'stroke': '#f44336', 'stroke_width': 3, 'radius': 12},
+            'basketball': {'fill': '#fff3e0', 'stroke': '#ff9800', 'stroke_width': 2.5, 'radius': 8},
+            'volleyball': {'fill': '#fff9c4', 'stroke': '#fbc02d', 'stroke_width': 2, 'radius': 7},
+            'baseball': {'fill': '#f3e5f5', 'stroke': '#9c27b0', 'stroke_width': 2.5, 'radius': 10},
+            'hockey': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 2.5, 'radius': 10},
+            
+            # Racket Sports - Yellow palette
+            'badminton': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 2, 'radius': 6},
+            'squash': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 2, 'radius': 6},
+            'table_tennis': {'fill': '#fff9c4', 'stroke': '#f9a825', 'stroke_width': 2, 'radius': 5},
+            
+            # Water Sports - Blue palette
+            'swimming': {'fill': '#e1f5fe', 'stroke': '#0288d1', 'stroke_width': 3, 'radius': 10},
+            'sailing': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 2.5, 'radius': 8},
+            'rowing': {'fill': '#e1f5fe', 'stroke': '#0277bd', 'stroke_width': 2.5, 'radius': 8},
+            'canoe': {'fill': '#e0f2f1', 'stroke': '#00796b', 'stroke_width': 2, 'radius': 7},
+            'surfing': {'fill': '#e0f7fa', 'stroke': '#00acc1', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Individual Sports - Purple palette
+            'athletics': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 2.5, 'radius': 9},
+            'running': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 2, 'radius': 6},
+            'cycling': {'fill': '#e8eaf6', 'stroke': '#5e35b1', 'stroke_width': 2, 'radius': 6},
+            'golf': {'fill': '#e8f5e8', 'stroke': '#388e3c', 'stroke_width': 3, 'radius': 15},
+            
+            # Fitness & Wellness - Teal palette
+            'fitness': {'fill': '#e0f2f1', 'stroke': '#00796b', 'stroke_width': 2.5, 'radius': 8},
+            'gym': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 2.5, 'radius': 8},
+            'yoga': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 2, 'radius': 7},
+            'dance': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2, 'radius': 7},
+            
+            # Combat Sports - Gray palette
+            'boxing': {'fill': '#f5f5f5', 'stroke': '#616161', 'stroke_width': 2.5, 'radius': 7},
+            'martial_arts': {'fill': '#f5f5f5', 'stroke': '#424242', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Adventure Sports - Brown palette
+            'climbing': {'fill': '#efebe9', 'stroke': '#6d4c41', 'stroke_width': 2.5, 'radius': 8},
+            'equestrian': {'fill': '#d7ccc8', 'stroke': '#5d4037', 'stroke_width': 2.5, 'radius': 10},
+            
+            # Urban Sports - Pink palette  
+            'skateboard': {'fill': '#fce4ec', 'stroke': '#e91e63', 'stroke_width': 2, 'radius': 6},
+            'bmx': {'fill': '#f8bbd9', 'stroke': '#ad1457', 'stroke_width': 2, 'radius': 6},
+            
+            # Default sports style
+            'default': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2.5, 'radius': 8}
+        }
+    },
+    
+    'agricultural_rural': {
+        'tags': {
+            # Agricultural and rural features
+            'landuse': ['orchard', 'vineyard', 'allotments', 'farmyard', 'farmland', 'animal_keeping', 'plant_nursery', 'greenhouse_horticulture', 'aquaculture', 'salt_pond'],
+            'man_made': ['silo', 'storage_tank', 'bunker_silo', 'windmill', 'watermill', 'windpump', 'watering_place'],
+            'building': ['farm_auxiliary', 'barn', 'stable', 'sty', 'greenhouse', 'cowshed', 'chicken_coop', 'farm'],
+            'amenity': ['animal_shelter', 'animal_boarding', 'veterinary'],
+            'craft': ['agricultural_engines', 'beekeeper', 'distillery', 'winery'],
+            'shop': ['farm', 'garden_centre', 'agrarian', 'feed'],
+            'leisure': ['fishing', 'garden'],
+            'natural': ['tree_row'],
+            'agriculture': ['greenhouse', 'crop', 'livestock', 'dairy', 'poultry', 'beekeeping'],
+            'produce': ['fruit', 'vegetable', 'grain', 'dairy', 'meat', 'eggs', 'honey']
+        },
+        'styles': {
+            # Agricultural Land Use - Green earth tones
+            'farmland': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 2, 'radius': 20},
+            'farmyard': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2.5, 'radius': 15},
+            'orchard': {'fill': '#e0f2e1', 'stroke': '#388e3c', 'stroke_width': 2.5, 'radius': 18},
+            'vineyard': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 2.5, 'radius': 18},
+            'allotments': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 2, 'radius': 12},
+            'animal_keeping': {'fill': '#efebe9', 'stroke': '#6d4c41', 'stroke_width': 2, 'radius': 15},
+            
+            # Specialized Agriculture - Distinct colors
+            'plant_nursery': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 2, 'radius': 10},
+            'greenhouse_horticulture': {'fill': '#eeffee', 'stroke': '#388e3c', 'stroke_width': 2, 'radius': 12},
+            'aquaculture': {'fill': '#e0f7fa', 'stroke': '#00acc1', 'stroke_width': 2.5, 'radius': 16},
+            'salt_pond': {'fill': '#fce4ec', 'stroke': '#ad1457', 'stroke_width': 2, 'radius': 14},
+            
+            # Farm Buildings - Brown barn palette
+            'barn': {'fill': '#d7ccc8', 'stroke': '#5d4037', 'stroke_width': 3, 'radius': 12},
+            'farm_auxiliary': {'fill': '#efebe9', 'stroke': '#6d4c41', 'stroke_width': 2.5, 'radius': 10},
+            'farm': {'fill': '#d7ccc8', 'stroke': '#4e342e', 'stroke_width': 3, 'radius': 15},
+            'stable': {'fill': '#bcaaa4', 'stroke': '#3e2723', 'stroke_width': 2.5, 'radius': 10},
+            'sty': {'fill': '#d7ccc8', 'stroke': '#5d4037', 'stroke_width': 2, 'radius': 8},
+            'greenhouse': {'fill': '#eeffee', 'stroke': '#2e7d32', 'stroke_width': 2, 'radius': 8},
+            'cowshed': {'fill': '#bcaaa4', 'stroke': '#4e342e', 'stroke_width': 2.5, 'radius': 10},
+            'chicken_coop': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 2, 'radius': 6},
+            
+            # Agricultural Infrastructure - Functional colors
+            'silo': {'fill': '#cfd8dc', 'stroke': '#455a64', 'stroke_width': 3, 'radius': 12},
+            'storage_tank': {'fill': '#eceff1', 'stroke': '#37474f', 'stroke_width': 2.5, 'radius': 10},
+            'bunker_silo': {'fill': '#d7ccc8', 'stroke': '#6d4c41', 'stroke_width': 2.5, 'radius': 10},
+            'watering_place': {'fill': '#e1f5fe', 'stroke': '#0288d1', 'stroke_width': 2, 'radius': 6},
+            
+            # Traditional Structures - Heritage colors
+            'windmill': {'fill': '#f1f8e9', 'stroke': '#2e7d32', 'stroke_width': 3, 'radius': 12},
+            'watermill': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 3, 'radius': 10},
+            'windpump': {'fill': '#e8f5e8', 'stroke': '#388e3c', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Animal Services - Warm caring colors
+            'animal_shelter': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2.5, 'radius': 9},
+            'animal_boarding': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 2, 'radius': 8},
+            'veterinary': {'fill': '#fdd835', 'stroke': '#f9a825', 'stroke_width': 3, 'radius': 10},
+            
+            # Agricultural Crafts - Artisan palette
+            'agricultural_engines': {'fill': '#eceff1', 'stroke': '#455a64', 'stroke_width': 2.5, 'radius': 8},
+            'beekeeper': {'fill': '#fff8e1', 'stroke': '#f9a825', 'stroke_width': 2.5, 'radius': 7},
+            'distillery': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 2.5, 'radius': 9},
+            'winery': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2.5, 'radius': 9},
+            
+            # Agricultural Retail - Market colors
+            'farm': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2.5, 'radius': 9},
+            'garden_centre': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 2.5, 'radius': 10},
+            'agrarian': {'fill': '#fff8e1', 'stroke': '#fbc02d', 'stroke_width': 2, 'radius': 8},
+            'feed': {'fill': '#efebe9', 'stroke': '#6d4c41', 'stroke_width': 2, 'radius': 7},
+            
+            # Rural Recreation - Natural colors
+            'fishing': {'fill': '#e0f7fa', 'stroke': '#00838f', 'stroke_width': 2, 'radius': 8},
+            'garden': {'fill': '#f1f8e9', 'stroke': '#558b2f', 'stroke_width': 2, 'radius': 10},
+            
+            # Natural Agricultural Features - Earth tones
+            'tree_row': {'width': 3, 'color': '#2e7d32', 'casing': '#1b5e20', 'casing_width': 5},
+            
+            # Agricultural Production Types - Crop-specific colors
+            'greenhouse': {'fill': '#eeffee', 'stroke': '#2e7d32', 'stroke_width': 2, 'radius': 8},
+            'crop': {'fill': '#f9fbe7', 'stroke': '#827717', 'stroke_width': 2, 'radius': 15},
+            'livestock': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 2, 'radius': 12},
+            'dairy': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 2, 'radius': 10},
+            'poultry': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 2, 'radius': 8},
+            'beekeeping': {'fill': '#fff59d', 'stroke': '#f9a825', 'stroke_width': 2, 'radius': 6},
+            
+            # Produce Types - Product-specific colors
+            'fruit': {'fill': '#ffcdd2', 'stroke': '#c62828', 'stroke_width': 2, 'radius': 8},
+            'vegetable': {'fill': '#c8e6c9', 'stroke': '#2e7d32', 'stroke_width': 2, 'radius': 8},
+            'grain': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 2, 'radius': 10},
+            'meat': {'fill': '#ffcdd2', 'stroke': '#d32f2f', 'stroke_width': 2, 'radius': 8},
+            'eggs': {'fill': '#fff3e0', 'stroke': '#ff9800', 'stroke_width': 2, 'radius': 6},
+            'honey': {'fill': '#fff59d', 'stroke': '#fbc02d', 'stroke_width': 2, 'radius': 6},
+            
+            # Default agricultural style
+            'default': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 2.5, 'radius': 10}
+        }
+    },
+    
+    'military_government': {
+        'tags': {
+            # Military and government features
+            'military': ['airfield', 'base', 'bunker', 'barracks', 'checkpoint', 'danger_area', 'nuclear_explosion_site', 'obstacle_course', 'office', 'range', 'training_area', 'naval_base', 'depot', 'academy', 'hospital'],
+            'government': ['administrative', 'archive', 'courthouse', 'customs', 'diplomatic', 'embassy', 'fire_department', 'legislative', 'library', 'military', 'ministry', 'office', 'parliament', 'police', 'prison', 'public_service', 'register_office', 'social_services', 'taxation', 'town_hall'],
+            'amenity': ['courthouse', 'prison', 'police', 'fire_station', 'embassy', 'townhall', 'customs', 'ranger_station'],
+            'building': ['government', 'military', 'courthouse', 'prison', 'fire_station', 'police'],
+            'landuse': ['military', 'government'],
+            'office': ['government', 'diplomatic', 'administrative', 'military'],
+            'diplomatic': ['embassy', 'consulate', 'delegation', 'mission'],
+            'public_service': ['social_services', 'employment_agency', 'tax_office']
+        },
+        'styles': {
+            # Military Installations - Military green/olive palette
+            'base': {'fill': '#e8f2e8', 'stroke': '#2e7d32', 'stroke_width': 4, 'radius': 25},
+            'airfield': {'fill': '#f1f8e9', 'stroke': '#388e3c', 'stroke_width': 4, 'radius': 30},
+            'naval_base': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 4, 'radius': 25},
+            'barracks': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 3, 'radius': 15},
+            'depot': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 3, 'radius': 12},
+            'academy': {'fill': '#e0f2e1', 'stroke': '#2e7d32', 'stroke_width': 3, 'radius': 18},
+            
+            # Military Infrastructure - Tactical colors
+            'bunker': {'fill': '#efebe9', 'stroke': '#5d4037', 'stroke_width': 4, 'radius': 10},
+            'checkpoint': {'fill': '#fff3e0', 'stroke': '#e65100', 'stroke_width': 3, 'radius': 8},
+            'danger_area': {'fill': '#ffebee', 'stroke': '#d32f2f', 'stroke_width': 3, 'radius': 20},
+            'nuclear_explosion_site': {'fill': '#fff3e0', 'stroke': '#ff6f00', 'stroke_width': 4, 'radius': 15},
+            'range': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 3, 'radius': 18},
+            'training_area': {'fill': '#f1f8e9', 'stroke': '#558b2f', 'stroke_width': 3, 'radius': 22},
+            'obstacle_course': {'fill': '#fff9c4', 'stroke': '#f9a825', 'stroke_width': 2.5, 'radius': 12},
+            
+            # Military Services - Professional colors
+            'office': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 2.5, 'radius': 10},
+            'hospital': {'fill': '#ffcdd2', 'stroke': '#c62828', 'stroke_width': 3, 'radius': 12},
+            
+            # Government Buildings - Civic blue palette
+            'courthouse': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 4, 'radius': 15},
+            'parliament': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 4, 'radius': 18},
+            'town_hall': {'fill': '#e1f5fe', 'stroke': '#0277bd', 'stroke_width': 3.5, 'radius': 16},
+            'townhall': {'fill': '#e1f5fe', 'stroke': '#0277bd', 'stroke_width': 3.5, 'radius': 16},
+            'ministry': {'fill': '#e8eaf6', 'stroke': '#303f9f', 'stroke_width': 3.5, 'radius': 14},
+            'legislative': {'fill': '#c5cae9', 'stroke': '#1a237e', 'stroke_width': 4, 'radius': 16},
+            
+            # Government Services - Professional palette
+            'administrative': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 3, 'radius': 12},
+            'archive': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2.5, 'radius': 10},
+            'library': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 2.5, 'radius': 11},
+            'register_office': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2.5, 'radius': 9},
+            'taxation': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 2.5, 'radius': 10},
+            
+            # Public Services - Caring colors
+            'social_services': {'fill': '#fff3e0', 'stroke': '#ff9800', 'stroke_width': 2.5, 'radius': 11},
+            'employment_agency': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2.5, 'radius': 10},
+            'tax_office': {'fill': '#ffecb3', 'stroke': '#ffa000', 'stroke_width': 2.5, 'radius': 9},
+            'public_service': {'fill': '#f3e5f5', 'stroke': '#9c27b0', 'stroke_width': 2.5, 'radius': 10},
+            
+            # Law Enforcement & Justice - Authority colors
+            'police': {'fill': '#e3f2fd', 'stroke': '#0d47a1', 'stroke_width': 3.5, 'radius': 12},
+            'prison': {'fill': '#eceff1', 'stroke': '#37474f', 'stroke_width': 4, 'radius': 18},
+            'customs': {'fill': '#fff3e0', 'stroke': '#e65100', 'stroke_width': 3, 'radius': 10},
+            
+            # Emergency Services - Emergency colors
+            'fire_station': {'fill': '#ffebee', 'stroke': '#c62828', 'stroke_width': 3.5, 'radius': 12},
+            'fire_department': {'fill': '#ffcdd2', 'stroke': '#d32f2f', 'stroke_width': 3.5, 'radius': 14},
+            'ranger_station': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 3, 'radius': 10},
+            
+            # Diplomatic Services - International colors
+            'embassy': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 3.5, 'radius': 14},
+            'consulate': {'fill': '#ede7f6', 'stroke': '#673ab7', 'stroke_width': 3, 'radius': 12},
+            'delegation': {'fill': '#e8eaf6', 'stroke': '#5e35b1', 'stroke_width': 3, 'radius': 11},
+            'mission': {'fill': '#c5cae9', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 10},
+            'diplomatic': {'fill': '#e1bee7', 'stroke': '#8e24aa', 'stroke_width': 3, 'radius': 12},
+            
+            # Government Buildings - Official colors
+            'government': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 14},
+            'military': {'fill': '#e8f2e8', 'stroke': '#2e7d32', 'stroke_width': 3, 'radius': 12},
+            
+            # Land Use - Area colors
+            'military': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 2, 'radius': 30},
+            'government': {'fill': '#e8eaf6', 'stroke': '#5e35b1', 'stroke_width': 2, 'radius': 25},
+            
+            # Default military/government style
+            'default': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 12}
+        }
+    },
+    
+    'leisure_entertainment_details': {
+        'tags': {
+            # Leisure and entertainment details
+            'leisure': ['dance', 'escape_game', 'hackerspace', 'adult_gaming_centre', 'miniature_golf', 'arcade', 'bingo_hall', 'casino', 'gambling', 'social_club', 'sauna', 'bandstand', 'bleachers', 'maze', 'shooting_range', 'disc_golf', 'picnic_table', 'firepit', 'bbq'],
+            'amenity': ['casino', 'gambling', 'game_feeding', 'karaoke_box', 'love_hotel', 'nightclub', 'planetarium', 'social_facility', 'stripclub', 'swingerclub', 'brothel', 'studio'],
+            'shop': ['games', 'lottery', 'video_games', 'music', 'musical_instrument', 'video', 'books', 'art', 'craft', 'hobby'],
+            'club': ['sport', 'social', 'veterans', 'youth', 'senior', 'community', 'photography', 'computer', 'automobile'],
+            'tourism': ['theme_park', 'aquarium', 'zoo'],
+            'sport': ['billiards', 'darts', 'chess', 'go', 'beachvolleyball'],
+            'craft': ['brewery', 'distillery', 'winery'],
+            'entertainment': ['escape_room', 'laser_tag', 'paintball', 'axe_throwing', 'virtual_reality']
+        },
+        'styles': {
+            # Dance & Performance - Vibrant entertainment colors
+            'dance': {'fill': '#fce4ec', 'stroke': '#e91e63', 'stroke_width': 3, 'radius': 12},
+            'bandstand': {'fill': '#f3e5f5', 'stroke': '#9c27b0', 'stroke_width': 3, 'radius': 14},
+            'bleachers': {'fill': '#fff3e0', 'stroke': '#ff9800', 'stroke_width': 2.5, 'radius': 18},
+            
+            # Gaming & Interactive Entertainment - Fun colors
+            'escape_game': {'fill': '#fff8e1', 'stroke': '#fbc02d', 'stroke_width': 3, 'radius': 10},
+            'arcade': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2.5, 'radius': 12},
+            'adult_gaming_centre': {'fill': '#ffecb3', 'stroke': '#ffa000', 'stroke_width': 2.5, 'radius': 11},
+            'bingo_hall': {'fill': '#e1f5fe', 'stroke': '#00bcd4', 'stroke_width': 2.5, 'radius': 13},
+            'miniature_golf': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 2.5, 'radius': 15},
+            'maze': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 2.5, 'radius': 16},
+            
+            # Modern Entertainment - Tech colors
+            'escape_room': {'fill': '#fff59d', 'stroke': '#f57f17', 'stroke_width': 3, 'radius': 9},
+            'laser_tag': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 12},
+            'paintball': {'fill': '#e8f5e8', 'stroke': '#388e3c', 'stroke_width': 3, 'radius': 11},
+            'axe_throwing': {'fill': '#efebe9', 'stroke': '#6d4c41', 'stroke_width': 3, 'radius': 9},
+            'virtual_reality': {'fill': '#e1bee7', 'stroke': '#8e24aa', 'stroke_width': 3, 'radius': 10},
+            
+            # Technology & Maker Spaces - Innovation colors
+            'hackerspace': {'fill': '#eceff1', 'stroke': '#607d8b', 'stroke_width': 3, 'radius': 12},
+            
+            # Gambling & Casino - Luxury colors
+            'casino': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 4, 'radius': 16},
+            'gambling': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 3, 'radius': 14},
+            'lottery': {'fill': '#fff9c4', 'stroke': '#f9a825', 'stroke_width': 2.5, 'radius': 8},
+            
+            # Social & Community - Warm social colors
+            'social_club': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 3, 'radius': 13},
+            'social_facility': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2.5, 'radius': 12},
+            
+            # Nightlife & Adult Entertainment - Evening colors
+            'nightclub': {'fill': '#f3e5f5', 'stroke': '#7b1fa2', 'stroke_width': 3.5, 'radius': 14},
+            'karaoke_box': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 3, 'radius': 10},
+            'love_hotel': {'fill': '#ffebee', 'stroke': '#e91e63', 'stroke_width': 3, 'radius': 11},
+            'stripclub': {'fill': '#f8bbd9', 'stroke': '#ad1457', 'stroke_width': 3, 'radius': 12},
+            'swingerclub': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 3, 'radius': 10},
+            'brothel': {'fill': '#fce4ec', 'stroke': '#ad1457', 'stroke_width': 3, 'radius': 9},
+            
+            # Wellness & Relaxation - Calm colors
+            'sauna': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 3, 'radius': 10},
+            
+            # Sports & Games - Active colors
+            'shooting_range': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 3, 'radius': 12},
+            'disc_golf': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 2.5, 'radius': 20},
+            'billiards': {'fill': '#e8f5e8', 'stroke': '#388e3c', 'stroke_width': 2.5, 'radius': 12},
+            'darts': {'fill': '#ffecb3', 'stroke': '#ffa000', 'stroke_width': 2, 'radius': 6},
+            'chess': {'fill': '#eceff1', 'stroke': '#455a64', 'stroke_width': 2, 'radius': 8},
+            'go': {'fill': '#f5f5f5', 'stroke': '#616161', 'stroke_width': 2, 'radius': 8},
+            'beachvolleyball': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 2.5, 'radius': 15},
+            
+            # Outdoor Leisure - Nature colors
+            'picnic_table': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2, 'radius': 6},
+            'firepit': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 2.5, 'radius': 8},
+            'bbq': {'fill': '#efebe9', 'stroke': '#6d4c41', 'stroke_width': 2.5, 'radius': 7},
+            
+            # Retail Entertainment - Commercial colors
+            'games': {'fill': '#e8eaf6', 'stroke': '#5e35b1', 'stroke_width': 2.5, 'radius': 9},
+            'video_games': {'fill': '#e1bee7', 'stroke': '#8e24aa', 'stroke_width': 2.5, 'radius': 9},
+            'music': {'fill': '#f3e5f5', 'stroke': '#9c27b0', 'stroke_width': 2.5, 'radius': 10},
+            'musical_instrument': {'fill': '#ede7f6', 'stroke': '#673ab7', 'stroke_width': 2.5, 'radius': 10},
+            'video': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 2.5, 'radius': 9},
+            'books': {'fill': '#fff3e0', 'stroke': '#ef6c00', 'stroke_width': 2.5, 'radius': 10},
+            'art': {'fill': '#fce4ec', 'stroke': '#c2185b', 'stroke_width': 2.5, 'radius': 9},
+            'craft': {'fill': '#e0f2f1', 'stroke': '#00695c', 'stroke_width': 2.5, 'radius': 8},
+            'hobby': {'fill': '#f1f8e9', 'stroke': '#689f38', 'stroke_width': 2.5, 'radius': 9},
+            
+            # Clubs & Organizations - Community colors
+            'sport': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 2.5, 'radius': 11},
+            'social': {'fill': '#fff3e0', 'stroke': '#ff9800', 'stroke_width': 2.5, 'radius': 11},
+            'veterans': {'fill': '#e8eaf6', 'stroke': '#3f51b5', 'stroke_width': 3, 'radius': 10},
+            'youth': {'fill': '#fff59d', 'stroke': '#f9a825', 'stroke_width': 2.5, 'radius': 10},
+            'senior': {'fill': '#e1f5fe', 'stroke': '#0288d1', 'stroke_width': 2.5, 'radius': 10},
+            'community': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2.5, 'radius': 12},
+            'photography': {'fill': '#eceff1', 'stroke': '#607d8b', 'stroke_width': 2.5, 'radius': 9},
+            'computer': {'fill': '#e3f2fd', 'stroke': '#1976d2', 'stroke_width': 2.5, 'radius': 9},
+            'automobile': {'fill': '#ffecb3', 'stroke': '#ff8f00', 'stroke_width': 2.5, 'radius': 11},
+            
+            # Tourism Entertainment - Attraction colors
+            'theme_park': {'fill': '#fce4ec', 'stroke': '#e91e63', 'stroke_width': 4, 'radius': 25},
+            'aquarium': {'fill': '#e0f7fa', 'stroke': '#00acc1', 'stroke_width': 3.5, 'radius': 18},
+            'zoo': {'fill': '#e8f5e8', 'stroke': '#2e7d32', 'stroke_width': 3.5, 'radius': 20},
+            'planetarium': {'fill': '#e8eaf6', 'stroke': '#303f9f', 'stroke_width': 3, 'radius': 15},
+            
+            # Food & Beverage Entertainment - Artisan colors
+            'brewery': {'fill': '#fff8e1', 'stroke': '#f57f17', 'stroke_width': 3, 'radius': 12},
+            'distillery': {'fill': '#efebe9', 'stroke': '#6d4c41', 'stroke_width': 3, 'radius': 11},
+            'winery': {'fill': '#f3e5f5', 'stroke': '#8e24aa', 'stroke_width': 3, 'radius': 12},
+            
+            # Creative Spaces - Artistic colors
+            'studio': {'fill': '#f3e5f5', 'stroke': '#9c27b0', 'stroke_width': 3, 'radius': 11},
+            'game_feeding': {'fill': '#e8f5e8', 'stroke': '#4caf50', 'stroke_width': 2, 'radius': 8},
+            
+            # Default leisure/entertainment style
+            'default': {'fill': '#fce4ec', 'stroke': '#e91e63', 'stroke_width': 3, 'radius': 10}
         }
     }
 }

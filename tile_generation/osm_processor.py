@@ -30,6 +30,11 @@ class OSMHandler(osmium.SimpleHandler):
             'historic_cultural': [],
             'craft_specialized_services': [],
             'communication_technology': [],
+            'education_childcare': [],
+            'sports_fitness': [],
+            'agricultural_rural': [],
+            'military_government': [],
+            'leisure_entertainment_details': [],
             'accessibility': [],
             'pedestrian_areas': [],
             'transit': [],
@@ -157,6 +162,65 @@ class OSMHandler(osmium.SimpleHandler):
         elif (tags.get('amenity') in ['post_box', 'telephone'] or
               tags.get('telecom') in ['data_center']):
             self.features['communication_technology'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Education & Childcare - Educational institutions and childcare facilities
+        elif tags.get('amenity') in ['childcare', 'language_school', 'driving_school', 'music_school', 'research_institute']:
+            self.features['education_childcare'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Sports & Fitness Facilities - Sports venues, fitness equipment, and recreational facilities
+        elif (tags.get('leisure') in ['fitness_station', 'track', 'pitch', 'marina', 'slipway'] or
+              tags.get('sport') in ['tennis', 'football', 'soccer', 'basketball', 'baseball', 'swimming', 'athletics', 'golf', 'hockey', 'volleyball', 'badminton', 'squash', 'table_tennis', 'boxing', 'martial_arts', 'climbing', 'cycling', 'running', 'fitness', 'gym', 'yoga', 'dance', 'skateboard', 'bmx', 'equestrian', 'sailing', 'rowing', 'canoe', 'surfing']):
+            self.features['sports_fitness'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Agricultural & Rural Features - Comprehensive coverage of farming, rural infrastructure, and agricultural facilities
+        elif (tags.get('landuse') in ['orchard', 'vineyard', 'allotments', 'farmyard', 'farmland', 'animal_keeping', 'plant_nursery', 'greenhouse_horticulture', 'aquaculture', 'salt_pond'] or
+              tags.get('man_made') in ['silo', 'storage_tank', 'bunker_silo', 'windmill', 'watermill', 'windpump', 'watering_place'] or
+              tags.get('building') in ['farm_auxiliary', 'barn', 'stable', 'sty', 'greenhouse', 'cowshed', 'chicken_coop', 'farm'] or
+              tags.get('amenity') in ['animal_shelter', 'animal_boarding', 'veterinary'] or
+              tags.get('craft') in ['agricultural_engines', 'beekeeper', 'distillery', 'winery'] or
+              tags.get('shop') in ['farm', 'garden_centre', 'agrarian', 'feed'] or
+              tags.get('leisure') in ['fishing', 'garden'] or
+              tags.get('natural') in ['tree_row'] or
+              tags.get('agriculture') in ['greenhouse', 'crop', 'livestock', 'dairy', 'poultry', 'beekeeping'] or
+              tags.get('produce') in ['fruit', 'vegetable', 'grain', 'dairy', 'meat', 'eggs', 'honey']):
+            self.features['agricultural_rural'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Military & Government Features - Comprehensive coverage of military installations and government facilities
+        elif (tags.get('military') in ['airfield', 'base', 'bunker', 'barracks', 'checkpoint', 'danger_area', 'nuclear_explosion_site', 'obstacle_course', 'office', 'range', 'training_area', 'naval_base', 'depot', 'academy', 'hospital'] or
+              tags.get('government') in ['administrative', 'archive', 'courthouse', 'customs', 'diplomatic', 'embassy', 'fire_department', 'legislative', 'library', 'military', 'ministry', 'office', 'parliament', 'police', 'prison', 'public_service', 'register_office', 'social_services', 'taxation', 'town_hall'] or
+              tags.get('amenity') in ['courthouse', 'prison', 'police', 'fire_station', 'embassy', 'townhall', 'customs', 'ranger_station'] or
+              tags.get('building') in ['government', 'military', 'courthouse', 'prison', 'fire_station', 'police'] or
+              tags.get('landuse') in ['military', 'government'] or
+              tags.get('office') in ['government', 'diplomatic', 'administrative', 'military'] or
+              tags.get('diplomatic') in ['embassy', 'consulate', 'delegation', 'mission'] or
+              tags.get('public_service') in ['social_services', 'employment_agency', 'tax_office']):
+            self.features['military_government'].append({
+                'geometry': Point(n.location.lon, n.location.lat),
+                'properties': {**tags, 'osm_id': n.id}
+            })
+        
+        # Leisure & Entertainment Details - Comprehensive coverage of specialized leisure and entertainment venues
+        elif (tags.get('leisure') in ['dance', 'escape_game', 'hackerspace', 'adult_gaming_centre', 'miniature_golf', 'arcade', 'bingo_hall', 'casino', 'gambling', 'social_club', 'sauna', 'bandstand', 'bleachers', 'maze', 'shooting_range', 'disc_golf', 'picnic_table', 'firepit', 'bbq'] or
+              tags.get('amenity') in ['casino', 'gambling', 'game_feeding', 'karaoke_box', 'love_hotel', 'nightclub', 'planetarium', 'social_facility', 'stripclub', 'swingerclub', 'brothel', 'studio'] or
+              tags.get('shop') in ['games', 'lottery', 'video_games', 'music', 'musical_instrument', 'video', 'books', 'art', 'craft', 'hobby'] or
+              tags.get('club') in ['sport', 'social', 'veterans', 'youth', 'senior', 'community', 'photography', 'computer', 'automobile'] or
+              tags.get('tourism') in ['theme_park', 'aquarium', 'zoo'] or
+              tags.get('sport') in ['billiards', 'darts', 'chess', 'go', 'beachvolleyball'] or
+              tags.get('craft') in ['brewery', 'distillery', 'winery'] or
+              tags.get('entertainment') in ['escape_room', 'laser_tag', 'paintball', 'axe_throwing', 'virtual_reality']):
+            self.features['leisure_entertainment_details'].append({
                 'geometry': Point(n.location.lon, n.location.lat),
                 'properties': {**tags, 'osm_id': n.id}
             })
@@ -591,6 +655,123 @@ class OSMHandler(osmium.SimpleHandler):
                     geom = wkb.create_polygon(w)
                     poly = loads(geom, hex=True)
                     self.features['communication_technology'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
+        # Education & Childcare (as areas/buildings) - Educational institutions and childcare facilities
+        elif tags.get('amenity') in ['childcare', 'language_school', 'driving_school', 'music_school', 'research_institute']:
+            try:
+                if w.is_closed():
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['education_childcare'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
+        # Sports & Fitness Facilities (as areas/tracks) - Sports venues, fitness equipment, and recreational facilities
+        elif (tags.get('leisure') in ['fitness_station', 'track', 'pitch', 'marina', 'slipway'] or
+              tags.get('sport') in ['tennis', 'football', 'soccer', 'basketball', 'baseball', 'swimming', 'athletics', 'golf', 'hockey', 'volleyball', 'badminton', 'squash', 'table_tennis', 'boxing', 'martial_arts', 'climbing', 'cycling', 'running', 'fitness', 'gym', 'yoga', 'dance', 'skateboard', 'bmx', 'equestrian', 'sailing', 'rowing', 'canoe', 'surfing']):
+            try:
+                if tags.get('leisure') == 'track':
+                    # Running/cycling tracks as linear features (if not closed) or areas (if closed)
+                    if w.is_closed():
+                        geom = wkb.create_polygon(w)
+                        poly = loads(geom, hex=True)
+                        self.features['sports_fitness'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': w.id}
+                        })
+                    else:
+                        geom = wkb.create_linestring(w)
+                        line = loads(geom, hex=True)
+                        self.features['sports_fitness'].append({
+                            'geometry': line,
+                            'properties': {**tags, 'osm_id': w.id}
+                        })
+                elif w.is_closed():
+                    # Other sports facilities as area features
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['sports_fitness'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
+        # Agricultural & Rural Features (as areas/facilities) - Comprehensive coverage of farming, rural infrastructure, and agricultural facilities
+        elif (tags.get('landuse') in ['orchard', 'vineyard', 'allotments', 'farmyard', 'farmland', 'animal_keeping', 'plant_nursery', 'greenhouse_horticulture', 'aquaculture', 'salt_pond'] or
+              tags.get('man_made') in ['silo', 'storage_tank', 'bunker_silo', 'windmill', 'watermill', 'windpump', 'watering_place'] or
+              tags.get('building') in ['farm_auxiliary', 'barn', 'stable', 'sty', 'greenhouse', 'cowshed', 'chicken_coop', 'farm'] or
+              tags.get('amenity') in ['animal_shelter', 'animal_boarding', 'veterinary'] or
+              tags.get('craft') in ['agricultural_engines', 'beekeeper', 'distillery', 'winery'] or
+              tags.get('shop') in ['farm', 'garden_centre', 'agrarian', 'feed'] or
+              tags.get('leisure') in ['fishing', 'garden'] or
+              tags.get('natural') in ['tree_row'] or
+              tags.get('agriculture') in ['greenhouse', 'crop', 'livestock', 'dairy', 'poultry', 'beekeeping'] or
+              tags.get('produce') in ['fruit', 'vegetable', 'grain', 'dairy', 'meat', 'eggs', 'honey']):
+            try:
+                if tags.get('natural') == 'tree_row':
+                    # Tree rows as linear features
+                    geom = wkb.create_linestring(w)
+                    line = loads(geom, hex=True)
+                    self.features['agricultural_rural'].append({
+                        'geometry': line,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+                elif w.is_closed():
+                    # Agricultural areas and facilities
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['agricultural_rural'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
+        # Military & Government Features (as areas/facilities) - Comprehensive coverage of military installations and government facilities
+        elif (tags.get('military') in ['airfield', 'base', 'bunker', 'barracks', 'checkpoint', 'danger_area', 'nuclear_explosion_site', 'obstacle_course', 'office', 'range', 'training_area', 'naval_base', 'depot', 'academy', 'hospital'] or
+              tags.get('government') in ['administrative', 'archive', 'courthouse', 'customs', 'diplomatic', 'embassy', 'fire_department', 'legislative', 'library', 'military', 'ministry', 'office', 'parliament', 'police', 'prison', 'public_service', 'register_office', 'social_services', 'taxation', 'town_hall'] or
+              tags.get('amenity') in ['courthouse', 'prison', 'police', 'fire_station', 'embassy', 'townhall', 'customs', 'ranger_station'] or
+              tags.get('building') in ['government', 'military', 'courthouse', 'prison', 'fire_station', 'police'] or
+              tags.get('landuse') in ['military', 'government'] or
+              tags.get('office') in ['government', 'diplomatic', 'administrative', 'military'] or
+              tags.get('diplomatic') in ['embassy', 'consulate', 'delegation', 'mission'] or
+              tags.get('public_service') in ['social_services', 'employment_agency', 'tax_office']):
+            try:
+                if w.is_closed():
+                    # Military and government areas and facilities
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['military_government'].append({
+                        'geometry': poly,
+                        'properties': {**tags, 'osm_id': w.id}
+                    })
+            except Exception:
+                pass
+        
+        # Leisure & Entertainment Details (as areas/facilities) - Comprehensive coverage of specialized leisure and entertainment venues
+        elif (tags.get('leisure') in ['dance', 'escape_game', 'hackerspace', 'adult_gaming_centre', 'miniature_golf', 'arcade', 'bingo_hall', 'casino', 'gambling', 'social_club', 'sauna', 'bandstand', 'bleachers', 'maze', 'shooting_range', 'disc_golf', 'picnic_table', 'firepit', 'bbq'] or
+              tags.get('amenity') in ['casino', 'gambling', 'game_feeding', 'karaoke_box', 'love_hotel', 'nightclub', 'planetarium', 'social_facility', 'stripclub', 'swingerclub', 'brothel', 'studio'] or
+              tags.get('shop') in ['games', 'lottery', 'video_games', 'music', 'musical_instrument', 'video', 'books', 'art', 'craft', 'hobby'] or
+              tags.get('club') in ['sport', 'social', 'veterans', 'youth', 'senior', 'community', 'photography', 'computer', 'automobile'] or
+              tags.get('tourism') in ['theme_park', 'aquarium', 'zoo'] or
+              tags.get('sport') in ['billiards', 'darts', 'chess', 'go', 'beachvolleyball'] or
+              tags.get('craft') in ['brewery', 'distillery', 'winery'] or
+              tags.get('entertainment') in ['escape_room', 'laser_tag', 'paintball', 'axe_throwing', 'virtual_reality']):
+            try:
+                if w.is_closed():
+                    # Leisure and entertainment areas and facilities
+                    geom = wkb.create_polygon(w)
+                    poly = loads(geom, hex=True)
+                    self.features['leisure_entertainment_details'].append({
                         'geometry': poly,
                         'properties': {**tags, 'osm_id': w.id}
                     })
@@ -1078,6 +1259,139 @@ class OSMHandler(osmium.SimpleHandler):
                     
                     if poly.intersects(bounds_poly):
                         self.features['communication_technology'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Education & Childcare (as relations) - Educational institutions and childcare facilities
+            elif tags.get('amenity') in ['childcare', 'language_school', 'driving_school', 'music_school', 'research_institute']:
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if education area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['education_childcare'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Sports & Fitness Facilities (as relations) - Sports venues, fitness equipment, and recreational facilities
+            elif (tags.get('leisure') in ['fitness_station', 'track', 'pitch', 'marina', 'slipway'] or
+                  tags.get('sport') in ['tennis', 'football', 'soccer', 'basketball', 'baseball', 'swimming', 'athletics', 'golf', 'hockey', 'volleyball', 'badminton', 'squash', 'table_tennis', 'boxing', 'martial_arts', 'climbing', 'cycling', 'running', 'fitness', 'gym', 'yoga', 'dance', 'skateboard', 'bmx', 'equestrian', 'sailing', 'rowing', 'canoe', 'surfing']):
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if sports area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['sports_fitness'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Agricultural & Rural Features (as relations) - Comprehensive coverage of farming, rural infrastructure, and agricultural facilities
+            elif (tags.get('landuse') in ['orchard', 'vineyard', 'allotments', 'farmyard', 'farmland', 'animal_keeping', 'plant_nursery', 'greenhouse_horticulture', 'aquaculture', 'salt_pond'] or
+                  tags.get('man_made') in ['silo', 'storage_tank', 'bunker_silo', 'windmill', 'watermill', 'windpump', 'watering_place'] or
+                  tags.get('building') in ['farm_auxiliary', 'barn', 'stable', 'sty', 'greenhouse', 'cowshed', 'chicken_coop', 'farm'] or
+                  tags.get('amenity') in ['animal_shelter', 'animal_boarding', 'veterinary'] or
+                  tags.get('craft') in ['agricultural_engines', 'beekeeper', 'distillery', 'winery'] or
+                  tags.get('shop') in ['farm', 'garden_centre', 'agrarian', 'feed'] or
+                  tags.get('leisure') in ['fishing', 'garden'] or
+                  tags.get('agriculture') in ['greenhouse', 'crop', 'livestock', 'dairy', 'poultry', 'beekeeping'] or
+                  tags.get('produce') in ['fruit', 'vegetable', 'grain', 'dairy', 'meat', 'eggs', 'honey']):
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if agricultural area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['agricultural_rural'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Military & Government Features (as relations) - Comprehensive coverage of military installations and government facilities
+            elif (tags.get('military') in ['airfield', 'base', 'bunker', 'barracks', 'checkpoint', 'danger_area', 'nuclear_explosion_site', 'obstacle_course', 'office', 'range', 'training_area', 'naval_base', 'depot', 'academy', 'hospital'] or
+                  tags.get('government') in ['administrative', 'archive', 'courthouse', 'customs', 'diplomatic', 'embassy', 'fire_department', 'legislative', 'library', 'military', 'ministry', 'office', 'parliament', 'police', 'prison', 'public_service', 'register_office', 'social_services', 'taxation', 'town_hall'] or
+                  tags.get('amenity') in ['courthouse', 'prison', 'police', 'fire_station', 'embassy', 'townhall', 'customs', 'ranger_station'] or
+                  tags.get('building') in ['government', 'military', 'courthouse', 'prison', 'fire_station', 'police'] or
+                  tags.get('landuse') in ['military', 'government'] or
+                  tags.get('office') in ['government', 'diplomatic', 'administrative', 'military'] or
+                  tags.get('diplomatic') in ['embassy', 'consulate', 'delegation', 'mission'] or
+                  tags.get('public_service') in ['social_services', 'employment_agency', 'tax_office']):
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if military/government area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['military_government'].append({
+                            'geometry': poly,
+                            'properties': {**tags, 'osm_id': a.id}
+                        })
+                except Exception:
+                    pass
+            
+            # Leisure & Entertainment Details (as relations) - Comprehensive coverage of specialized leisure and entertainment venues
+            elif (tags.get('leisure') in ['dance', 'escape_game', 'hackerspace', 'adult_gaming_centre', 'miniature_golf', 'arcade', 'bingo_hall', 'casino', 'gambling', 'social_club', 'sauna', 'bandstand', 'bleachers', 'maze', 'shooting_range', 'disc_golf', 'picnic_table', 'firepit', 'bbq'] or
+                  tags.get('amenity') in ['casino', 'gambling', 'game_feeding', 'karaoke_box', 'love_hotel', 'nightclub', 'planetarium', 'social_facility', 'stripclub', 'swingerclub', 'brothel', 'studio'] or
+                  tags.get('shop') in ['games', 'lottery', 'video_games', 'music', 'musical_instrument', 'video', 'books', 'art', 'craft', 'hobby'] or
+                  tags.get('club') in ['sport', 'social', 'veterans', 'youth', 'senior', 'community', 'photography', 'computer', 'automobile'] or
+                  tags.get('tourism') in ['theme_park', 'aquarium', 'zoo'] or
+                  tags.get('sport') in ['billiards', 'darts', 'chess', 'go', 'beachvolleyball'] or
+                  tags.get('craft') in ['brewery', 'distillery', 'winery'] or
+                  tags.get('entertainment') in ['escape_room', 'laser_tag', 'paintball', 'axe_throwing', 'virtual_reality']):
+                try:
+                    geom = wkb.create_multipolygon(a)
+                    poly = loads(geom, hex=True)
+                    
+                    # Check if leisure/entertainment area intersects with bounds
+                    bounds_poly = Polygon([
+                        (self.bounds['west'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['south']),
+                        (self.bounds['east'], self.bounds['north']),
+                        (self.bounds['west'], self.bounds['north'])
+                    ])
+                    
+                    if poly.intersects(bounds_poly):
+                        self.features['leisure_entertainment_details'].append({
                             'geometry': poly,
                             'properties': {**tags, 'osm_id': a.id}
                         })

@@ -658,6 +658,206 @@ class TileBuilder:
             elif properties.get('communication') == 'line':
                 return 'line'
             return 'default'
+        elif feature_type == 'education_childcare':
+            # Determine education/childcare subtype
+            return properties.get('amenity', 'default')
+        elif feature_type == 'sports_fitness':
+            # Determine sports/fitness subtype - prefer sport tag, fallback to leisure
+            if properties.get('sport'):
+                return properties.get('sport')
+            elif properties.get('leisure'):
+                return properties.get('leisure')
+            return 'default'
+        
+        elif feature_type == 'agricultural_rural':
+            # Determine agricultural/rural subtype - prefer specific tags over generic ones
+            if properties.get('landuse'):
+                return properties.get('landuse')
+            elif properties.get('building'):
+                return properties.get('building')
+            elif properties.get('man_made'):
+                return properties.get('man_made')
+            elif properties.get('craft'):
+                return properties.get('craft')
+            elif properties.get('shop'):
+                return properties.get('shop')
+            elif properties.get('amenity'):
+                return properties.get('amenity')
+            elif properties.get('leisure'):
+                return properties.get('leisure')
+            elif properties.get('natural'):
+                return properties.get('natural')
+            elif properties.get('agriculture'):
+                return properties.get('agriculture')
+            elif properties.get('produce'):
+                return properties.get('produce')
+            return 'default'
+        
+        elif feature_type == 'military_government':
+            # Determine military/government subtype - prefer specific tags over generic ones
+            if properties.get('military'):
+                return properties.get('military')
+            elif properties.get('government'):
+                return properties.get('government')
+            elif properties.get('amenity'):
+                return properties.get('amenity')
+            elif properties.get('building'):
+                return properties.get('building')
+            elif properties.get('office'):
+                return properties.get('office')
+            elif properties.get('diplomatic'):
+                return properties.get('diplomatic')
+            elif properties.get('public_service'):
+                return properties.get('public_service')
+            elif properties.get('landuse'):
+                return properties.get('landuse')
+            return 'default'
+        
+        elif feature_type == 'leisure_entertainment_details':
+            # Determine leisure/entertainment subtype - prefer specific tags over generic ones
+            if properties.get('leisure'):
+                return properties.get('leisure')
+            elif properties.get('amenity'):
+                return properties.get('amenity')
+            elif properties.get('shop'):
+                return properties.get('shop')
+            elif properties.get('club'):
+                return properties.get('club')
+            elif properties.get('tourism'):
+                return properties.get('tourism')
+            elif properties.get('sport'):
+                return properties.get('sport')
+            elif properties.get('craft'):
+                return properties.get('craft')
+            elif properties.get('entertainment'):
+                return properties.get('entertainment')
+            return 'default'
+        
+        elif feature_type == 'sensory_accessibility':
+            # Determine sensory accessibility subtype based on specific accessibility features
+            if properties.get('tactile_paving') == 'yes':
+                return 'tactile_paving_yes'
+            elif properties.get('tactile_paving') == 'no':
+                return 'tactile_paving_no'
+            elif properties.get('traffic_signals:sound') == 'yes':
+                return 'traffic_signals_sound'
+            elif properties.get('traffic_signals:vibration') == 'yes':
+                return 'traffic_signals_vibration'
+            elif properties.get('acoustic') == 'voice_description':
+                return 'acoustic_voice'
+            elif properties.get('braille') == 'yes':
+                return 'braille'
+            elif properties.get('audio_loop') == 'yes':
+                return 'audio_loop'
+            elif properties.get('sign_language') == 'yes':
+                return 'sign_language'
+            return 'default'
+        
+        elif feature_type == 'accessible_facilities':
+            # Determine accessible facility subtype based on facility type and accessibility
+            if properties.get('toilets:wheelchair') == 'yes':
+                return 'toilets_wheelchair_yes'
+            elif properties.get('toilets:wheelchair') == 'no':
+                return 'toilets_wheelchair_no'
+            elif properties.get('changing_table') == 'yes':
+                return 'changing_table_yes'
+            elif properties.get('changing_table') == 'no':
+                return 'changing_table_no'
+            elif properties.get('elevator') == 'yes':
+                return 'elevator_yes'
+            elif properties.get('elevator') == 'no':
+                return 'elevator_no'
+            elif properties.get('highway') == 'elevator':
+                return 'elevator'
+            elif properties.get('escalator') == 'yes':
+                return 'escalator_yes'
+            elif properties.get('escalator') == 'no':
+                return 'escalator_no'
+            elif properties.get('highway') == 'escalator':
+                return 'escalator'
+            elif properties.get('conveying') == 'yes':
+                return 'conveying_yes'
+            elif properties.get('conveying') == 'no':
+                return 'conveying_no'
+            elif properties.get('automatic_door') == 'yes':
+                return 'automatic_door_yes'
+            elif properties.get('automatic_door') == 'no':
+                return 'automatic_door_no'
+            elif 'door:width' in properties:
+                return 'door_width'
+            elif 'kerb:height' in properties:
+                return 'kerb_height'
+            elif 'incline' in properties:
+                return 'incline'
+            return 'default'
+        
+        elif feature_type == 'mobility_access':
+            # Determine mobility access subtype based on accessibility features
+            if properties.get('wheelchair') == 'yes':
+                return 'wheelchair_yes'
+            elif properties.get('wheelchair') == 'no':
+                return 'wheelchair_no'
+            elif properties.get('wheelchair') == 'limited':
+                return 'wheelchair_limited'
+            elif properties.get('wheelchair') == 'designated':
+                return 'wheelchair_designated'
+            elif properties.get('ramp') == 'yes':
+                return 'ramp_yes'
+            elif properties.get('ramp') == 'no':
+                return 'ramp_no'
+            elif properties.get('ramp:wheelchair') == 'yes':
+                return 'ramp_wheelchair_yes'
+            elif properties.get('ramp:wheelchair') == 'no':
+                return 'ramp_wheelchair_no'
+            elif properties.get('ramp:stroller') == 'yes':
+                return 'ramp_stroller_yes'
+            elif properties.get('ramp:stroller') == 'no':
+                return 'ramp_stroller_no'
+            elif properties.get('ramp:bicycle') == 'yes':
+                return 'ramp_bicycle_yes'
+            elif properties.get('ramp:bicycle') == 'no':
+                return 'ramp_bicycle_no'
+            elif 'step_count' in properties:
+                return 'step_count'
+            elif properties.get('handrail') == 'yes':
+                return 'handrail_yes'
+            elif properties.get('handrail') == 'no':
+                return 'handrail_no'
+            elif properties.get('handrail:center') == 'yes':
+                return 'handrail_center'
+            elif properties.get('handrail:left') == 'yes':
+                return 'handrail_left'
+            elif properties.get('handrail:right') == 'yes':
+                return 'handrail_right'
+            return 'default'
+        
+        elif feature_type == 'accessible_transport':
+            # Determine accessible transport subtype based on transport accessibility
+            if properties.get('parking:disabled') == 'yes':
+                return 'parking_disabled_yes'
+            elif properties.get('parking:disabled') == 'no':
+                return 'parking_disabled_no'
+            elif properties.get('priority') == 'disabled':
+                return 'priority_disabled'
+            elif 'capacity:disabled' in properties:
+                return 'capacity_disabled'
+            elif properties.get('bus:wheelchair') == 'yes':
+                return 'bus_wheelchair_yes'
+            elif properties.get('bus:wheelchair') == 'no':
+                return 'bus_wheelchair_no'
+            elif properties.get('subway:wheelchair') == 'yes':
+                return 'subway_wheelchair_yes'
+            elif properties.get('subway:wheelchair') == 'no':
+                return 'subway_wheelchair_no'
+            elif properties.get('tram:wheelchair') == 'yes':
+                return 'tram_wheelchair_yes'
+            elif properties.get('tram:wheelchair') == 'no':
+                return 'tram_wheelchair_no'
+            elif properties.get('train:wheelchair') == 'yes':
+                return 'train_wheelchair_yes'
+            elif properties.get('train:wheelchair') == 'no':
+                return 'train_wheelchair_no'
+            return 'default'
         
         return 'default'
     
@@ -677,6 +877,18 @@ class TileBuilder:
                 feature_type = 'bus guideway'
             else:
                 feature_type = 'road'
+        elif properties.get('amenity') in ['childcare', 'language_school', 'driving_school', 'music_school', 'research_institute']:
+            # Education and childcare facilities (handle before generic amenity)
+            if properties.get('amenity') == 'childcare':
+                feature_type = 'childcare center'
+            elif properties.get('amenity') == 'language_school':
+                feature_type = 'language school'
+            elif properties.get('amenity') == 'driving_school':
+                feature_type = 'driving school'
+            elif properties.get('amenity') == 'music_school':
+                feature_type = 'music school'
+            elif properties.get('amenity') == 'research_institute':
+                feature_type = 'research institute'
         elif properties.get('amenity'):
             feature_type = properties.get('amenity').replace('_', ' ')
         elif properties.get('shop'):
@@ -743,6 +955,86 @@ class TileBuilder:
                 feature_type = properties.get('man_made').replace('_', ' ')
         elif properties.get('waterway'):
             feature_type = properties.get('waterway').replace('_', ' ')
+        elif properties.get('leisure') in ['fitness_station', 'track', 'pitch', 'marina', 'slipway'] or properties.get('sport'):
+            # Sports and fitness facilities (handle before generic leisure)
+            if properties.get('sport'):
+                sport_type = properties.get('sport')
+                # Ball sports
+                if sport_type == 'tennis':
+                    feature_type = 'tennis court'
+                elif sport_type in ['football', 'soccer']:
+                    feature_type = 'football field'
+                elif sport_type == 'basketball':
+                    feature_type = 'basketball court'
+                elif sport_type == 'volleyball':
+                    feature_type = 'volleyball court'
+                elif sport_type == 'baseball':
+                    feature_type = 'baseball field'
+                elif sport_type == 'hockey':
+                    feature_type = 'hockey rink'
+                # Racket sports
+                elif sport_type == 'table_tennis':
+                    feature_type = 'table tennis facility'
+                elif sport_type == 'badminton':
+                    feature_type = 'badminton court'
+                elif sport_type == 'squash':
+                    feature_type = 'squash court'
+                # Water sports
+                elif sport_type == 'swimming':
+                    feature_type = 'swimming facility'
+                elif sport_type == 'sailing':
+                    feature_type = 'sailing facility'
+                elif sport_type == 'rowing':
+                    feature_type = 'rowing facility'
+                elif sport_type == 'canoe':
+                    feature_type = 'canoe facility'
+                elif sport_type == 'surfing':
+                    feature_type = 'surfing area'
+                # Individual sports
+                elif sport_type == 'athletics':
+                    feature_type = 'athletics track'
+                elif sport_type == 'running':
+                    feature_type = 'running track'
+                elif sport_type == 'cycling':
+                    feature_type = 'cycling track'
+                elif sport_type == 'golf':
+                    feature_type = 'golf course'
+                # Fitness & wellness
+                elif sport_type == 'fitness':
+                    feature_type = 'fitness center'
+                elif sport_type == 'gym':
+                    feature_type = 'gymnasium'
+                elif sport_type == 'yoga':
+                    feature_type = 'yoga studio'
+                elif sport_type == 'dance':
+                    feature_type = 'dance studio'
+                # Combat sports
+                elif sport_type == 'boxing':
+                    feature_type = 'boxing gym'
+                elif sport_type == 'martial_arts':
+                    feature_type = 'martial arts facility'
+                # Adventure sports
+                elif sport_type == 'climbing':
+                    feature_type = 'climbing facility'
+                elif sport_type == 'equestrian':
+                    feature_type = 'equestrian facility'
+                # Urban sports
+                elif sport_type == 'skateboard':
+                    feature_type = 'skateboard park'
+                elif sport_type == 'bmx':
+                    feature_type = 'BMX track'
+                else:
+                    feature_type = f"{sport_type.replace('_', ' ')} facility"
+            elif properties.get('leisure') == 'fitness_station':
+                feature_type = 'fitness station'
+            elif properties.get('leisure') == 'track':
+                feature_type = 'running track'
+            elif properties.get('leisure') == 'pitch':
+                feature_type = 'sports field'
+            elif properties.get('leisure') == 'marina':
+                feature_type = 'marina'
+            elif properties.get('leisure') == 'slipway':
+                feature_type = 'boat launch'
         elif properties.get('leisure'):
             if properties.get('leisure') == 'water_park':
                 feature_type = 'water park'
@@ -842,6 +1134,626 @@ class TileBuilder:
             feature_type = 'data center'
         elif properties.get('communication') == 'line':
             feature_type = 'communication line'
+        
+        # Agricultural & Rural Features - Comprehensive agricultural and rural facility labeling
+        elif (properties.get('landuse') in ['orchard', 'vineyard', 'allotments', 'farmyard', 'farmland', 'animal_keeping', 'plant_nursery', 'greenhouse_horticulture', 'aquaculture'] or
+              properties.get('man_made') in ['silo', 'storage_tank', 'bunker_silo', 'windmill', 'watermill', 'windpump', 'watering_place'] or
+              properties.get('building') in ['farm_auxiliary', 'barn', 'stable', 'sty', 'greenhouse', 'cowshed', 'chicken_coop', 'farm'] or
+              properties.get('amenity') in ['animal_shelter', 'animal_boarding', 'veterinary'] or
+              properties.get('craft') in ['agricultural_engines', 'beekeeper', 'distillery', 'winery'] or
+              properties.get('shop') in ['farm', 'garden_centre', 'agrarian', 'feed'] or
+              properties.get('leisure') in ['fishing', 'garden'] or
+              properties.get('agriculture') in ['greenhouse', 'crop', 'livestock', 'dairy', 'poultry', 'beekeeping'] or
+              properties.get('produce') in ['fruit', 'vegetable', 'grain', 'dairy', 'meat', 'eggs', 'honey']):
+            
+            # Agricultural land use
+            if properties.get('landuse') == 'orchard':
+                feature_type = 'orchard'
+            elif properties.get('landuse') == 'vineyard':
+                feature_type = 'vineyard'
+            elif properties.get('landuse') == 'allotments':
+                feature_type = 'community garden'
+            elif properties.get('landuse') == 'farmyard':
+                feature_type = 'farmyard'
+            elif properties.get('landuse') == 'farmland':
+                feature_type = 'farmland'
+            elif properties.get('landuse') == 'animal_keeping':
+                feature_type = 'animal keeping area'
+            elif properties.get('landuse') == 'plant_nursery':
+                feature_type = 'plant nursery'
+            elif properties.get('landuse') == 'greenhouse_horticulture':
+                feature_type = 'greenhouse complex'
+            elif properties.get('landuse') == 'aquaculture':
+                feature_type = 'fish farm'
+            
+            # Agricultural buildings
+            elif properties.get('building') == 'barn':
+                feature_type = 'barn'
+            elif properties.get('building') == 'farm_auxiliary':
+                feature_type = 'farm building'
+            elif properties.get('building') == 'farm':
+                feature_type = 'farmhouse'
+            elif properties.get('building') == 'stable':
+                feature_type = 'stable'
+            elif properties.get('building') == 'sty':
+                feature_type = 'pig pen'
+            elif properties.get('building') == 'greenhouse':
+                feature_type = 'greenhouse'
+            elif properties.get('building') == 'cowshed':
+                feature_type = 'cow shed'
+            elif properties.get('building') == 'chicken_coop':
+                feature_type = 'chicken coop'
+            
+            # Agricultural infrastructure
+            elif properties.get('man_made') == 'silo':
+                feature_type = 'grain silo'
+            elif properties.get('man_made') == 'storage_tank':
+                feature_type = 'storage tank'
+            elif properties.get('man_made') == 'bunker_silo':
+                feature_type = 'bunker silo'
+            elif properties.get('man_made') == 'windmill':
+                feature_type = 'windmill'
+            elif properties.get('man_made') == 'watermill':
+                feature_type = 'water mill'
+            elif properties.get('man_made') == 'windpump':
+                feature_type = 'wind pump'
+            elif properties.get('man_made') == 'watering_place':
+                feature_type = 'watering place'
+            
+            # Agricultural crafts and services
+            elif properties.get('craft') == 'agricultural_engines':
+                feature_type = 'agricultural equipment shop'
+            elif properties.get('craft') == 'beekeeper':
+                feature_type = 'beekeeping facility'
+            elif properties.get('craft') == 'distillery':
+                feature_type = 'distillery'
+            elif properties.get('craft') == 'winery':
+                feature_type = 'winery'
+            
+            # Agricultural retail
+            elif properties.get('shop') == 'farm':
+                feature_type = 'farm shop'
+            elif properties.get('shop') == 'garden_centre':
+                feature_type = 'garden center'
+            elif properties.get('shop') == 'agrarian':
+                feature_type = 'agricultural supply store'
+            elif properties.get('shop') == 'feed':
+                feature_type = 'feed store'
+            
+            # Animal services
+            elif properties.get('amenity') == 'animal_shelter':
+                feature_type = 'animal shelter'
+            elif properties.get('amenity') == 'animal_boarding':
+                feature_type = 'animal boarding facility'
+            elif properties.get('amenity') == 'veterinary':
+                feature_type = 'veterinary clinic'
+            
+            # Rural recreation
+            elif properties.get('leisure') == 'fishing':
+                feature_type = 'fishing area'
+            elif properties.get('leisure') == 'garden':
+                feature_type = 'community garden'
+            
+            # Agricultural production
+            elif properties.get('agriculture') == 'greenhouse':
+                feature_type = 'greenhouse operation'
+            elif properties.get('agriculture') == 'crop':
+                feature_type = 'crop production'
+            elif properties.get('agriculture') == 'livestock':
+                feature_type = 'livestock farm'
+            elif properties.get('agriculture') == 'dairy':
+                feature_type = 'dairy farm'
+            elif properties.get('agriculture') == 'poultry':
+                feature_type = 'poultry farm'
+            elif properties.get('agriculture') == 'beekeeping':
+                feature_type = 'apiary'
+            
+            # Agricultural produce
+            elif properties.get('produce') == 'fruit':
+                feature_type = 'fruit production'
+            elif properties.get('produce') == 'vegetable':
+                feature_type = 'vegetable production'
+            elif properties.get('produce') == 'grain':
+                feature_type = 'grain production'
+            elif properties.get('produce') == 'dairy':
+                feature_type = 'dairy production'
+            elif properties.get('produce') == 'meat':
+                feature_type = 'meat production'
+            elif properties.get('produce') == 'eggs':
+                feature_type = 'egg production'
+            elif properties.get('produce') == 'honey':
+                feature_type = 'honey production'
+        
+        # Military & Government Features - Comprehensive military installation and government facility labeling
+        elif (properties.get('military') in ['airfield', 'base', 'bunker', 'barracks', 'checkpoint', 'danger_area', 'nuclear_explosion_site', 'obstacle_course', 'office', 'range', 'training_area', 'naval_base', 'depot', 'academy', 'hospital'] or
+              properties.get('government') in ['administrative', 'archive', 'courthouse', 'customs', 'diplomatic', 'embassy', 'fire_department', 'legislative', 'library', 'military', 'ministry', 'office', 'parliament', 'police', 'prison', 'public_service', 'register_office', 'social_services', 'taxation', 'town_hall'] or
+              properties.get('amenity') in ['courthouse', 'prison', 'police', 'fire_station', 'embassy', 'townhall', 'customs', 'ranger_station'] or
+              properties.get('building') in ['government', 'military', 'courthouse', 'prison', 'fire_station', 'police'] or
+              properties.get('landuse') in ['military', 'government'] or
+              properties.get('office') in ['government', 'diplomatic', 'administrative', 'military'] or
+              properties.get('diplomatic') in ['embassy', 'consulate', 'delegation', 'mission'] or
+              properties.get('public_service') in ['social_services', 'employment_agency', 'tax_office']):
+            
+            # Military installations
+            if properties.get('military') == 'base':
+                feature_type = 'military base'
+            elif properties.get('military') == 'airfield':
+                feature_type = 'military airfield'
+            elif properties.get('military') == 'naval_base':
+                feature_type = 'naval base'
+            elif properties.get('military') == 'barracks':
+                feature_type = 'military barracks'
+            elif properties.get('military') == 'depot':
+                feature_type = 'military depot'
+            elif properties.get('military') == 'academy':
+                feature_type = 'military academy'
+            elif properties.get('military') == 'hospital':
+                feature_type = 'military hospital'
+            elif properties.get('military') == 'bunker':
+                feature_type = 'military bunker'
+            elif properties.get('military') == 'checkpoint':
+                feature_type = 'security checkpoint'
+            elif properties.get('military') == 'danger_area':
+                feature_type = 'military danger area'
+            elif properties.get('military') == 'nuclear_explosion_site':
+                feature_type = 'nuclear test site'
+            elif properties.get('military') == 'range':
+                feature_type = 'firing range'
+            elif properties.get('military') == 'training_area':
+                feature_type = 'military training area'
+            elif properties.get('military') == 'obstacle_course':
+                feature_type = 'military obstacle course'
+            elif properties.get('military') == 'office':
+                feature_type = 'military office'
+            
+            # Government buildings
+            elif properties.get('government') == 'courthouse':
+                feature_type = 'courthouse'
+            elif properties.get('government') == 'parliament':
+                feature_type = 'parliament building'
+            elif properties.get('government') == 'town_hall':
+                feature_type = 'town hall'
+            elif properties.get('government') == 'ministry':
+                feature_type = 'government ministry'
+            elif properties.get('government') == 'legislative':
+                feature_type = 'legislative building'
+            elif properties.get('government') == 'administrative':
+                feature_type = 'government office'
+            elif properties.get('government') == 'archive':
+                feature_type = 'government archive'
+            elif properties.get('government') == 'library':
+                feature_type = 'government library'
+            elif properties.get('government') == 'register_office':
+                feature_type = 'registry office'
+            elif properties.get('government') == 'taxation':
+                feature_type = 'tax office'
+            elif properties.get('government') == 'customs':
+                feature_type = 'customs office'
+            elif properties.get('government') == 'public_service':
+                feature_type = 'public service office'
+            elif properties.get('government') == 'social_services':
+                feature_type = 'social services office'
+            
+            # Law enforcement and justice
+            elif properties.get('government') == 'police':
+                feature_type = 'police station'
+            elif properties.get('amenity') == 'police':
+                feature_type = 'police station'
+            elif properties.get('government') == 'prison':
+                feature_type = 'correctional facility'
+            elif properties.get('amenity') == 'prison':
+                feature_type = 'correctional facility'
+            elif properties.get('amenity') == 'courthouse':
+                feature_type = 'courthouse'
+            
+            # Emergency services
+            elif properties.get('government') == 'fire_department':
+                feature_type = 'fire department'
+            elif properties.get('amenity') == 'fire_station':
+                feature_type = 'fire station'
+            elif properties.get('amenity') == 'ranger_station':
+                feature_type = 'ranger station'
+            
+            # Diplomatic services
+            elif properties.get('government') == 'embassy':
+                feature_type = 'embassy'
+            elif properties.get('amenity') == 'embassy':
+                feature_type = 'embassy'
+            elif properties.get('diplomatic') == 'embassy':
+                feature_type = 'embassy'
+            elif properties.get('diplomatic') == 'consulate':
+                feature_type = 'consulate'
+            elif properties.get('diplomatic') == 'delegation':
+                feature_type = 'diplomatic delegation'
+            elif properties.get('diplomatic') == 'mission':
+                feature_type = 'diplomatic mission'
+            
+            # Government offices
+            elif properties.get('office') == 'government':
+                feature_type = 'government office'
+            elif properties.get('office') == 'diplomatic':
+                feature_type = 'diplomatic office'
+            elif properties.get('office') == 'administrative':
+                feature_type = 'administrative office'
+            elif properties.get('office') == 'military':
+                feature_type = 'military office'
+            
+            # Public services
+            elif properties.get('public_service') == 'social_services':
+                feature_type = 'social services office'
+            elif properties.get('public_service') == 'employment_agency':
+                feature_type = 'employment office'
+            elif properties.get('public_service') == 'tax_office':
+                feature_type = 'tax office'
+            
+            # Buildings and amenities
+            elif properties.get('amenity') == 'townhall':
+                feature_type = 'town hall'
+            elif properties.get('amenity') == 'customs':
+                feature_type = 'customs office'
+            elif properties.get('building') == 'government':
+                feature_type = 'government building'
+            elif properties.get('building') == 'military':
+                feature_type = 'military building'
+            elif properties.get('building') == 'courthouse':
+                feature_type = 'courthouse'
+            elif properties.get('building') == 'prison':
+                feature_type = 'correctional facility'
+            elif properties.get('building') == 'fire_station':
+                feature_type = 'fire station'
+            elif properties.get('building') == 'police':
+                feature_type = 'police station'
+            
+            # Land use
+            elif properties.get('landuse') == 'military':
+                feature_type = 'military area'
+            elif properties.get('landuse') == 'government':
+                feature_type = 'government area'
+        
+        # Leisure & Entertainment Details - Comprehensive leisure and entertainment venue labeling
+        elif (properties.get('leisure') in ['dance', 'escape_game', 'hackerspace', 'adult_gaming_centre', 'miniature_golf', 'arcade', 'bingo_hall', 'casino', 'gambling', 'social_club', 'sauna', 'bandstand', 'bleachers', 'maze', 'shooting_range', 'disc_golf', 'picnic_table', 'firepit', 'bbq'] or
+              properties.get('amenity') in ['casino', 'gambling', 'game_feeding', 'karaoke_box', 'love_hotel', 'nightclub', 'planetarium', 'social_facility', 'stripclub', 'swingerclub', 'brothel', 'studio'] or
+              properties.get('shop') in ['games', 'lottery', 'video_games', 'music', 'musical_instrument', 'video', 'books', 'art', 'craft', 'hobby'] or
+              properties.get('club') in ['sport', 'social', 'veterans', 'youth', 'senior', 'community', 'photography', 'computer', 'automobile'] or
+              properties.get('tourism') in ['theme_park', 'aquarium', 'zoo'] or
+              properties.get('sport') in ['billiards', 'darts', 'chess', 'go', 'beachvolleyball'] or
+              properties.get('craft') in ['brewery', 'distillery', 'winery'] or
+              properties.get('entertainment') in ['escape_room', 'laser_tag', 'paintball', 'axe_throwing', 'virtual_reality']):
+            
+            # Dance and performance venues
+            if properties.get('leisure') == 'dance':
+                feature_type = 'dance studio'
+            elif properties.get('leisure') == 'bandstand':
+                feature_type = 'bandstand'
+            elif properties.get('amenity') == 'studio':
+                feature_type = 'recording studio'
+            
+            # Gaming and entertainment venues
+            elif properties.get('leisure') == 'escape_game':
+                feature_type = 'escape room'
+            elif properties.get('entertainment') == 'escape_room':
+                feature_type = 'escape room'
+            elif properties.get('leisure') == 'arcade':
+                feature_type = 'arcade'
+            elif properties.get('leisure') == 'adult_gaming_centre':
+                feature_type = 'adult gaming center'
+            elif properties.get('leisure') == 'bingo_hall':
+                feature_type = 'bingo hall'
+            elif properties.get('entertainment') == 'laser_tag':
+                feature_type = 'laser tag arena'
+            elif properties.get('entertainment') == 'paintball':
+                feature_type = 'paintball field'
+            elif properties.get('entertainment') == 'axe_throwing':
+                feature_type = 'axe throwing venue'
+            elif properties.get('entertainment') == 'virtual_reality':
+                feature_type = 'VR arcade'
+            
+            # Gambling and casino venues
+            elif properties.get('leisure') == 'casino':
+                feature_type = 'casino'
+            elif properties.get('amenity') == 'casino':
+                feature_type = 'casino'
+            elif properties.get('leisure') == 'gambling':
+                feature_type = 'gambling venue'
+            elif properties.get('amenity') == 'gambling':
+                feature_type = 'gambling venue'
+            elif properties.get('shop') == 'lottery':
+                feature_type = 'lottery retailer'
+            
+            # Nightlife and social venues
+            elif properties.get('amenity') == 'nightclub':
+                feature_type = 'nightclub'
+            elif properties.get('amenity') == 'karaoke_box':
+                feature_type = 'karaoke venue'
+            elif properties.get('leisure') == 'social_club':
+                feature_type = 'social club'
+            elif properties.get('amenity') == 'social_facility':
+                feature_type = 'social facility'
+            elif properties.get('amenity') == 'love_hotel':
+                feature_type = 'love hotel'
+            elif properties.get('amenity') == 'stripclub':
+                feature_type = 'strip club'
+            elif properties.get('amenity') == 'swingerclub':
+                feature_type = 'swinger club'
+            elif properties.get('amenity') == 'brothel':
+                feature_type = 'brothel'
+            
+            # Wellness and relaxation
+            elif properties.get('leisure') == 'sauna':
+                feature_type = 'sauna'
+            
+            # Technology and innovation spaces
+            elif properties.get('leisure') == 'hackerspace':
+                feature_type = 'hackerspace'
+            
+            # Outdoor entertainment and sports
+            elif properties.get('leisure') == 'miniature_golf':
+                feature_type = 'miniature golf course'
+            elif properties.get('leisure') == 'shooting_range':
+                feature_type = 'shooting range'
+            elif properties.get('leisure') == 'disc_golf':
+                feature_type = 'disc golf course'
+            elif properties.get('sport') == 'billiards':
+                feature_type = 'billiards hall'
+            elif properties.get('sport') == 'darts':
+                feature_type = 'darts venue'
+            elif properties.get('sport') == 'chess':
+                feature_type = 'chess club'
+            elif properties.get('sport') == 'go':
+                feature_type = 'go club'
+            elif properties.get('sport') == 'beachvolleyball':
+                feature_type = 'beach volleyball court'
+            
+            # Outdoor facilities
+            elif properties.get('leisure') == 'picnic_table':
+                feature_type = 'picnic table'
+            elif properties.get('leisure') == 'firepit':
+                feature_type = 'fire pit'
+            elif properties.get('leisure') == 'bbq':
+                feature_type = 'barbecue area'
+            elif properties.get('leisure') == 'bleachers':
+                feature_type = 'bleachers'
+            elif properties.get('leisure') == 'maze':
+                feature_type = 'maze'
+            
+            # Educational and cultural attractions
+            elif properties.get('amenity') == 'planetarium':
+                feature_type = 'planetarium'
+            elif properties.get('tourism') == 'theme_park':
+                feature_type = 'theme park'
+            elif properties.get('tourism') == 'aquarium':
+                feature_type = 'aquarium'
+            elif properties.get('tourism') == 'zoo':
+                feature_type = 'zoo'
+            
+            # Retail entertainment
+            elif properties.get('shop') == 'games':
+                feature_type = 'game store'
+            elif properties.get('shop') == 'video_games':
+                feature_type = 'video game store'
+            elif properties.get('shop') == 'music':
+                feature_type = 'music store'
+            elif properties.get('shop') == 'musical_instrument':
+                feature_type = 'musical instrument shop'
+            elif properties.get('shop') == 'video':
+                feature_type = 'video store'
+            elif properties.get('shop') == 'books':
+                feature_type = 'bookstore'
+            elif properties.get('shop') == 'art':
+                feature_type = 'art store'
+            elif properties.get('shop') == 'craft':
+                feature_type = 'craft store'
+            elif properties.get('shop') == 'hobby':
+                feature_type = 'hobby shop'
+            
+            # Clubs and organizations
+            elif properties.get('club') == 'sport':
+                feature_type = 'sports club'
+            elif properties.get('club') == 'social':
+                feature_type = 'social club'
+            elif properties.get('club') == 'veterans':
+                feature_type = 'veterans club'
+            elif properties.get('club') == 'youth':
+                feature_type = 'youth club'
+            elif properties.get('club') == 'senior':
+                feature_type = 'senior center'
+            elif properties.get('club') == 'community':
+                feature_type = 'community club'
+            elif properties.get('club') == 'photography':
+                feature_type = 'photography club'
+            elif properties.get('club') == 'computer':
+                feature_type = 'computer club'
+            elif properties.get('club') == 'automobile':
+                feature_type = 'car club'
+            
+            # Craft and production
+            elif properties.get('craft') == 'brewery':
+                feature_type = 'brewery'
+            elif properties.get('craft') == 'distillery':
+                feature_type = 'distillery'
+            elif properties.get('craft') == 'winery':
+                feature_type = 'winery'
+            
+            # Animal-related entertainment
+            elif properties.get('amenity') == 'game_feeding':
+                feature_type = 'animal feeding area'
+        
+        # Advanced Accessibility Features - Comprehensive accessibility feature labeling
+        elif (properties.get('tactile_paving') in ['yes', 'no'] or
+              properties.get('traffic_signals:sound') == 'yes' or
+              properties.get('traffic_signals:vibration') == 'yes' or
+              properties.get('acoustic') == 'voice_description' or
+              properties.get('braille') == 'yes' or
+              properties.get('audio_loop') == 'yes' or
+              properties.get('sign_language') == 'yes' or
+              properties.get('toilets:wheelchair') in ['yes', 'no'] or
+              properties.get('changing_table') in ['yes', 'no'] or
+              properties.get('elevator') in ['yes', 'no'] or
+              properties.get('escalator') in ['yes', 'no'] or
+              properties.get('conveying') in ['yes', 'no'] or
+              properties.get('automatic_door') in ['yes', 'no'] or
+              'door:width' in properties or
+              'kerb:height' in properties or
+              'incline' in properties or
+              properties.get('highway') in ['elevator', 'escalator'] or
+              'wheelchair' in properties or
+              properties.get('ramp') in ['yes', 'no'] or
+              properties.get('ramp:wheelchair') in ['yes', 'no'] or
+              properties.get('ramp:stroller') in ['yes', 'no'] or
+              properties.get('ramp:bicycle') in ['yes', 'no'] or
+              'step_count' in properties or
+              properties.get('handrail') in ['yes', 'no'] or
+              properties.get('handrail:center') in ['yes', 'no'] or
+              properties.get('handrail:left') in ['yes', 'no'] or
+              properties.get('handrail:right') in ['yes', 'no'] or
+              'capacity:disabled' in properties or
+              properties.get('parking:disabled') in ['yes', 'no'] or
+              properties.get('priority') == 'disabled' or
+              properties.get('bus:wheelchair') in ['yes', 'no'] or
+              properties.get('subway:wheelchair') in ['yes', 'no'] or
+              properties.get('tram:wheelchair') in ['yes', 'no'] or
+              properties.get('train:wheelchair') in ['yes', 'no']):
+            
+            # Tactile navigation features
+            if properties.get('tactile_paving') == 'yes':
+                feature_type = 'tactile paving surface'
+            elif properties.get('tactile_paving') == 'no':
+                feature_type = 'no tactile paving'
+            
+            # Audio signal features
+            elif properties.get('traffic_signals:sound') == 'yes':
+                feature_type = 'audio traffic signal'
+            elif properties.get('traffic_signals:vibration') == 'yes':
+                feature_type = 'vibrating traffic signal'
+            elif properties.get('acoustic') == 'voice_description':
+                feature_type = 'voice description system'
+            elif properties.get('audio_loop') == 'yes':
+                feature_type = 'audio induction loop'
+            
+            # Visual and communication accessibility
+            elif properties.get('braille') == 'yes':
+                feature_type = 'braille signage'
+            elif properties.get('sign_language') == 'yes':
+                feature_type = 'sign language services'
+            
+            # Accessible toilet facilities
+            elif properties.get('toilets:wheelchair') == 'yes':
+                feature_type = 'wheelchair accessible toilet'
+            elif properties.get('toilets:wheelchair') == 'no':
+                feature_type = 'not wheelchair accessible toilet'
+            elif properties.get('changing_table') == 'yes':
+                feature_type = 'baby changing table'
+            elif properties.get('changing_table') == 'no':
+                feature_type = 'no baby changing table'
+            
+            # Vertical transport accessibility
+            elif properties.get('elevator') == 'yes':
+                feature_type = 'elevator available'
+            elif properties.get('elevator') == 'no':
+                feature_type = 'no elevator'
+            elif properties.get('highway') == 'elevator':
+                feature_type = 'elevator'
+            elif properties.get('escalator') == 'yes':
+                feature_type = 'escalator available'
+            elif properties.get('escalator') == 'no':
+                feature_type = 'no escalator'
+            elif properties.get('highway') == 'escalator':
+                feature_type = 'escalator'
+            elif properties.get('conveying') == 'yes':
+                feature_type = 'moving walkway available'
+            elif properties.get('conveying') == 'no':
+                feature_type = 'no moving walkway'
+            
+            # Door and entrance accessibility
+            elif properties.get('automatic_door') == 'yes':
+                feature_type = 'automatic door'
+            elif properties.get('automatic_door') == 'no':
+                feature_type = 'manual door'
+            elif 'door:width' in properties:
+                door_width = properties.get('door:width')
+                feature_type = f'door width {door_width}'
+            
+            # Surface and path accessibility
+            elif 'kerb:height' in properties:
+                kerb_height = properties.get('kerb:height')
+                feature_type = f'curb height {kerb_height}'
+            elif 'incline' in properties:
+                incline = properties.get('incline')
+                feature_type = f'incline {incline}'
+            
+            # Wheelchair accessibility levels
+            elif properties.get('wheelchair') == 'yes':
+                feature_type = 'wheelchair accessible'
+            elif properties.get('wheelchair') == 'no':
+                feature_type = 'not wheelchair accessible'
+            elif properties.get('wheelchair') == 'limited':
+                feature_type = 'limited wheelchair access'
+            elif properties.get('wheelchair') == 'designated':
+                feature_type = 'designated wheelchair access'
+            
+            # Ramp accessibility
+            elif properties.get('ramp') == 'yes':
+                feature_type = 'ramp available'
+            elif properties.get('ramp') == 'no':
+                feature_type = 'no ramp'
+            elif properties.get('ramp:wheelchair') == 'yes':
+                feature_type = 'wheelchair ramp'
+            elif properties.get('ramp:wheelchair') == 'no':
+                feature_type = 'no wheelchair ramp'
+            elif properties.get('ramp:stroller') == 'yes':
+                feature_type = 'stroller ramp'
+            elif properties.get('ramp:stroller') == 'no':
+                feature_type = 'no stroller ramp'
+            elif properties.get('ramp:bicycle') == 'yes':
+                feature_type = 'bicycle ramp'
+            elif properties.get('ramp:bicycle') == 'no':
+                feature_type = 'no bicycle ramp'
+            
+            # Steps and barriers
+            elif 'step_count' in properties:
+                step_count = properties.get('step_count')
+                feature_type = f'{step_count} steps'
+            
+            # Handrail support
+            elif properties.get('handrail') == 'yes':
+                feature_type = 'handrail available'
+            elif properties.get('handrail') == 'no':
+                feature_type = 'no handrail'
+            elif properties.get('handrail:center') == 'yes':
+                feature_type = 'center handrail'
+            elif properties.get('handrail:left') == 'yes':
+                feature_type = 'left handrail'
+            elif properties.get('handrail:right') == 'yes':
+                feature_type = 'right handrail'
+            
+            # Accessible parking and transport
+            elif properties.get('parking:disabled') == 'yes':
+                feature_type = 'accessible parking'
+            elif properties.get('parking:disabled') == 'no':
+                feature_type = 'no accessible parking'
+            elif properties.get('priority') == 'disabled':
+                feature_type = 'priority disabled access'
+            elif 'capacity:disabled' in properties:
+                capacity = properties.get('capacity:disabled')
+                feature_type = f'accessible capacity {capacity}'
+            
+            # Public transport wheelchair accessibility
+            elif properties.get('bus:wheelchair') == 'yes':
+                feature_type = 'wheelchair accessible bus'
+            elif properties.get('bus:wheelchair') == 'no':
+                feature_type = 'not wheelchair accessible bus'
+            elif properties.get('subway:wheelchair') == 'yes':
+                feature_type = 'wheelchair accessible subway'
+            elif properties.get('subway:wheelchair') == 'no':
+                feature_type = 'not wheelchair accessible subway'
+            elif properties.get('tram:wheelchair') == 'yes':
+                feature_type = 'wheelchair accessible tram'
+            elif properties.get('tram:wheelchair') == 'no':
+                feature_type = 'not wheelchair accessible tram'
+            elif properties.get('train:wheelchair') == 'yes':
+                feature_type = 'wheelchair accessible train'
+            elif properties.get('train:wheelchair') == 'no':
+                feature_type = 'not wheelchair accessible train'
         
         if name and feature_type:
             return f"{name}, {feature_type}"
