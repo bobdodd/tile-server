@@ -1,0 +1,24 @@
+tile-server
+Copyright (C) Bob Dodd
+
+The code in this repository is licensed under the GNU General Public
+License v3.0 or later. See LICENSE for the full text.
+
+----------------------------------------------------------------------
+Third-party source material
+----------------------------------------------------------------------
+
+This is a tile-generation server: it processes OpenStreetMap data into
+accessible SVG tiles. The OpenStreetMap source data, and any sample
+tiles included in this repository (e.g. under tiles/), are derived from
+OpenStreetMap.
+
+(C) OpenStreetMap contributors. OpenStreetMap data is made available
+under the Open Database License (ODbL) v1.0:
+
+  https://www.openstreetmap.org/copyright
+  https://opendatacommons.org/licenses/odbl/1-0/
+
+The OpenStreetMap data and the tiles derived from it remain under ODbL;
+the GPL-3.0-or-later grant covering this repository's code does not
+extend to them.
